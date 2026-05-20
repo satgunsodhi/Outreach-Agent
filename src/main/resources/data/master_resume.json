@@ -1,73 +1,85 @@
 {
   "personalInfo": {
-    "name": "Jane Doe",
-    "email": "jane.doe@example.com",
-    "phone": "555-123-4567",
-    "linkedin": "linkedin.com/in/janedoe",
-    "github": "github.com/janedoe",
-    "location": "San Francisco, CA",
-    "summary": "Experienced software engineer specializing in scalable backend systems."
+    "name": "Satgun Singh Sodhi",
+    "email": "satgunsodhi@gmail.com",
+    "phone": "+91 93231 22190",
+    "linkedin": "linkedin.com/in/satgunsodhi",
+    "github": "github.com/satgunsodhi",
+    "location": "Navi Mumbai, Maharashtra, India",
+    "summary": "AI/ML Engineer and B.Tech CSE student at VIT Vellore (9.42 CGPA, 2027 batch) with hands-on experience in deep learning, LLM systems, computer vision, and production ML infrastructure. Built original research projects (CNN-Transformer architectures, RAG pipelines, transformer-based SLMs) and delivered unsupervised anomaly detection at scale during an ML internship at Reliance Industries Limited."
   },
   "skills": [
     {
-      "category": "Languages",
-      "items": ["Java", "Python", "JavaScript"]
+      "category": "Programming Languages",
+      "items": ["Python", "C++", "Java", "SQL", "Shell Scripting", "JavaScript"]
     },
     {
-      "category": "Frameworks",
-      "items": ["Spring Boot", "React", "Node.js"]
+      "category": "Machine Learning & Deep Learning",
+      "items": [
+        "PyTorch", "TensorFlow", "Keras", "Scikit-Learn", "Hugging Face Transformers",
+        "Deep Learning", "CNNs", "Transformer Architecture", "Autoencoders",
+        "LoRA Fine-tuning", "Instruction Tuning", "Bayesian Optimization",
+        "Gaussian Processes", "Sentence Transformers", "RAG", "Agentic AI", "LLMs", "MLOps"
+      ]
+    },
+    {
+      "category": "Computer Vision",
+      "items": ["OpenCV", "RT-DETR", "EasyOCR", "Swin Transformer", "EfficientNet-B3", "Medical Image Segmentation"]
+    },
+    {
+      "category": "Web & Backend",
+      "items": ["React.js", "Node.js", "Express.js", "MongoDB", "Oracle XE", "MERN Stack", "Spring Boot", "FastAPI"]
+    },
+    {
+      "category": "Cloud & Infrastructure",
+      "items": ["Docker", "Docker Compose", "AWS EC2", "AWS S3", "Cloudflare Warp & Tunnel", "Supabase", "pgvector", "n8n", "Raspberry Pi", "Containerization"]
+    },
+    {
+      "category": "Data & Analytics",
+      "items": ["Pandas", "NumPy", "Time-Series Analysis", "Anomaly Detection", "Statistical Modelling"]
     }
   ],
   "experiences": [
     {
       "id": "exp-001",
-      "company": "Acme Corp",
-      "title": "Senior Software Engineer",
-      "startDate": "2022-01",
-      "endDate": "Present",
-      "tags": ["java", "microservices", "aws", "spring-boot"],
+      "company": "Reliance Industries Limited",
+      "title": "Machine Learning Intern",
+      "startDate": "2025-05",
+      "endDate": "2025-07",
+      "location": "RCP, Ghansoli, Navi Mumbai",
+      "tags": ["python", "pytorch", "anomaly-detection", "time-series", "autoencoders", "bayesian-optimization", "unsupervised-ml", "industrial-ml", "mlops"],
       "projects": [
         {
-          "id": "proj-001",
-          "name": "Payment Gateway Redesign",
-          "tags": ["spring-boot", "kafka", "postgresql"],
+          "id": "proj-reliance-001",
+          "name": "Industrial Pipeline Anomaly Detection System",
+          "tags": ["anomaly-detection", "autoencoders", "time-series", "bayesian-optimization", "unsupervised-ml"],
           "bullets": [
             {
-              "id": "bp-001",
-              "text": "Architected event-driven payment processing pipeline resulting in 40% increased throughput.",
-              "tags": ["event-driven", "kafka", "system-design"],
+              "id": "bp-r-001",
+              "text": "Engineered RMS-normalized flow deltas and cosine similarity features on sliding windows across all pairwise sensor combinations, translating physical pipeline behaviours into temporally independent, scale-invariant representations.",
+              "tags": ["feature-engineering", "time-series", "signal-processing", "anomaly-detection"],
               "priority": 1,
               "lengthCategory": "LONG"
             },
             {
-              "id": "bp-002",
-              "text": "Migrated legacy monolithic service to Spring Boot microservices.",
-              "tags": ["spring-boot", "migration"],
-              "priority": 2,
-              "lengthCategory": "SHORT"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "exp-002",
-      "company": "BetaTech",
-      "title": "Software Engineer",
-      "startDate": "2019-06",
-      "endDate": "2021-12",
-      "tags": ["python", "django", "gcp"],
-      "projects": [
-        {
-          "id": "proj-002",
-          "name": "User Analytics Dashboard",
-          "tags": ["python", "django", "analytics"],
-          "bullets": [
-            {
-              "id": "bp-003",
-              "text": "Developed a real-time user analytics dashboard using Django and GCP BigQuery.",
-              "tags": ["django", "gcp", "analytics"],
+              "id": "bp-r-002",
+              "text": "Built deep Autoencoder models (SELU activations, AlphaDropout, MAE loss) for unsupervised anomaly detection across 5 industrial pipeline systems, achieving up to 99.47% training accuracy and 93.05% validation accuracy on large multi-sensor time-series data.",
+              "tags": ["autoencoder", "deep-learning", "unsupervised-ml", "anomaly-detection", "pytorch"],
               "priority": 1,
+              "lengthCategory": "LONG"
+            },
+            {
+              "id": "bp-r-003",
+              "text": "Implemented Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement acquisition function without external libraries, auto-tuning training parameters with principled exploration-exploitation tradeoff.",
+              "tags": ["bayesian-optimization", "gaussian-processes", "hyperparameter-tuning", "from-scratch"],
+              "priority": 2,
+              "lengthCategory": "LONG"
+            },
+            {
+              "id": "bp-r-004",
+              "text": "Delivered dashboards, technical documentation, and presentations to mentors, leads, and stakeholders, honing cross-functional communication in a production ML environment.",
+              "tags": ["communication", "documentation", "stakeholder-management", "mlops"],
+              "priority": 3,
               "lengthCategory": "MEDIUM"
             }
           ]
@@ -75,21 +87,181 @@
       ]
     }
   ],
+  "projects": [
+    {
+      "id": "proj-asympt",
+      "name": "AsymPT: Asymmetric Parallel Transformer for Medical Image Segmentation",
+      "github": "github.com/satgunsodhi/AsymPT-showcase",
+      "tags": ["computer-vision", "deep-learning", "transformers", "medical-imaging", "pytorch", "cnn", "research", "swin-transformer"],
+      "bullets": [
+        {
+          "id": "bp-a-001",
+          "text": "Designed a hybrid CNN-Transformer architecture with asymmetric component placement: CNNs at high resolutions, a Parallel Hybrid Block with learnable Gated Fusion at mid-scale, and Dual-Swin Transformer blocks at the bottleneck for global context modelling.",
+          "tags": ["architecture-design", "cnn", "transformer", "swin-transformer", "computer-vision"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-a-002",
+          "text": "Outperformed TransUNet (77.48% Dice, 106B FLOPs) with 84% Dice Score at 28B FLOPs on the Synapse Multi-Organ Segmentation benchmark (9 classes), achieving a 6.5pp accuracy improvement with 73.6% compute reduction.",
+          "tags": ["benchmarking", "efficiency", "medical-imaging", "segmentation", "research"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-a-003",
+          "text": "Implemented production-ready training pipeline with mixed-precision AMP, deep supervision (3-level weighted loss), cosine annealing LR scheduler, and multi-format inference support (NIfTI, PNG, NPY).",
+          "tags": ["mlops", "training-pipeline", "mixed-precision", "pytorch"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-slm",
+      "name": "SLM: Financial Sentiment Analysis via Transformer Architecture",
+      "github": "github.com/satgunsodhi/SLM",
+      "tags": ["nlp", "llm", "transformer", "lora", "fine-tuning", "pytorch", "sentiment-analysis", "finance"],
+      "bullets": [
+        {
+          "id": "bp-s-001",
+          "text": "Built a transformer-based Small Language Model (SLM) from scratch in PyTorch using GPT-2 tokenizer (Tiktoken) for financial sentiment analysis, classifying text as positive/negative/neutral and mapping outputs to actionable buy/sell/hold trading signals.",
+          "tags": ["nlp", "transformer", "from-scratch", "pytorch", "sentiment-analysis", "finance"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-s-002",
+          "text": "Implemented Low-Rank Adaptation (LoRA) for parameter-efficient fine-tuning on FinancialPhraseBank and FiQA datasets, reducing trainable parameters from millions to thousands while preserving model expressiveness on domain-specific financial language.",
+          "tags": ["lora", "fine-tuning", "parameter-efficient", "nlp", "llm"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-s-003",
+          "text": "Applied instruction tuning to align model outputs with standardized sentiment categories, enabling robust inference on financial jargon, negations, and implicit market cues.",
+          "tags": ["instruction-tuning", "alignment", "nlp", "llm"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-dasai",
+      "name": "DasAI: AI-Powered Discord Assistant with RAG",
+      "github": "github.com/satgunsodhi/DasAI",
+      "tags": ["rag", "llm", "discord-bot", "supabase", "pgvector", "semantic-search", "python", "multi-tenant"],
+      "bullets": [
+        {
+          "id": "bp-d-001",
+          "text": "Implemented a full Retrieval-Augmented Generation (RAG) pipeline with Sentence Transformer embeddings (384-dim) stored in Supabase pgvector for semantic search over conversation history.",
+          "tags": ["rag", "embeddings", "pgvector", "semantic-search", "supabase"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-d-002",
+          "text": "Integrated Hugging Face Inference API (Llama-3.2-3B) with DuckDuckGo web search augmentation for real-time grounding, and implemented rolling conversation summaries (every 5 messages) to manage long-term context within LLM token window constraints.",
+          "tags": ["llm", "rag", "context-management", "huggingface", "real-time"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-d-003",
+          "text": "Deployed with multi-tenant architecture featuring per-server data isolation and role-based access control using Supabase service roles; containerized on Railway with a Vercel dashboard.",
+          "tags": ["multi-tenant", "deployment", "docker", "access-control", "production"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-irpai",
+      "name": "IrpAI: Multimodal Vision-Language Pipeline",
+      "github": "github.com/satgunsodhi/IrpAI",
+      "tags": ["computer-vision", "multimodal", "rt-detr", "ocr", "llm", "python-library", "object-detection"],
+      "bullets": [
+        {
+          "id": "bp-i-001",
+          "text": "Built a 5-stage multimodal machine vision pipeline converting raw screenshots into structured JSON/Markdown for downstream LLM consumption, achieving ~287ms end-to-end latency: preprocessing → RT-DETR object detection → EasyOCR text extraction → layout analysis → context assembly.",
+          "tags": ["multimodal", "computer-vision", "ocr", "rt-detr", "pipeline", "latency"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-i-002",
+          "text": "Selected RT-DETR over YOLOv8 for its transformer detection head capturing global layout relationships; implemented hybrid detector-fallback strategy for low-confidence edge cases.",
+          "tags": ["object-detection", "rt-detr", "transformer", "computer-vision", "architecture"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-i-003",
+          "text": "Shipped as a pip-installable Python library with a full pytest suite, CLI interface, fine-tuning guide, and API documentation — designed for team-level integration and reproducibility.",
+          "tags": ["python-library", "mlops", "testing", "cli", "documentation"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    }
+  ],
   "education": [
     {
-      "degree": "B.S. in Computer Science",
-      "institution": "University of Tech",
-      "graduationDate": "2019-05",
-      "gpa": "3.8",
-      "tags": ["computer-science"]
+      "degree": "B.Tech Computer Science and Engineering",
+      "institution": "Vellore Institute of Technology (VIT)",
+      "location": "Vellore, Tamil Nadu",
+      "startDate": "2023-09",
+      "graduationDate": "2027-05",
+      "gpa": "9.42 CGPA",
+      "tags": ["computer-science", "machine-learning", "algorithms", "data-structures"]
+    },
+    {
+      "degree": "Class XII",
+      "institution": "Delhi World Public School",
+      "location": "Nerul, Navi Mumbai",
+      "graduationDate": "2023-05",
+      "gpa": "91.8%",
+      "tags": ["academics"]
+    },
+    {
+      "degree": "Class X",
+      "institution": "Apeejay School",
+      "location": "Nerul, Navi Mumbai",
+      "graduationDate": "2021-05",
+      "gpa": "90.6%",
+      "tags": ["academics"]
     }
   ],
   "certifications": [
     {
-      "name": "AWS Certified Solutions Architect",
-      "issuer": "Amazon Web Services",
-      "date": "2023-08",
-      "tags": ["aws", "cloud"]
+      "name": "Alliance Française B1 (Concours Romain Rolland)",
+      "issuer": "Alliance Française",
+      "date": "2023",
+      "tags": ["french", "language", "certification"]
+    }
+  ],
+  "extracurriculars": [
+    {
+      "id": "ec-001",
+      "organization": "Mozilla Firefox Club, VIT Vellore",
+      "role": "Core Member & Point of Contact",
+      "tags": ["leadership", "community", "hackathon", "events"],
+      "bullets": [
+        {
+          "id": "bp-ec-001",
+          "text": "Served as Point of Contact for CodeHub hackathon and anchored 5+ technical events including a keynote with Love Babbar (500+ attendees).",
+          "tags": ["leadership", "events", "hackathon"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-ec-002",
+          "text": "Achieved 1st Place at Binary Battles competition at Gravitas, VIT's annual technical fest.",
+          "tags": ["competition", "achievement", "algorithms"],
+          "priority": 1,
+          "lengthCategory": "SHORT"
+        }
+      ]
     }
   ]
 }
