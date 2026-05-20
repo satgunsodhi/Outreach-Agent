@@ -1,0 +1,95 @@
+{
+  "personalInfo": {
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "phone": "555-123-4567",
+    "linkedin": "linkedin.com/in/janedoe",
+    "github": "github.com/janedoe",
+    "location": "San Francisco, CA",
+    "summary": "Experienced software engineer specializing in scalable backend systems."
+  },
+  "skills": [
+    {
+      "category": "Languages",
+      "items": ["Java", "Python", "JavaScript"]
+    },
+    {
+      "category": "Frameworks",
+      "items": ["Spring Boot", "React", "Node.js"]
+    }
+  ],
+  "experiences": [
+    {
+      "id": "exp-001",
+      "company": "Acme Corp",
+      "title": "Senior Software Engineer",
+      "startDate": "2022-01",
+      "endDate": "Present",
+      "tags": ["java", "microservices", "aws", "spring-boot"],
+      "projects": [
+        {
+          "id": "proj-001",
+          "name": "Payment Gateway Redesign",
+          "tags": ["spring-boot", "kafka", "postgresql"],
+          "bullets": [
+            {
+              "id": "bp-001",
+              "text": "Architected event-driven payment processing pipeline resulting in 40% increased throughput.",
+              "tags": ["event-driven", "kafka", "system-design"],
+              "priority": 1,
+              "lengthCategory": "LONG"
+            },
+            {
+              "id": "bp-002",
+              "text": "Migrated legacy monolithic service to Spring Boot microservices.",
+              "tags": ["spring-boot", "migration"],
+              "priority": 2,
+              "lengthCategory": "SHORT"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exp-002",
+      "company": "BetaTech",
+      "title": "Software Engineer",
+      "startDate": "2019-06",
+      "endDate": "2021-12",
+      "tags": ["python", "django", "gcp"],
+      "projects": [
+        {
+          "id": "proj-002",
+          "name": "User Analytics Dashboard",
+          "tags": ["python", "django", "analytics"],
+          "bullets": [
+            {
+              "id": "bp-003",
+              "text": "Developed a real-time user analytics dashboard using Django and GCP BigQuery.",
+              "tags": ["django", "gcp", "analytics"],
+              "priority": 1,
+              "lengthCategory": "MEDIUM"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. in Computer Science",
+      "institution": "University of Tech",
+      "graduationDate": "2019-05",
+      "gpa": "3.8",
+      "tags": ["computer-science"]
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Solutions Architect",
+      "issuer": "Amazon Web Services",
+      "date": "2023-08",
+      "tags": ["aws", "cloud"]
+    }
+  ]
+}
