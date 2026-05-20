@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "outreach.llm")
 public class LlmProperties {
     private String openRouterApiKey;
-    private String openRouterModelName = "gpt-oss-120b";
+    private String openRouterModelName = "openai/gpt-oss-120b:free";
     private Double temperature = 0.2;
     private Integer maxTokens = 4000;
 
