@@ -9,13 +9,13 @@ langchain4j:
 outreach:
   llm:
     openRouterApiKey: ${OPENROUTER_API_KEY:}
-    openRouterModelName: google/gemini-2.5-flash
+    openRouterModelName: ${OPENROUTER_MODEL_NAME:gpt-oss-120b}
     temperature: 0.2
+    maxTokens: 4000
 
 spring:
   profiles:
-    active: gemini-studio
-
+    active: openrouter
   mail:
     host: smtp.gmail.com
     port: 587
@@ -27,3 +27,6 @@ spring:
           auth: true
           starttls:
             enable: true
+
+server:
+  port: 8080

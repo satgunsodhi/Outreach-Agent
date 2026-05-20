@@ -59,10 +59,28 @@ public class MasterResumeService {
                 .sorted(Comparator.comparingInt((Experience exp) -> countMatches(exp.tags(), lowerTags)).reversed())
                 .toList();
 
+        List<Project> filteredProjects = masterResume.projects().stream()
+                .map(proj -> {
+                    List<BulletPoint> filteredBullets = proj.bullets().stream()
+                            .filter(bp -> matchesAny(bp.tags(), lowerTags))
+                            .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
+                            .toList();
+                    return new Project(proj.id(), proj.name(), proj.tags(), filteredBullets);
+                })
+                .filter(proj -> !proj.bullets().isEmpty() || matchesAny(proj.tags(), lowerTags))
+                .sorted(Comparator.comparingInt((Project proj) -> countMatches(proj.tags(), lowerTags)).reversed())
+                .toList();
+
+        // Fallback: If both experiences and projects end up completely empty after filtering,
+        // return the original unfiltered lists so the agent has material to build a resume.
+        List<Experience> finalExperiences = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.experiences() : filteredExperiences;
+        List<Project> finalProjects = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.projects() : filteredProjects;
+
         return new MasterResume(
                 masterResume.personalInfo(),
                 masterResume.skills(),
-                filteredExperiences,
+                finalExperiences,
+                finalProjects,
                 masterResume.education(),
                 masterResume.certifications()
         );

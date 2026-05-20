@@ -23,6 +23,7 @@ public class ResumeController {
             ResumeResponse response = new ResumeResponse(pdfPath, "Resume generated successfully.");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ResumeResponse(null, "Error generating resume: " + e.getMessage()));
         }
     }

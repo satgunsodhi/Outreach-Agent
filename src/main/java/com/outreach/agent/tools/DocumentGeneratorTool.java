@@ -30,7 +30,7 @@ public class DocumentGeneratorTool {
             Path tempFile = Files.createTempFile("resume-", ".pdf");
             Files.write(tempFile, pdfBytes);
             
-            return tempFile.toAbsolutePath().toString();
+            return tempFile.toAbsolutePath().toString().replace("\\", "/");
         } catch (Exception e) {
             return "Error generating PDF: " + e.getMessage();
         }

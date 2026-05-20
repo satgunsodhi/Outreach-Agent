@@ -6,6 +6,7 @@ public record MasterResume(
     PersonalInfo personalInfo,
     List<SkillCategory> skills,
     List<Experience> experiences,
+    List<Project> projects,
     List<Education> education,
     List<Certification> certifications
 ) {}

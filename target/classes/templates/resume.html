@@ -15,6 +15,7 @@
         }
         h1 { font-size: 16pt; margin: 0 0 5px 0; text-align: center; }
         .contact-info { text-align: center; margin-bottom: 10px; font-size: 10pt; }
+        .contact-info a { color: #1a0dab; text-decoration: underline; }
         h2 { font-size: 12pt; border-bottom: 1px solid #000; margin: 10px 0 5px 0; text-transform: uppercase; }
         .item-header { margin-bottom: 2px; }
         .item-title { font-weight: bold; float: left; }
@@ -25,26 +26,29 @@
         li { margin-bottom: 3px; text-align: justify; }
         .skills { margin-bottom: 10px; }
         .skill-category { font-weight: bold; }
+        b, strong { font-weight: bold; }
+        a.proj-link { color: #1a0dab; text-decoration: underline; font-weight: bold; }
     </style>
 </head>
 <body>
     <div th:if="${personalInfo != null}">
-        <h1 th:text="${personalInfo.name}">Name</h1>
+        <h1 th:text="${personalInfo['name']}">Name</h1>
         <div class="contact-info">
-            <span th:text="${personalInfo.email}">email@example.com</span> |
-            <span th:text="${personalInfo.phone}">123-456-7890</span> |
-            <span th:text="${personalInfo.location}">City, State</span><br/>
-            <span th:if="${personalInfo.linkedin != null}" th:text="${personalInfo.linkedin}">linkedin.com/in/name</span>
-            <span th:if="${personalInfo.github != null}" th:text="' | ' + ${personalInfo.github}">github.com/name</span>
+            <span th:text="${personalInfo['email']}">email@example.com</span> |
+            <span th:text="${personalInfo['phone']}">123-456-7890</span> |
+            <span th:text="${personalInfo['location']}">City, State</span><br/>
+            <a th:if="${personalInfo['linkedin'] != null}" th:href="'https://' + ${personalInfo['linkedin']}" th:text="${personalInfo['linkedin']}" style="color:#1a0dab; text-decoration:underline;">linkedin.com/in/name</a>
+            <span th:if="${personalInfo['github'] != null}"> | </span>
+            <a th:if="${personalInfo['github'] != null}" th:href="'https://' + ${personalInfo['github']}" th:text="${personalInfo['github']}" style="color:#1a0dab; text-decoration:underline;">github.com/name</a>
         </div>
-        <p th:if="${personalInfo.summary != null}" th:text="${personalInfo.summary}" style="text-align: justify; margin-bottom: 10px;"></p>
+        <p th:if="${personalInfo['summary'] != null}" th:text="${personalInfo['summary']}" style="text-align: justify; margin-bottom: 10px;"></p>
     </div>
 
     <div th:if="${skills != null and !skills.isEmpty()}">
         <h2>Skills</h2>
         <div class="skills" th:each="skillCat : ${skills}">
-            <span class="skill-category" th:text="${skillCat.category} + ': '">Category:</span>
-            <span th:text="${#strings.listJoin(skillCat.items, ', ')}">Skill 1, Skill 2</span>
+            <span class="skill-category" th:text="${skillCat['category']} + ': '">Category:</span>
+            <span th:text="${#strings.listJoin(skillCat['items'], ', ')}">Skill 1, Skill 2</span>
         </div>
     </div>
 
@@ -52,42 +56,62 @@
         <h2>Experience</h2>
         <div th:each="exp : ${experiences}" style="margin-bottom: 10px;">
             <div class="item-header">
-                <span class="item-title" th:text="${exp.title}">Job Title</span>
-                <span class="item-date" th:text="${exp.startDate} + ' - ' + ${exp.endDate}">Date</span>
+                <span class="item-title" th:text="${exp['title']}">Job Title</span>
+                <span class="item-date" th:text="${exp['startDate']} + ' - ' + ${exp['endDate']}">Date</span>
                 <div class="clear"></div>
             </div>
-            <div class="company" th:text="${exp.company}">Company Name</div>
+            <div class="company" th:text="${exp['company']}">Company Name</div>
             
-            <div th:each="proj : ${exp.projects}" style="margin-bottom: 5px;">
-                <div style="font-weight: bold; font-size: 10.5pt;" th:if="${proj.name != null}" th:text="${proj.name}">Project Name</div>
-                <ul th:if="${proj.bullets != null and !proj.bullets.isEmpty()}">
-                    <li th:each="bullet : ${proj.bullets}" th:text="${bullet.text}">Bullet point</li>
+            <div th:each="proj : ${exp['projects']}" style="margin-bottom: 5px;">
+                <div style="font-weight: bold; font-size: 10.5pt;" th:if="${proj['name'] != null}" th:text="${proj['name']}">Project Name</div>
+                <ul th:if="${proj['bullets'] != null and !proj['bullets'].isEmpty()}">
+                    <li th:each="bullet : ${proj['bullets']}" th:utext="${bullet['text']}">Bullet point</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <div th:if="${education != null and !education.isEmpty()}">
-        <h2>Education</h2>
-        <div th:each="edu : ${education}" style="margin-bottom: 5px;">
+    <div th:if="${projects != null and !projects.isEmpty()}">
+        <h2>Projects</h2>
+        <div th:each="proj : ${projects}" style="margin-bottom: 8px;">
             <div class="item-header">
-                <span class="item-title" th:text="${edu.degree}">Degree</span>
-                <span class="item-date" th:text="${edu.graduationDate}">Date</span>
+                <span class="item-title">
+                    <a th:if="${proj['github'] != null}" th:href="${proj['github']}" th:text="${proj['name']}" class="proj-link">Project Name</a>
+                    <span th:if="${proj['github'] == null}" th:text="${proj['name']}">Project Name</span>
+                </span>
                 <div class="clear"></div>
             </div>
-            <div class="company" th:text="${edu.institution}">Institution</div>
+            <ul th:if="${proj['bullets'] != null and !proj['bullets'].isEmpty()}">
+                <li th:each="bullet : ${proj['bullets']}" th:utext="${bullet['text']}">Bullet point</li>
+            </ul>
         </div>
+    </div>
+
+    <div th:if="${education != null and !education.isEmpty()}">
+        <h2>Education</h2>
+        <table style="width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 10px; font-size: 11pt;">
+            <tr>
+                <th style="padding-bottom: 2px; width: 40%;">Degree</th>
+                <th style="padding-bottom: 2px; width: 45%;">Institute</th>
+                <th style="padding-bottom: 2px; width: 15%;">Year</th>
+            </tr>
+            <tr th:each="edu : ${education}">
+                <td style="padding: 2px 0; font-weight: bold;" th:text="${edu['degree']}">Degree</td>
+                <td style="padding: 2px 0; font-style: italic;" th:text="${edu['institution']}">Institution</td>
+                <td style="padding: 2px 0;" th:text="${edu['graduationDate']}">Year</td>
+            </tr>
+        </table>
     </div>
 
     <div th:if="${certifications != null and !certifications.isEmpty()}">
         <h2>Certifications</h2>
         <div th:each="cert : ${certifications}" style="margin-bottom: 5px;">
             <div class="item-header">
-                <span class="item-title" th:text="${cert.name}">Cert Name</span>
-                <span class="item-date" th:text="${cert.date}">Date</span>
+                <span class="item-title" th:text="${cert['name']}">Cert Name</span>
+                <span class="item-date" th:text="${cert['date']}">Date</span>
                 <div class="clear"></div>
             </div>
-            <div class="company" th:text="${cert.issuer}">Issuer</div>
+            <div class="company" th:text="${cert['issuer']}">Issuer</div>
         </div>
     </div>
 </body>

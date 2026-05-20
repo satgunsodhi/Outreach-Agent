@@ -23,6 +23,7 @@ public class OpenRouterLlmConfig {
                 .apiKey(llmProperties.getOpenRouterApiKey())
                 .modelName(llmProperties.getOpenRouterModelName())
                 .temperature(llmProperties.getTemperature())
+                .maxTokens(llmProperties.getMaxTokens())
                 .build();
     }
 }
