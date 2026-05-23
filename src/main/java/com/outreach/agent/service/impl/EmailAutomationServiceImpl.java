@@ -7,6 +7,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.lang.NonNull;
 import java.util.Objects;
 
 @Service
@@ -22,7 +23,11 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
     }
 
     @Override
-    public void sendResumeEmail(String recipientEmail, String subject, byte[] resumePdf, String coverLetterBody) {
+    public void sendResumeEmail(
+            @NonNull String recipientEmail,
+            @NonNull String subject,
+            byte[] resumePdf,
+            @NonNull String coverLetterBody) {
         if (recipientEmail == null || recipientEmail.isBlank())
             throw new IllegalArgumentException("recipientEmail must not be null or blank");
         if (subject == null || subject.isBlank())
@@ -36,7 +41,8 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            String from = fromEmail != null && !fromEmail.isBlank() ? fromEmail : "noreply@example.com";
+            String emailSenderAddress = fromEmail;
+            String from = emailSenderAddress != null && !emailSenderAddress.isBlank() ? emailSenderAddress : "noreply@example.com";
             helper.setFrom(from);
             helper.setTo(recipientEmail);
             helper.setSubject(subject);
@@ -53,7 +59,10 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
     }
 
     @Override
-    public void sendFollowUp(String recipientEmail, String originalSubject, int daysSinceSent) {
+    public void sendFollowUp(
+            @NonNull String recipientEmail,
+            @NonNull String originalSubject,
+            int daysSinceSent) {
         if (recipientEmail == null || recipientEmail.isBlank())
             throw new IllegalArgumentException("recipientEmail must not be null or blank");
         if (originalSubject == null || originalSubject.isBlank())
@@ -63,7 +72,8 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false);
 
-            String from = fromEmail != null && !fromEmail.isBlank() ? fromEmail : "noreply@example.com";
+            String emailSenderAddress = fromEmail;
+            String from = emailSenderAddress != null && !emailSenderAddress.isBlank() ? emailSenderAddress : "noreply@example.com";
             helper.setFrom(from);
             helper.setTo(recipientEmail);
             helper.setSubject("Re: " + originalSubject);

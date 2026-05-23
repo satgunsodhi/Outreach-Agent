@@ -1,7 +1,16 @@
 package com.outreach.agent.service;
 
-public interface EmailAutomationService {
-    void sendResumeEmail(String recipientEmail, String subject, byte[] resumePdf, String coverLetterBody);
+import org.springframework.lang.NonNull;
 
-    void sendFollowUp(String recipientEmail, String originalSubject, int daysSinceSent);
+public interface EmailAutomationService {
+    void sendResumeEmail(
+            @NonNull String recipientEmail,
+            @NonNull String subject,
+            byte[] resumePdf,
+            @NonNull String coverLetterBody);
+
+    void sendFollowUp(
+            @NonNull String recipientEmail,
+            @NonNull String originalSubject,
+            int daysSinceSent);
 }
