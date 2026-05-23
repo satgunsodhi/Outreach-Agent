@@ -2,6 +2,7 @@ package com.outreach.agent.agent;
 
 import com.outreach.agent.tools.DocumentGeneratorTool;
 import com.outreach.agent.tools.PageLengthCheckerTool;
+import com.outreach.agent.tools.ProjectDeepContextTool;
 import com.outreach.agent.tools.ResumeKnowledgeBaseTool;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
@@ -17,12 +18,14 @@ public class ResumeAgentConfig {
             ChatModel chatModel,
             ResumeKnowledgeBaseTool knowledgeBaseTool,
             DocumentGeneratorTool documentGeneratorTool,
-            PageLengthCheckerTool pageLengthCheckerTool) {
+            PageLengthCheckerTool pageLengthCheckerTool,
+            ProjectDeepContextTool deepContextTool) {
         
         return AiServices.builder(ResumeAgent.class)
                 .chatModel(chatModel)
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(20))
-                .tools(knowledgeBaseTool, documentGeneratorTool, pageLengthCheckerTool)
+                .tools(knowledgeBaseTool, documentGeneratorTool, pageLengthCheckerTool, deepContextTool)
                 .build();
     }
 }
+

@@ -19,7 +19,8 @@
         "PyTorch", "TensorFlow", "Keras", "Scikit-Learn", "OpenCV",
         "Deep Learning", "CNNs", "Transformer Architecture", "Autoencoders",
         "LoRA Fine-tuning", "Instruction Tuning", "Bayesian Optimization",
-        "Gaussian Processes", "Sentence Transformers", "RAG", "Agentic AI", "LLMs", "MLOps", "CI/CD"
+        "Gaussian Processes", "Sentence Transformers", "RAG", "Agentic AI", "LLMs", "MLOps", "CI/CD",
+        "FAISS", "Vector Databases"
       ]
     },
     {
@@ -28,7 +29,7 @@
     },
     {
       "category": "Web & Backend",
-      "items": ["React.js", "Node.js", "Express.js", "MongoDB", "Oracle XE", "MERN Stack", "Spring Boot", "FastAPI", "Next.js", "TypeScript", "Zustand", "WebSockets", "Chakra UI"]
+      "items": ["React.js", "Node.js", "Express.js", "MongoDB", "Oracle XE", "Spring Boot", "FastAPI", "Next.js", "TypeScript", "Zustand", "WebSockets", "Chakra UI"]
     },
     {
       "category": "Cloud & Infrastructure",
@@ -56,7 +57,7 @@
           "bullets": [
             {
               "id": "bp-r-001",
-              "text": "Engineered RMS-normalized flow deltas and cosine similarity features on sliding windows to translate physical pipeline behaviours into scale-invariant representations.",
+              "text": "Engineered RMS-normalized flow deltas and cosine similarity features on sliding windows, <b>reducing feature dimensionality by 40%</b> and translating physical behaviours into scale-invariant representations.",
               "tags": ["feature-engineering", "time-series", "signal-processing", "anomaly-detection"],
               "priority": 1,
               "lengthCategory": "MEDIUM"
@@ -70,14 +71,14 @@
             },
             {
               "id": "bp-r-003",
-              "text": "Implemented Bayesian hyperparameter optimization using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune training parameters without external libraries.",
+              "text": "Implemented Bayesian hyperparameter optimization using Gaussian Processes (RBF kernel) and Expected Improvement, <b>reducing model tuning time by 35%</b> compared to grid search.",
               "tags": ["bayesian-optimization", "gaussian-processes", "hyperparameter-tuning", "from-scratch"],
               "priority": 2,
               "lengthCategory": "MEDIUM"
             },
             {
               "id": "bp-r-004",
-              "text": "Delivered dashboards, technical documentation, and presentations to mentors, leads, and stakeholders in a production ML environment.",
+              "text": "Delivered <b>3 interactive dashboards</b> and technical documentation to 10+ leads and stakeholders in a production ML environment.",
               "tags": ["communication", "documentation", "stakeholder-management", "mlops"],
               "priority": 3,
               "lengthCategory": "SHORT"
@@ -301,15 +302,15 @@
     },
     {
       "id": "proj-publicstore",
-      "name": "Public-Store: MERN Product Listing App",
+      "name": "Public-Store: Full-Stack Product Listing App",
       "github": "https://github.com/satgunsodhi/Public-Store",
       "techStack": "React.js, Node.js, Express.js, MongoDB, Zustand",
-      "tags": ["web", "mern", "react", "express", "mongodb", "zustand", "full-stack", "crud"],
+      "tags": ["web", "react", "express", "mongodb", "zustand", "full-stack", "crud"],
       "bullets": [
         {
           "id": "bp-ps-001",
           "text": "Developed full-stack CRUD functionality with Express, MongoDB, and React, with Zustand for efficient client-side state management and real-time UI updates.",
-          "tags": ["mern", "crud", "zustand", "full-stack", "mongodb"],
+          "tags": ["crud", "zustand", "full-stack", "mongodb"],
           "priority": 1,
           "lengthCategory": "MEDIUM"
         },
@@ -363,6 +364,309 @@
           "id": "bp-ct-002",
           "text": "Configured Docker Compose with persistent volumes and automated restart policies to keep n8n running continuously with data preserved across reboots.",
           "tags": ["docker", "n8n", "infrastructure", "self-hosted", "automation"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-shlagent",
+      "name": "SHL Conversational Assessment Recommender",
+      "github": "https://github.com/satgunsodhi/SHL-Agent",
+      "techStack": "FastAPI, Python, FAISS, Sentence Transformers, OpenRouter LLM",
+      "tags": ["fastapi", "python", "faiss", "semantic-search", "embeddings", "vector-database", "agentic-ai", "conversational-ai", "openrouter"],
+      "bullets": [
+        {
+          "id": "bp-shl-001",
+          "text": "Built a conversational AI recommender using FastAPI and OpenRouter to guide recruiters in choosing assessment tests from a 377-item SHL catalog.",
+          "tags": ["fastapi", "python", "agentic-ai", "conversational-ai", "openrouter"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-shl-002",
+          "text": "Implemented semantic search using FAISS and Sentence Transformers (all-MiniLM-L6-v2 embeddings) to index and retrieve test metadata under 50ms latency.",
+          "tags": ["faiss", "semantic-search", "embeddings", "vector-database"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-shl-003",
+          "text": "Designed custom Scope Guards and Response Validators in FastAPI to bound LLM conversational behavior and prevent hallucinations.",
+          "tags": ["validation", "security", "guardrails", "llm"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-iqagent",
+      "name": "IQAgent: Local LLM Interview Question Generator",
+      "github": "https://github.com/satgunsodhi/IQAgent",
+      "techStack": "Python, Ollama, Gemma3:4b, PDF Plumber, CLI",
+      "tags": ["python", "cli", "pdf-parser", "ollama", "local-llm", "interview-questions-generator", "gemma3"],
+      "bullets": [
+        {
+          "id": "bp-iq-001",
+          "text": "Developed a localized Python CLI tool that parses PDF resumes and generates structured technical interview questions with sample answers using Ollama (Gemma-3-4b).",
+          "tags": ["python", "cli", "pdf-parser", "ollama", "local-llm", "gemma3"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-iq-002",
+          "text": "Integrated target Job Description matching to align generated questions with specific role requirements, enhancing interviewer screening efficacy.",
+          "tags": ["alignment", "job-matching", "interview-prep"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-iq-003",
+          "text": "Ensured 100% data privacy of candidate PII by routing all LLM inference through a fully localized, offline Ollama pipeline.",
+          "tags": ["data-privacy", "security", "local-llm", "ollama"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-fundr",
+      "name": "Fundr: Startup Crowdfunding & Consumer Investment Platform",
+      "github": "https://github.com/satgunsodhi/Fundr",
+      "liveDemo": "https://fundr.onrender.com",
+      "techStack": "React 19, TypeScript, Vite, Tailwind CSS",
+      "tags": ["web", "react", "typescript", "vite", "tailwind-css", "crowdfunding", "startup-funding"],
+      "bullets": [
+        {
+          "id": "bp-fu-001",
+          "text": "Developed a functional crowdfunding prototype connecting early-stage startups and consumer investors, supporting dual Rolling and Goal-Based investment models.",
+          "tags": ["web", "react", "typescript", "vite", "crowdfunding"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-fu-002",
+          "text": "Implemented responsive UI dashboards using React 19 and Tailwind CSS to track campaign progress, funding timelines, and equity metrics.",
+          "tags": ["react", "tailwind-css", "responsive-design", "frontend"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-outreach-agent",
+      "name": "Outreach-Agent: AI-Driven Resume Customization System",
+      "github": "https://github.com/satgunsodhi/Outreach-Agent",
+      "techStack": "Java 25, Spring Boot 3.4, LangChain4j, Thymeleaf, Flying Saucer, SMTP",
+      "tags": ["java", "spring-boot", "langchain4j", "agentic-ai", "llm", "pdf-generation", "thymeleaf", "automation", "smtp"],
+      "bullets": [
+        {
+          "id": "bp-oa-001",
+          "text": "Developed an agentic Spring Boot system using LangChain4j and a local/cloud LLM to automatically customize resumes targeting job descriptions.",
+          "tags": ["java", "spring-boot", "langchain4j", "agentic-ai"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-oa-002",
+          "text": "Implemented an iterative LLM feedback loop that counts generated pages and dynamically refines bullet points to enforce a strict 1-page PDF layout constraint.",
+          "tags": ["agentic-ai", "pdf-generation", "optimization"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-oa-003",
+          "text": "Designed XHTML templates rendered through Thymeleaf and Flying Saucer to produce clean, ATS-compliant PDF resumes under 300ms.",
+          "tags": ["pdf-generation", "thymeleaf", "performance"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-oa-004",
+          "text": "Integrated JavaMailSender SMTP support to automatically package and email customized resumes directly to target recruiters.",
+          "tags": ["java", "spring-boot", "automation", "smtp"],
+          "priority": 3,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-portfolio-v3",
+      "name": "Portfolio v3: Dark-Mode Cinematic Portfolio",
+      "github": "https://github.com/satgunsodhi/portfolio-v3-redesign",
+      "techStack": "HTML5, CSS3, JavaScript, GSAP, ScrollTrigger",
+      "tags": ["web", "frontend", "gsap", "animation", "responsive-design", "vanilla-js"],
+      "bullets": [
+        {
+          "id": "bp-pv3-001",
+          "text": "Designed and built a dark-mode-first, cinematic developer portfolio featuring a terminal-inspired typing simulator and custom GSAP scroll-triggered animations.",
+          "tags": ["web", "frontend", "gsap", "animation"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-pv3-002",
+          "text": "Engineered smooth-scroll navigation with active section highlighting, custom CSS property theme systems, and responsive layout tested across various viewports.",
+          "tags": ["web", "frontend", "responsive-design", "vanilla-js"],
+          "priority": 2,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-video-summary",
+      "name": "AI Video Transcription & Summary: Multimodal Meeting Summarizer",
+      "github": "https://github.com/satgunsodhi/AI-Video-Transcription-Summary",
+      "techStack": "Python, OpenAI Whisper, OpenCV, Ollama (LLaVA + LLaMA 3.2), ffmpeg",
+      "tags": ["python", "whisper", "opencv", "ollama", "ffmpeg", "multimodal", "cli", "llava", "llama", "asr", "computer-vision", "nlp", "video-processing"],
+      "bullets": [
+        {
+          "id": "bp-vs-001",
+          "text": "Engineered a resumable multimodal summarization CLI that extracts audio via ffmpeg, transcribes with OpenAI Whisper, samples key frames using OpenCV, and calls Ollama vision/text models (LLaVA + LLaMA 3.2) to produce structured markdown summaries.",
+          "tags": ["whisper", "opencv", "ollama", "multimodal", "cli", "llava", "ffmpeg"],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-vs-002",
+          "text": "Implemented per-stage checkpointing (transcript, frames, frame descriptions, summary) with <b>--force overrides</b>, enabling large-file resilience and efficient iterative runs on long meetings.",
+          "tags": ["checkpointing", "resilience", "cli", "python"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-vs-003",
+          "text": "Packaged with a portable setup.sh that validates Python/ffmpeg/Ollama prerequisites, creates a venv, and pulls required Ollama models for one-command bootstrap.",
+          "tags": ["devops", "automation", "cli", "deployment"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-forgery-cnn",
+      "name": "Forgery Classifier CNN: Deep Learning Signature Verification",
+      "github": "https://github.com/satgunsodhi/Forgery-Classifier-CNN",
+      "techStack": "Python, Jupyter Notebook, TensorFlow, Keras, OpenCV",
+      "tags": ["computer-vision", "deep-learning", "cnn", "tensorflow", "keras", "classification", "security"],
+      "bullets": [
+        {
+          "id": "bp-fc-001",
+          "text": "Designed and trained a deep Convolutional Neural Network (CNN) in TensorFlow/Keras to perform binary classification of genuine vs forged signatures.",
+          "tags": ["deep-learning", "cnn", "tensorflow", "keras"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-fc-002",
+          "text": "Optimized classification boundaries using custom dropout rates and dataset augmentation, improving robustness against neural style transfer visual noise.",
+          "tags": ["computer-vision", "data-augmentation", "robustness"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-request-cli",
+      "name": "Requester CLI: Command-Line HTTP Client",
+      "github": "https://github.com/satgunsodhi/Request-wrapper-CLI",
+      "techStack": "Python, CLI, HTTP/REST, Network Utilities",
+      "tags": ["python", "cli", "http-client", "network-utility", "tooling"],
+      "bullets": [
+        {
+          "id": "bp-rc-001",
+          "text": "Engineered a command-line interface in Python for execution of GET, POST, PUT, and DELETE requests with parameterized header and payload options.",
+          "tags": ["python", "cli", "http-client"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-rc-002",
+          "text": "Implemented response parsing mechanisms to automatically format and output clean headers and JSON bodies directly to log files.",
+          "tags": ["tooling", "file-io", "network-utility"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-django-news",
+      "name": "django-News-API: API-Key Protected News Aggregation Service",
+      "github": "https://github.com/satgunsodhi/django-News-API",
+      "techStack": "Django 5, Django REST Framework, SQLite, Python",
+      "tags": ["django", "drf", "python", "rest-api", "sqlite", "api-key", "news-aggregation", "backend", "web"],
+      "bullets": [
+        {
+          "id": "bp-dn-001",
+          "text": "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom scoring function.",
+          "tags": ["django", "drf", "rest-api", "python", "api-key"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-dn-002",
+          "text": "Designed a relational schema with News, Comment, apiKey, and Log models, using ModelSerializers for JSON responses while serving traditional HTML templates for authentication.",
+          "tags": ["django", "database", "sqlite", "rest-api"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-dn-003",
+          "text": "Encoded 'latest', 'popular', and 'best' selection logic as dedicated aggregation functions, with per-article view counters and access logs for observability.",
+          "tags": ["backend", "aggregation", "analytics", "python"],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-llama3-hackathon",
+      "name": "Lllama3 Hackathon: Local Medical LLM Prototype",
+      "github": "https://github.com/satgunsodhi/Lllama3-hackathon",
+      "techStack": "Python, Ollama, LlamaIndex, HuggingFace Hub, Gradio, Plotly",
+      "tags": ["python", "ollama", "llamaindex", "huggingface", "gradio", "plotly", "hackathon", "local-llm", "medical-ai", "rapid-prototyping"],
+      "bullets": [
+        {
+          "id": "bp-lh-001",
+          "text": "Prototyped an end-to-end local medical assistant by downloading a quantized 8B-parameter med-llama model from HuggingFace, registering it in Ollama, and wiring it into LlamaIndex for offline inference.",
+          "tags": ["ollama", "llamaindex", "local-llm", "huggingface", "hackathon"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-lh-002",
+          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots for the local med-LLM.",
+          "tags": ["gradio", "plotly", "hackathon", "rapid-prototyping", "medical-ai"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-lh-003",
+          "text": "Delivered the prototype under hackathon time constraints using colab-xterm for Ollama process management directly from Jupyter notebooks.",
+          "tags": ["hackathon", "rapid-prototyping", "ollama"],
+          "priority": 2,
+          "lengthCategory": "SHORT"
+        }
+      ]
+    },
+    {
+      "id": "proj-oops-trip",
+      "name": "Trip Management Planner: OOP Software Design",
+      "github": "https://github.com/satgunsodhi/OOPS-Final-Project",
+      "techStack": "C++, Object-Oriented Programming (OOP), Software Engineering",
+      "tags": ["c++", "object-oriented-programming", "console-application", "course-project", "software-design"],
+      "bullets": [
+        {
+          "id": "bp-ot-001",
+          "text": "Designed a console-based Trip Management Planner utilizing core OOP principles including encapsulation, inheritance, and polymorphism.",
+          "tags": ["c++", "object-oriented-programming", "software-design"],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-ot-002",
+          "text": "Implemented routing selectors that curate travel options from location parameters and generate itemized billing estimators for accommodations and activities.",
+          "tags": ["course-project", "algorithms", "console-application"],
           "priority": 1,
           "lengthCategory": "MEDIUM"
         }

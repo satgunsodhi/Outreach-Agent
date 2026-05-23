@@ -19,7 +19,9 @@ C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent
 C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\service\impl\EmailAutomationServiceImpl.java
 C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\service\MasterResumeService.java
 C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\service\PdfGeneratorService.java
+C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\service\ProjectDeepContextService.java
 C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\service\ResumeOrchestrationService.java
 C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\tools\DocumentGeneratorTool.java
 C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\tools\PageLengthCheckerTool.java
+C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\tools\ProjectDeepContextTool.java
 C:\Users\Satgu\Documents\VS Code\Outreach Agent\src\main\java\com\outreach\agent\tools\ResumeKnowledgeBaseTool.java

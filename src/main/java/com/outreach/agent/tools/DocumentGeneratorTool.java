@@ -24,7 +24,20 @@ public class DocumentGeneratorTool {
     @Tool("Generate a PDF resume from selected resume data. Returns the file path of the generated PDF.")
     public String generateResume(String selectedDataJson) {
         try {
-            Map<String, Object> templateData = objectMapper.readValue(selectedDataJson, new TypeReference<Map<String, Object>>() {});
+            try {
+                java.nio.file.Files.writeString(
+                    java.nio.file.Path.of("C:/Users/Satgu/.gemini/antigravity-ide/scratch/last_selected_data.json"),
+                    selectedDataJson
+                );
+            } catch (Exception ex) {
+                // Ignore write failure of debug file
+            }
+
+            String sanitizedJson = selectedDataJson
+                .replace("\u2011", "-")  // Replace non-breaking hyphen with standard hyphen
+                .replace("\u00A0", " "); // Replace non-breaking space with standard space
+            
+            Map<String, Object> templateData = objectMapper.readValue(sanitizedJson, new TypeReference<Map<String, Object>>() {});
             byte[] pdfBytes = pdfGeneratorService.generatePdf(templateData);
             
             Path tempFile = Files.createTempFile("resume-", ".pdf");

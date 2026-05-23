@@ -31,7 +31,8 @@ public class PdfGeneratorService {
     @SuppressWarnings("unchecked")
     private List<Map<String, Object>> normalizeBullets(List<?> bullets) {
         List<Map<String, Object>> result = new ArrayList<>();
-        if (bullets == null) return result;
+        if (bullets == null)
+            return result;
         for (Object bullet : bullets) {
             if (bullet instanceof String s) {
                 Map<String, Object> wrapped = new HashMap<>();
@@ -49,7 +50,8 @@ public class PdfGeneratorService {
      */
     @SuppressWarnings("unchecked")
     private void normalizeBulletsInData(Map<String, Object> data) {
-        // Normalize top-level sections that have a bullets list: projects, extracurriculars
+        // Normalize top-level sections that have a bullets list: projects,
+        // extracurriculars
         for (String sectionKey : List.of("projects", "extracurriculars")) {
             if (data.get(sectionKey) instanceof List<?> items) {
                 for (Object item : items) {
@@ -80,7 +82,8 @@ public class PdfGeneratorService {
                 }
             }
         }
-        // Normalize skills: ensure each skill category's 'items' is a proper List<String>
+        // Normalize skills: ensure each skill category's 'items' is a proper
+        // List<String>
         if (data.get("skills") instanceof List<?> skills) {
             for (Object skill : skills) {
                 if (skill instanceof Map<?, ?> skillMap) {
@@ -95,7 +98,35 @@ public class PdfGeneratorService {
         }
     }
 
+    private Object cleanData(Object obj) {
+        if (obj instanceof String s) {
+            return s.replace("\u2011", "-") // non-breaking hyphen
+                    .replace("\u00ad", "") // soft hyphen
+                    .replace("\u200b", "") // zero-width space
+                    .replace("\u00a0", " ") // non-breaking space
+                    .replace("\u202f", " "); // narrow no-break space
+        } else if (obj instanceof Map<?, ?> m) {
+            Map<String, Object> copy = new java.util.HashMap<>();
+            for (Map.Entry<?, ?> entry : m.entrySet()) {
+                String key = entry.getKey().toString();
+                copy.put(key, cleanData(entry.getValue()));
+            }
+            return copy;
+        } else if (obj instanceof List<?> l) {
+            List<Object> copy = new ArrayList<>();
+            for (Object item : l) {
+                copy.add(cleanData(item));
+            }
+            return copy;
+        }
+        return obj;
+    }
+
+    @SuppressWarnings("unchecked")
     public byte[] generatePdf(Map<String, Object> templateData) throws Exception {
+        // Clean special/non-breaking characters from the entire dataset
+        templateData = (Map<String, Object>) cleanData(templateData);
+
         // Normalize bullets before passing to Thymeleaf
         normalizeBulletsInData(templateData);
 
@@ -106,7 +137,7 @@ public class PdfGeneratorService {
 
         // Parse as XML (Thymeleaf already outputs valid XHTML) so Jsoup preserves
         // inline elements like <b> and <strong> rather than self-closing them.
-        Document document = Jsoup.parse(html, "", org.jsoup.parser.Parser.xmlParser());
+        Document document = Jsoup.parse(html, "", org.jsoup.parser.Parser.htmlParser());
         document.outputSettings()
                 .syntax(Document.OutputSettings.Syntax.xml)
                 .prettyPrint(false)

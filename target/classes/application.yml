@@ -9,7 +9,7 @@ langchain4j:
 outreach:
   llm:
     openRouterApiKey: ${OPENROUTER_API_KEY:}
-    openRouterModelName: ${OPENROUTER_MODEL_NAME:gpt-oss-120b}
+    openRouterModelName: ${OPENROUTER_MODEL_NAME:openai/gpt-oss-120b:free}
     temperature: 0.2
     maxTokens: 4000
 

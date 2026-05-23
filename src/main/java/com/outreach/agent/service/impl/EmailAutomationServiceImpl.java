@@ -7,6 +7,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import java.util.Objects;
 
 @Service
 public class EmailAutomationServiceImpl implements EmailAutomationService {
@@ -17,20 +18,30 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
     private String fromEmail;
 
     public EmailAutomationServiceImpl(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+        this.mailSender = Objects.requireNonNull(mailSender, "mailSender must not be null");
     }
 
     @Override
     public void sendResumeEmail(String recipientEmail, String subject, byte[] resumePdf, String coverLetterBody) {
+        if (recipientEmail == null || recipientEmail.isBlank())
+            throw new IllegalArgumentException("recipientEmail must not be null or blank");
+        if (subject == null || subject.isBlank())
+            throw new IllegalArgumentException("subject must not be null or blank");
+        if (resumePdf == null || resumePdf.length == 0)
+            throw new IllegalArgumentException("resumePdf must not be null or empty");
+        if (coverLetterBody == null || coverLetterBody.isBlank())
+            throw new IllegalArgumentException("coverLetterBody must not be null or blank");
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setFrom(fromEmail);
+            String from = fromEmail != null && !fromEmail.isBlank() ? fromEmail : "noreply@example.com";
+            helper.setFrom(from);
             helper.setTo(recipientEmail);
             helper.setSubject(subject);
             helper.setText(coverLetterBody, false);
-            
+
             // Attach the PDF
             helper.addAttachment("Resume.pdf", new ByteArrayResource(resumePdf));
 
@@ -43,15 +54,22 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
 
     @Override
     public void sendFollowUp(String recipientEmail, String originalSubject, int daysSinceSent) {
+        if (recipientEmail == null || recipientEmail.isBlank())
+            throw new IllegalArgumentException("recipientEmail must not be null or blank");
+        if (originalSubject == null || originalSubject.isBlank())
+            throw new IllegalArgumentException("originalSubject must not be null or blank");
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, false);
 
-            helper.setFrom(fromEmail);
+            String from = fromEmail != null && !fromEmail.isBlank() ? fromEmail : "noreply@example.com";
+            helper.setFrom(from);
             helper.setTo(recipientEmail);
             helper.setSubject("Re: " + originalSubject);
-            
-            String followUpBody = "Hi,\n\nI wanted to follow up on my previous email sent " + daysSinceSent + " days ago.\n\nBest regards.";
+
+            String followUpBody = "Hi,\n\nI wanted to follow up on my previous email sent " + daysSinceSent
+                    + " days ago.\n\nBest regards.";
             helper.setText(followUpBody, false);
 
             mailSender.send(message);
