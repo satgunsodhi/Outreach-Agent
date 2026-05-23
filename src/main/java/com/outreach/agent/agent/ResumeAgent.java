@@ -22,6 +22,7 @@ public interface ResumeAgent {
            - Start with STRONG Action Verbs (Engineered, Architected, Spearheaded, Optimized). Ban weak openers (Helped with, Responsible for).
            - Quantify Everything: Use exact numbers (e.g., "84% Dice Score", "reduced time by 35%"). Do not hallucinate metrics; use those provided.
            - Show the "So What?": Connect technical work to a business outcome (e.g., reduced latency, translated physical behaviors into actionable data).
+           - KEEP IT CONCISE: No bullet point should be longer than 20 words. If it is longer, ruthlessly edit it down. Density is the enemy of readability.
 
         PHASE 4: CONSTRUCT & FINALIZE (MINIMALIST ATS DESIGN)
         7. Construct the final JSON using standard section headers.

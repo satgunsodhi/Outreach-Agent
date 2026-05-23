@@ -9,14 +9,14 @@
         }
         body {
             font-family: Arial, sans-serif;
-            font-size: 8.8pt;
-            line-height: 1.1;
+            font-size: 10pt;
+            line-height: 1.15;
             color: #000;
         }
-        h1 { font-size: 14pt; margin: 0 0 2px 0; text-align: center; }
-        .contact-info { text-align: center; margin-bottom: 4px; font-size: 8.5pt; }
+        h1 { font-size: 16pt; margin: 0 0 2px 0; text-align: center; }
+        .contact-info { text-align: center; margin-bottom: 4px; font-size: 9pt; }
         .contact-info a { color: #1a0dab; text-decoration: underline; }
-        h2 { font-size: 10pt; border-bottom: 1px solid #000; margin: 6px 0 3px 0; text-transform: uppercase; }
+        h2 { font-size: 14pt; border-bottom: 1px solid #000; margin: 6px 0 3px 0; text-transform: uppercase; }
         .item-header { margin-bottom: 1px; }
         .item-title { font-weight: bold; float: left; }
         .item-date { float: right; font-style: italic; }
@@ -46,7 +46,7 @@
 
     <div th:if="${education != null and !education.isEmpty()}">
         <h2>Education</h2>
-        <table style="width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 5px; font-size: 9.5pt;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 5px; font-size: 10pt;">
             <tr>
                 <th style="padding-bottom: 2px; width: 40%;">Degree</th>
                 <th style="padding-bottom: 2px; width: 45%;">Institute</th>
@@ -73,7 +73,7 @@
             <div th:each="proj : ${exp['projects']}" style="margin-bottom: 2px;">
                 <div class="item-header" th:if="${proj['name'] != null}">
                     <span class="item-title" th:text="${proj['name']}">Project Name</span>
-                    <span class="item-date" style="font-size: 8.5pt; font-weight: normal; font-style: normal;">
+                    <span class="item-date" style="font-size: 9pt; font-weight: normal; font-style: normal;">
                         <a th:if="${proj['github'] != null}" th:href="${proj['github']}" th:text="${#strings.replace(#strings.replace(proj['github'], 'https://', ''), 'http://', '')}" style="color: #1a0dab; text-decoration: underline;">github.com/...</a>
                         <span th:if="${proj['github'] != null and proj['liveDemo'] != null}"> | </span>
                         <a th:if="${proj['liveDemo'] != null}" th:href="${proj['liveDemo']}" th:text="${#strings.replace(#strings.replace(proj['liveDemo'], 'https://', ''), 'http://', '')}" style="color: #1a0dab; text-decoration: underline;">Live Demo</a>
@@ -92,7 +92,7 @@
         <div th:each="proj : ${projects}" style="margin-bottom: 2px;">
             <div class="item-header">
                 <span class="item-title" th:text="${proj['name']}">Project Name</span>
-                <span class="item-date" style="font-size: 8.5pt; font-weight: normal; font-style: normal;">
+                <span class="item-date" style="font-size: 9pt; font-weight: normal; font-style: normal;">
                     <a th:if="${proj['github'] != null}" th:href="${proj['github']}" th:text="${#strings.replace(#strings.replace(proj['github'], 'https://', ''), 'http://', '')}" style="color: #1a0dab; text-decoration: underline;">github.com/...</a>
                     <span th:if="${proj['github'] != null and proj['liveDemo'] != null}"> | </span>
                     <a th:if="${proj['liveDemo'] != null}" th:href="${proj['liveDemo']}" th:text="${#strings.replace(#strings.replace(proj['liveDemo'], 'https://', ''), 'http://', '')}" style="color: #1a0dab; text-decoration: underline;">Live Demo</a>
