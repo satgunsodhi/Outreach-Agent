@@ -4,11 +4,12 @@ An agentic Spring Boot system designed to automatically tailor a candidate's mas
 
 ## 🚀 Key Features
 
-- **Agentic Workflow:** Employs an iterative LLM-powered feedback loop (via LangChain4j Tool calling) to continually adjust the resume content until the generated PDF meets the strict 1-page length requirement.
-- **Knowledge Base Querying:** Automatically loads a comprehensive JSON-based `master_resume` and matches skills, project tags, and bullet points to the target Job Description.
-- **HTML-to-PDF Engine:** Renders dynamic data into strict XHTML using Thymeleaf, then processes it through Flying Saucer (OpenPDF) to produce pristine, ATS-friendly PDF outputs.
-- **Automated Delivery:** Packages the generated PDF and dispatches it via a built-in JavaMailSender SMTP integration.
-- **Modern Stack:** Built on Java 25, Spring Boot 3.4.0, LangChain4j 1.15.0, and completely Lombok-free for maximum compatibility with newer JDKs.
+- **Agentic Workflow:** Employs an iterative LLM-powered feedback loop (via LangChain4j Tool calling) to continually adjust the resume content until the generated PDF meets the strict 1-page layout constraints.
+- **Automated Batch Outreach Pipeline:** Uses Jsoup to scrape target company websites, feeds the content to a **CompanyResearchAgent** to identify key facts/technologies, generates a personalized cover letter using a **CoverLetterAgent**, and tailors the resume dynamically.
+- **Next-Working-Day Scheduler:** Calculates the next working day's 8:00 AM IST and schedules automated personalized outreach emails to be sent asynchronously in batches.
+- **Campaign Persistence:** Tracks batch outreach campaigns and targets using **Spring Data JPA** and an **H2 in-memory database**.
+- **HTML-to-PDF Engine:** Renders data into strict XHTML using Thymeleaf, then compiles it via Flying Saucer (OpenPDF) to produce layout-optimized, ATS-compliant PDF resumes under 300ms.
+- **Modern Stack:** Built on Java 25, Spring Boot 3.4.0, LangChain4j 1.15.0, and completely Lombok-free for compatibility and performance.
 
 ---
 
@@ -17,7 +18,9 @@ An agentic Spring Boot system designed to automatically tailor a candidate's mas
 - **Core:** Java 21+ (Compatible up to JDK 25)
 - **Framework:** Spring Boot 3.4.0
 - **AI Orchestration:** LangChain4j 1.15.0
-- **LLM Provider:** Google AI Studio (gemini-2.5-flash)
+- **LLM Providers:** Google AI Studio (gemini-2.5-flash) or OpenRouter (gpt-oss-120b:free)
+- **Database:** Spring Data JPA + H2 in-memory database
+- **Web Scraping:** Jsoup HTML Parser
 - **PDF Generation:** Thymeleaf (HTML templates), JSoup (XHTML compliance), Flying Saucer PDF / OpenPDF
 - **Secrets Management:** Spring Dotenv
 
@@ -94,7 +97,10 @@ mvn spring-boot:run
 
 ## 🔌 API Usage
 
-Once the application is running, you can interact with the agent via its REST API.
+Once the application is running, you can interact with the agent via its REST APIs.
+
+### 1. Single Resume Customization and Direct Mail
+Generate a resume tailored to a JD and email it immediately.
 
 **Endpoint:** `POST /api/resume/generate`
 
@@ -115,12 +121,59 @@ curl -X POST http://localhost:8080/api/resume/generate \
 -d '{"jobDescription":"Looking for a Java Spring Boot developer with Kafka experience.", "recipientEmail": "test@test.com"}'
 ```
 
-The agent will:
-1. Parse the provided JD.
-2. Search `master_resume.json` for the most relevant bullet points.
-3. Generate an HTML resume and convert it to a PDF.
-4. Verify the PDF is exactly 1 page (and loop to shorten it if it's too long).
-5. Dispatch the email with the PDF attached to the provided `recipientEmail`.
+---
+
+### 2. Batch Outreach Campaign (Scrape, Research, Tailor, Schedule)
+Submit a list of target companies and emails. The application will scrape each company's website, perform LLM research to find key talking points, draft a tailored cover letter, generate a tailored resume, and schedule the outreach email for the **next working day at 8:00 AM IST** (asynchronous batch dispatch).
+
+**Endpoint:** `POST /api/outreach/batch`
+
+**Request Payload:**
+```json
+{
+  "jobDescription": "We are looking for a Machine Learning engineer with computer vision and LLM deployment experience.",
+  "targets": [
+    {
+      "companyName": "Sapiens",
+      "companyUrl": "https://www.sapiens.com",
+      "recipientEmail": "hr@sapiens.com"
+    },
+    {
+      "companyName": "Reliance",
+      "companyUrl": "https://www.ril.com",
+      "recipientEmail": "recruiter@ril.com"
+    }
+  ]
+}
+```
+
+**cURL Example:**
+```bash
+curl -X POST http://localhost:8080/api/outreach/batch \
+-H "Content-Type: application/json" \
+-d '{"jobDescription":"Machine Learning Engineer role...", "targets":[{"companyName":"Sapiens","companyUrl":"https://www.sapiens.com","recipientEmail":"hr@sapiens.com"}]}'
+```
+
+**Response:**
+```json
+{
+  "campaignId": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+  "status": "PROCESSING",
+  "message": "Batch outreach campaign scheduled successfully."
+}
+```
+
+---
+
+### 3. Check Campaign Status
+Retrieve the list of campaigns and their targets.
+
+**Endpoint:** `GET /api/outreach/batch`
+
+**cURL Example:**
+```bash
+curl http://localhost:8080/api/outreach/batch
+```
 
 ---
 
