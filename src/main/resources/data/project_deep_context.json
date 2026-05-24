@@ -180,9 +180,10 @@
     "architectureDetails": "Deep Autoencoder models with SELU activation, AlphaDropout, and reconstruction loss (MAE). Domain-driven feature engineering: RMS-normalized deltas, sliding-window cosine similarity, normalized flow deltas, and valve transition states. Bayesian hyperparameter optimization from scratch via Gaussian Processes (RBF kernel) and Expected Improvement. Data pipeline: Pandas, Plotly, Keras, Matplotlib, TensorFlow.",
     "keyTechnologies": ["TensorFlow", "Keras", "PyTorch", "Autoencoders", "Bayesian Optimization", "Gaussian Processes", "Pandas", "Matplotlib", "Accops VDI", "Unsupervised Learning"],
     "suggestedBullets": [
-      "Engineered domain-aware features (RMS-normalized deltas, sliding-window cosine similarity, valve transition states) from raw telemetry, standardizing feature templates to accelerate team onboarding.",
-      "Developed deep Autoencoder models (SELU, AlphaDropout, MAE loss) in Keras/TensorFlow for unsupervised anomaly detection on flowmeters and control valves, achieving <b>99.47% training and 93.05% validation accuracy</b>.",
-      "Implemented Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune neural network training parameters."
+      "Engineered RMS-normalized flow deltas and cosine similarity features on sliding windows across all pairwise sensor combinations, translating physical pipeline behaviours into temporally independent, scale-invariant representations.",
+      "Built deep Autoencoder models (SELU, AlphaDropout, MAE loss) for unsupervised anomaly detection across 5 industrial systems, achieving up to 99.47% training accuracy and 93.05% validation accuracy on large multi-sensor time-series data.",
+      "Implemented Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune training parameters without external libraries.",
+      "Delivered dashboards, technical documentation, and presentations to mentors, leads, and stakeholders, honing cross-functional communication in a production ML environment."
     ]
   }
 }

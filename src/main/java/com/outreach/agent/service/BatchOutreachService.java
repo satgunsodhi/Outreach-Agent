@@ -1,13 +1,5 @@
 package com.outreach.agent.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.outreach.agent.agent.CompanyResearchAgent;
-import com.outreach.agent.agent.CoverLetterAgent;
-import com.outreach.agent.model.OutreachTarget;
-import com.outreach.agent.repository.OutreachTargetRepository;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.DayOfWeek;
@@ -15,6 +7,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.outreach.agent.agent.CompanyResearchAgent;
+import com.outreach.agent.agent.CoverLetterAgent;
+import com.outreach.agent.model.OutreachTarget;
+import com.outreach.agent.repository.OutreachTargetRepository;
 
 @Service
 public class BatchOutreachService {
@@ -43,7 +44,7 @@ public class BatchOutreachService {
         this.objectMapper = objectMapper;
     }
 
-    // Run every 5 minutes
+    // Run every 5 minutes to draft targets
     @Scheduled(fixedDelay = 300000)
     public void processPendingTargets() {
         List<OutreachTarget> pendingTargets = targetRepository.findByStatus("PENDING");
@@ -67,29 +68,55 @@ public class BatchOutreachService {
                         : "General position at " + target.getCompanyName();
                 
                 String pdfPathStr = resumeOrchestrationService.generateTailoredResume(jd);
-                byte[] resumePdf = Files.readAllBytes(Path.of(pdfPathStr));
 
                 // 3. Generate Cover Letter
                 String masterResumeJson = objectMapper.writeValueAsString(masterResumeService.getMasterResume());
                 String coverLetterBody = coverLetterAgent.generateCoverLetter(masterResumeJson, jd, companyResearch);
 
-                // 4. Send Email
                 String subject = target.getSubject() != null && !target.getSubject().isBlank()
                         ? target.getSubject()
                         : "Application for Role at " + target.getCompanyName() + " - Satgun Singh Sodhi";
-                
-                emailAutomationService.sendResumeEmail(target.getRecipientEmail(), subject, resumePdf, coverLetterBody);
 
-                // 5. Update State
-                target.setStatus("EMAIL_SENT");
-                target.setEmailSentAt(LocalDateTime.now());
-                target.setFollowUpScheduledAt(calculateNextWorkingDay8AmIst());
+                // 4. Update State to DRAFTED
+                target.setGeneratedPdfPath(pdfPathStr);
+                target.setDraftedCoverLetter(coverLetterBody);
                 target.setSubject(subject);
+                target.setStatus("DRAFTED");
+                target.setEmailScheduledAt(calculateNextWorkingDay8AmIst());
                 targetRepository.save(target);
 
             } catch (Exception e) {
                 target.setStatus("FAILED");
                 target.setErrorReason(e.getMessage());
+                targetRepository.save(target);
+            }
+        }
+    }
+
+    // Run every minute to check if drafted targets are ready to send
+    @Scheduled(fixedDelay = 60000)
+    public void dispatchDraftedTargets() {
+        LocalDateTime now = LocalDateTime.now();
+        List<OutreachTarget> dueEmails = targetRepository.findByStatusAndEmailScheduledAtBefore("DRAFTED", now);
+
+        for (OutreachTarget target : dueEmails) {
+            try {
+                byte[] resumePdf = Files.readAllBytes(Path.of(target.getGeneratedPdfPath()));
+                
+                emailAutomationService.sendResumeEmail(
+                    target.getRecipientEmail(), 
+                    target.getSubject(), 
+                    resumePdf, 
+                    target.getDraftedCoverLetter()
+                );
+
+                target.setStatus("EMAIL_SENT");
+                target.setEmailSentAt(LocalDateTime.now());
+                target.setFollowUpScheduledAt(calculateNextWorkingDay8AmIst()); // Schedules follow-up for next working day
+                targetRepository.save(target);
+            } catch (Exception e) {
+                target.setStatus("FAILED");
+                target.setErrorReason("Dispatch failed: " + e.getMessage());
                 targetRepository.save(target);
             }
         }

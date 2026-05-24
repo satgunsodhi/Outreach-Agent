@@ -8,5 +8,6 @@ public record MasterResume(
     List<Experience> experiences,
     List<Project> projects,
     List<Education> education,
-    List<Certification> certifications
+    List<Certification> certifications,
+    List<Extracurricular> extracurriculars
 ) {}

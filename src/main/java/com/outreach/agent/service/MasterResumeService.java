@@ -68,10 +68,24 @@ public class MasterResumeService {
                 .sorted(Comparator.comparingInt((Project proj) -> countMatches(proj.tags(), lowerTags)).reversed())
                 .toList();
 
+        List<Extracurricular> filteredExtracurriculars = masterResume.extracurriculars() != null 
+                ? masterResume.extracurriculars().stream()
+                        .map(ec -> {
+                            List<BulletPoint> filteredBullets = ec.bullets().stream()
+                                    .filter(bp -> matchesAny(bp.tags(), lowerTags))
+                                    .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
+                                    .toList();
+                            List<BulletPoint> finalBullets = filteredBullets.isEmpty() ? ec.bullets() : filteredBullets;
+                            return new Extracurricular(ec.id(), ec.organization(), ec.role(), ec.tags(), finalBullets);
+                        })
+                        .toList()
+                : List.of();
+
         // Fallback: If both experiences and projects end up completely empty after filtering,
         // return the original unfiltered lists so the agent has material to build a resume.
         List<Experience> finalExperiences = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.experiences() : filteredExperiences;
         List<Project> finalProjects = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.projects() : filteredProjects;
+        List<Extracurricular> finalExtracurriculars = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.extracurriculars() : filteredExtracurriculars;
 
         return new MasterResume(
                 masterResume.personalInfo(),
@@ -79,7 +93,8 @@ public class MasterResumeService {
                 finalExperiences,
                 finalProjects,
                 masterResume.education(),
-                masterResume.certifications()
+                masterResume.certifications(),
+                finalExtracurriculars
         );
     }
 

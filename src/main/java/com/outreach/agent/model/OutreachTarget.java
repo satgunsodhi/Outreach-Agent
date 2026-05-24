@@ -1,7 +1,17 @@
 package com.outreach.agent.model;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "outreach_targets")
@@ -34,6 +44,13 @@ public class OutreachTarget {
     private LocalDateTime followUpScheduledAt;
     
     private String subject;
+
+    @Column(columnDefinition = "TEXT")
+    private String draftedCoverLetter;
+
+    private String generatedPdfPath;
+
+    private LocalDateTime emailScheduledAt;
 
     @PrePersist
     protected void onCreate() {
@@ -134,5 +151,29 @@ public class OutreachTarget {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public String getDraftedCoverLetter() {
+        return draftedCoverLetter;
+    }
+
+    public void setDraftedCoverLetter(String draftedCoverLetter) {
+        this.draftedCoverLetter = draftedCoverLetter;
+    }
+
+    public String getGeneratedPdfPath() {
+        return generatedPdfPath;
+    }
+
+    public void setGeneratedPdfPath(String generatedPdfPath) {
+        this.generatedPdfPath = generatedPdfPath;
+    }
+
+    public LocalDateTime getEmailScheduledAt() {
+        return emailScheduledAt;
+    }
+
+    public void setEmailScheduledAt(LocalDateTime emailScheduledAt) {
+        this.emailScheduledAt = emailScheduledAt;
     }
 }

@@ -18,9 +18,16 @@ import java.util.Map;
 public class PdfGeneratorService {
 
     private final TemplateEngine templateEngine;
+    /** Cached XHTML from the most recent generatePdf call (for fill-% measurement). */
+    private volatile String lastRenderedXhtml;
 
     public PdfGeneratorService(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
+    }
+
+    /** Returns the XHTML produced by the most recent generatePdf() call, or null. */
+    public String getLastRenderedXhtml() {
+        return lastRenderedXhtml;
     }
 
     /**
@@ -143,6 +150,7 @@ public class PdfGeneratorService {
                 .prettyPrint(false)
                 .charset(java.nio.charset.StandardCharsets.UTF_8);
         String xhtml = document.html();
+        this.lastRenderedXhtml = xhtml; // cache for fill-% measurement
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
@@ -157,5 +165,35 @@ public class PdfGeneratorService {
         try (PdfReader reader = new PdfReader(pdfBytes)) {
             return reader.getNumberOfPages();
         }
+    }
+
+    /**
+     * Measure how much of the A4-page height the content actually fills.
+     * Renders onto an extra-tall single page so content never wraps to page 2,
+     * then compares the natural content height to the usable area of an A4 page.
+     *
+     * @return fill percentage 0–100 (can exceed 100 if content overflows 1 page)
+     */
+    public int measureFillPercentage(String xhtml) throws Exception {
+        // A4 = 210×297mm = 595×842pt; margins 0.25in top+bottom → usable ≈ 806pt
+        double usableHeight = (297.0 / 25.4 - 0.25 - 0.25) * 72.0; // ≈ 806pt
+
+        // Replace @page size so all content fits on one tall page (no page breaks)
+        String tallXhtml = xhtml.replace(
+                "size: A4;",
+                "size: 210mm 1500mm;"
+        );
+
+        ITextRenderer renderer = new ITextRenderer();
+        renderer.setDocumentFromString(tallXhtml);
+        renderer.layout();
+
+        // rootBox.getHeight() is in Flying Saucer internal dots.
+        // Convert: dots → CSS px (÷ dotsPerPixel) → points (× 72/96)
+        double contentDots = renderer.getRootBox().getHeight();
+        int dpp = renderer.getSharedContext().getDotsPerPixel();
+        double contentPt = (contentDots / dpp) * (72.0 / 96.0);
+
+        return Math.max(0, (int) Math.round((contentPt / usableHeight) * 100.0));
     }
 }

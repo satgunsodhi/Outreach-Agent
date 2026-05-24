@@ -22,22 +22,38 @@ public class DocumentGeneratorTool {
     }
 
     @Tool("Generate a PDF resume from selected resume data. Returns the file path of the generated PDF.")
-    public String generateResume(String selectedDataJson) {
+    @SuppressWarnings("unchecked")
+    public String generateResume(ResumeDataWrapper wrapper) {
         try {
+            Map<String, Object> templateData = null;
+            if (wrapper.getAdditionalProperties().containsKey("selectedDataJson")) {
+                Object val = wrapper.getAdditionalProperties().get("selectedDataJson");
+                if (val instanceof String s) {
+                    String sanitizedJson = s
+                        .replace("\u2011", "-")  // Replace non-breaking hyphen with standard hyphen
+                        .replace("\u00A0", " "); // Replace non-breaking space with standard space
+                    templateData = objectMapper.readValue(sanitizedJson, new TypeReference<Map<String, Object>>() {});
+                } else if (val instanceof Map) {
+                    templateData = (Map<String, Object>) val;
+                }
+            } else {
+                templateData = wrapper.asMap();
+            }
+
+            if (templateData == null || templateData.isEmpty()) {
+                return "Error: No resume data provided.";
+            }
+
             try {
+                String debugJson = objectMapper.writeValueAsString(templateData);
                 java.nio.file.Files.writeString(
                     java.nio.file.Path.of("C:/Users/Satgu/.gemini/antigravity-ide/scratch/last_selected_data.json"),
-                    selectedDataJson
+                    debugJson
                 );
             } catch (Exception ex) {
                 // Ignore write failure of debug file
             }
-
-            String sanitizedJson = selectedDataJson
-                .replace("\u2011", "-")  // Replace non-breaking hyphen with standard hyphen
-                .replace("\u00A0", " "); // Replace non-breaking space with standard space
             
-            Map<String, Object> templateData = objectMapper.readValue(sanitizedJson, new TypeReference<Map<String, Object>>() {});
             byte[] pdfBytes = pdfGeneratorService.generatePdf(templateData);
             
             Path tempFile = Files.createTempFile("resume-", ".pdf");
@@ -46,6 +62,63 @@ public class DocumentGeneratorTool {
             return tempFile.toAbsolutePath().toString().replace("\\", "/");
         } catch (Exception e) {
             return "Error generating PDF: " + e.getMessage();
+        }
+    }
+
+    public static class ResumeDataWrapper {
+        private Map<String, Object> personalInfo;
+        private String summary;
+        private Object skills;
+        private Object experiences;
+        private Object projects;
+        private Object education;
+        private Object certifications;
+        private Object extracurriculars;
+
+        private Map<String, Object> additionalProperties = new java.util.HashMap<>();
+
+        @com.fasterxml.jackson.annotation.JsonAnySetter
+        public void set(String key, Object value) {
+            additionalProperties.put(key, value);
+        }
+
+        public Map<String, Object> getPersonalInfo() { return personalInfo; }
+        public void setPersonalInfo(Map<String, Object> personalInfo) { this.personalInfo = personalInfo; }
+
+        public String getSummary() { return summary; }
+        public void setSummary(String summary) { this.summary = summary; }
+
+        public Object getSkills() { return skills; }
+        public void setSkills(Object skills) { this.skills = skills; }
+
+        public Object getExperiences() { return experiences; }
+        public void setExperiences(Object experiences) { this.experiences = experiences; }
+
+        public Object getProjects() { return projects; }
+        public void setProjects(Object projects) { this.projects = projects; }
+
+        public Object getEducation() { return education; }
+        public void setEducation(Object education) { this.education = education; }
+
+        public Object getCertifications() { return certifications; }
+        public void setCertifications(Object certifications) { this.certifications = certifications; }
+
+        public Object getExtracurriculars() { return extracurriculars; }
+        public void setExtracurriculars(Object extracurriculars) { this.extracurriculars = extracurriculars; }
+
+        public Map<String, Object> getAdditionalProperties() { return additionalProperties; }
+
+        public Map<String, Object> asMap() {
+            Map<String, Object> map = new java.util.HashMap<>(additionalProperties);
+            if (personalInfo != null) map.put("personalInfo", personalInfo);
+            if (summary != null) map.put("summary", summary);
+            if (skills != null) map.put("skills", skills);
+            if (experiences != null) map.put("experiences", experiences);
+            if (projects != null) map.put("projects", projects);
+            if (education != null) map.put("education", education);
+            if (certifications != null) map.put("certifications", certifications);
+            if (extracurriculars != null) map.put("extracurriculars", extracurriculars);
+            return map;
         }
     }
 }
