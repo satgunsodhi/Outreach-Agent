@@ -24,6 +24,31 @@ public class BatchOutreachController {
         this.targetRepository = targetRepository;
     }
 
+    @GetMapping("/targets")
+    public ResponseEntity<?> getAllTargets() {
+        return ResponseEntity.ok(targetRepository.findAll());
+    }
+
+    @PostMapping("/reset-tests")
+    public ResponseEntity<?> resetTestTargets() {
+        List<OutreachTarget> testTargets = targetRepository.findAll().stream()
+                .filter(t -> "satgunsodhi@gmail.com".equalsIgnoreCase(t.getRecipientEmail()))
+                .toList();
+                
+        for (OutreachTarget target : testTargets) {
+            target.setStatus("PENDING");
+            target.setErrorReason(null);
+            target.setDraftedCoverLetter(null);
+            target.setSubject(null);
+            target.setGeneratedPdfPath(null);
+            target.setEmailScheduledAt(null);
+            target.setEmailSentAt(null);
+            targetRepository.save(target);
+        }
+        
+        return ResponseEntity.ok(java.util.Map.of("message", "Reset " + testTargets.size() + " test targets to PENDING."));
+    }
+
     @PostMapping("/batch")
     public ResponseEntity<?> startBatchOutreach(@RequestBody BatchOutreachRequest request) {
         if (request.getTargets() == null || request.getTargets().isEmpty()) {

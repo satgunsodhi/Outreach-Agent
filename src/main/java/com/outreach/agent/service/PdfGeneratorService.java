@@ -53,6 +53,58 @@ public class PdfGeneratorService {
     }
 
     /**
+     * The LLM sometimes flattens experience bullets onto the experience object
+     * instead of nesting them under projects[].bullets as the template expects.
+     */
+    @SuppressWarnings("unchecked")
+    private void normalizeExperiences(Map<String, Object> data) {
+        Object raw = data.get("experiences");
+        if (raw == null && data.get("experience") instanceof List<?>) {
+            raw = data.remove("experience");
+            data.put("experiences", raw);
+        }
+        if (!(raw instanceof List<?> exps)) {
+            return;
+        }
+        for (Object exp : exps) {
+            if (!(exp instanceof Map<?, ?> expMap)) {
+                continue;
+            }
+            Map<String, Object> em = (Map<String, Object>) expMap;
+            Object projectsObj = em.get("projects");
+            boolean hasProjects = projectsObj instanceof List<?> list && !list.isEmpty();
+            Object bulletsObj = em.get("bullets");
+            if (!(bulletsObj instanceof List<?> expBullets) || expBullets.isEmpty()) {
+                continue;
+            }
+            if (!hasProjects) {
+                Map<String, Object> defaultProject = new HashMap<>();
+                defaultProject.put("bullets", expBullets);
+                em.put("projects", List.of(defaultProject));
+                em.remove("bullets");
+                continue;
+            }
+            if (projectsObj instanceof List<?> projects) {
+                boolean anyProjectHasBullets = false;
+                for (Object proj : projects) {
+                    if (proj instanceof Map<?, ?> projMap) {
+                        Object projBullets = ((Map<String, Object>) projMap).get("bullets");
+                        if (projBullets instanceof List<?> list && !list.isEmpty()) {
+                            anyProjectHasBullets = true;
+                            break;
+                        }
+                    }
+                }
+                if (!anyProjectHasBullets && !projects.isEmpty()
+                        && projects.get(0) instanceof Map<?, ?> firstProj) {
+                    ((Map<String, Object>) firstProj).put("bullets", expBullets);
+                    em.remove("bullets");
+                }
+            }
+        }
+    }
+
+    /**
      * Recursively normalize all bullet lists within the template data map.
      */
     @SuppressWarnings("unchecked")
@@ -134,7 +186,8 @@ public class PdfGeneratorService {
         // Clean special/non-breaking characters from the entire dataset
         templateData = (Map<String, Object>) cleanData(templateData);
 
-        // Normalize bullets before passing to Thymeleaf
+        // Fix flattened experience structure, then normalize bullet shapes
+        normalizeExperiences(templateData);
         normalizeBulletsInData(templateData);
 
         Context context = new Context();

@@ -32,8 +32,6 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
             throw new IllegalArgumentException("recipientEmail must not be null or blank");
         if (subject == null || subject.isBlank())
             throw new IllegalArgumentException("subject must not be null or blank");
-        if (resumePdf == null || resumePdf.length == 0)
-            throw new IllegalArgumentException("resumePdf must not be null or empty");
         if (coverLetterBody == null || coverLetterBody.isBlank())
             throw new IllegalArgumentException("coverLetterBody must not be null or blank");
 
@@ -48,8 +46,10 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
             helper.setSubject(subject);
             helper.setText(coverLetterBody, false);
 
-            // Attach the PDF
-            helper.addAttachment("Resume.pdf", new ByteArrayResource(resumePdf));
+            // Attach the PDF if provided
+            if (resumePdf != null && resumePdf.length > 0) {
+                helper.addAttachment("Resume.pdf", new ByteArrayResource(resumePdf));
+            }
 
             mailSender.send(message);
             System.out.println("Email sent successfully to " + recipientEmail);

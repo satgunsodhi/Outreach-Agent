@@ -22,16 +22,18 @@ public interface ResumeAgent {
            - Start with STRONG Action Verbs (Engineered, Architected, Spearheaded, Optimized). Ban weak openers (Helped with, Responsible for).
            - Quantify Everything: Use exact numbers (e.g., "84% Dice Score", "reduced time by 35%"). Do not hallucinate metrics; use those provided.
            - Show the "So What?": Connect technical work to a business outcome (e.g., reduced latency, translated physical behaviors into actionable data).
-           - KEEP IT CONCISE: No bullet point should be longer than 35 words. Aim for 20-30 words. For the experience at "Reliance Industries Limited", you MUST preserve the exact phrasing, text, and metrics of its 4 bullet points from the database verbatim, without any rewrites, optimization, rephrasing, or adaptations.
+           - KEEP IT CONCISE: No bullet point should be longer than 35 words. Aim for 20-30 words.
+           - Target 3-4 bullet points per project/experience by default to keep the resume looking full.
+           - For the experience at "Reliance Industries Limited", the subset of bullet points you choose to include must be strictly verbatim. Try to include 3-4 bullets from the database verbatim by default.
 
         PHASE 4: CONSTRUCT & FINALIZE (MINIMALIST ATS DESIGN)
         7. Construct the final JSON using standard section headers.
            - "personalInfo": Use from search results.
            - "skills": REORDER the items within each skill category so the programming languages, frameworks, and tools most relevant to the JD appear at the very front of the lists.
-           - "experiences": Ensure the full list of experiences is included. IMPORTANT: You MUST preserve the nested "projects" array inside each experience. Do not flatten the structure.
-           - "projects": Ensure selected independent projects are included.
+           - "experiences": Include your experience. Target 3-4 verbatim bullet points for the Reliance Industries internship (exp-001) by default, but you may select fewer (e.g., 2-3) if needed to fit everything on one page. Do not flatten the projects array.
+           - "projects": Target 3-4 independent projects (at least 3, and try to include 4 if space permits) to cover more space. Prioritize the most relevant ones. For each project, target 3-4 bullet points.
            - "education", "certifications": Include fully.
-           - "extracurriculars": Only include if highly relevant to the JD; otherwise omit. Ensure it uses the keys 'role', 'organization', and 'bullets' (with 'text' keys), mirroring the database structure exactly instead of hallucinating different keys.
+           - "extracurriculars": Include this section by default to help fill space, unless you need to omit it to fit on a single page.
            
         CRITICAL SCHEMA RULES FOR BULLETS:
         For both "experiences" (inside their "projects" array) and independent "projects", you MUST output bullets as an array of objects with a "text" key. DO NOT output lists of strings. 
@@ -42,10 +44,15 @@ public interface ResumeAgent {
         ]
         8. Call generateResume() with the complete JSON.
         9. Call checkPageLength(). This returns page count AND fill percentage. Handle ALL three outcomes:
-           - **FAIL (pages > 1)**: Remove lowest-priority bullets or swap a LONG project for a SHORT one, then generateResume() again. Max 3 retries.
+           - **FAIL (pages > 1)**: The resume is too long. Progressively reduce content:
+             • First, decrease the number of bullets per project/experience (down to 2-3 per project).
+             • Second, if it still overflows, select fewer verbatim bullet points for the Reliance Industries internship (down to 2-3).
+             • Third, omit the extracurriculars section entirely.
+             • Fourth, reduce the number of independent projects (down to 3).
+             Then generateResume() and checkPageLength() again. Max 3 retries.
            - **UNDERFILLED (1 page but fill < 85%)**: You are wasting valuable space. Add more content to fill the page:
-             • Add priority-2 or priority-3 bullet points you previously omitted.
-             • Include an additional relevant project section.
+             • Ensure each project/experience has 3-4 bullet points (add priority-2 or priority-3 bullet points or suggested bullets from deep context).
+             • Make sure you have at least 4 projects if you only have 3.
              • Add the extracurriculars section if not already present.
              • Add more detail to existing bullet points (while staying under 35 words each).
              Then call generateResume() and checkPageLength() again. Max 3 retries.
@@ -54,9 +61,10 @@ public interface ResumeAgent {
 
         CONSTRAINTS:
         - NEVER exceed 1 page.
-        - Prioritize priority=1 bullets.
-        - Ensure bullets sound technically authentic and follow the XYZ formula strictly (except for the "Reliance Industries Limited" bullets, which must be kept verbatim).
-        - For the "Reliance Industries Limited" experience (exp-001), you MUST use its 4 bullet points exactly as they appear in the database, verbatim, without any changes.
+        - AT LEAST 3 projects MUST be included, target 4 if space permits.
+        - Target 3-4 bullet points per project/experience by default.
+        - Ensure bullets sound technically authentic and follow the XYZ formula strictly.
+        - For the "Reliance Industries Limited" experience (exp-001), any bullets used must be exactly verbatim from the database, but you should try to include 3-4 bullets by default, reducing to 2-3 only if needed to prevent the resume from exceeding 1 page.
         """)
-    String tailorResume(@UserMessage String jobDescription);
+    String tailorResume(@dev.langchain4j.service.MemoryId java.util.UUID memoryId, @UserMessage String jobDescription);
 }

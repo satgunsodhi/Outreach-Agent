@@ -56,7 +56,13 @@ public class DocumentGeneratorTool {
             
             byte[] pdfBytes = pdfGeneratorService.generatePdf(templateData);
             
-            Path tempFile = Files.createTempFile("resume-", ".pdf");
+            // Create persistent directory for PDFs
+            Path pdfDir = Path.of("data/generated-pdfs");
+            if (!Files.exists(pdfDir)) {
+                Files.createDirectories(pdfDir);
+            }
+            
+            Path tempFile = Files.createTempFile(pdfDir, "resume-", ".pdf");
             Files.write(tempFile, pdfBytes);
             
             return tempFile.toAbsolutePath().toString().replace("\\", "/");

@@ -27,6 +27,7 @@ public class BatchOutreachService {
     private final EmailAutomationService emailAutomationService;
     private final MasterResumeService masterResumeService;
     private final ObjectMapper objectMapper;
+    private final GoogleDriveService googleDriveService;
 
     public BatchOutreachService(OutreachTargetRepository targetRepository,
                                 CompanyResearchAgent researchAgent,
@@ -34,7 +35,8 @@ public class BatchOutreachService {
                                 CoverLetterAgent coverLetterAgent,
                                 EmailAutomationService emailAutomationService,
                                 MasterResumeService masterResumeService,
-                                ObjectMapper objectMapper) {
+                                ObjectMapper objectMapper,
+                                GoogleDriveService googleDriveService) {
         this.targetRepository = targetRepository;
         this.researchAgent = researchAgent;
         this.resumeOrchestrationService = resumeOrchestrationService;
@@ -42,15 +44,24 @@ public class BatchOutreachService {
         this.emailAutomationService = emailAutomationService;
         this.masterResumeService = masterResumeService;
         this.objectMapper = objectMapper;
+        this.googleDriveService = googleDriveService;
     }
 
-    // Run every 5 minutes to draft targets
-    @Scheduled(fixedDelay = 300000)
+    // Run every 10 seconds to draft targets
+    @Scheduled(fixedDelay = 10000)
     public void processPendingTargets() {
-        List<OutreachTarget> pendingTargets = targetRepository.findByStatus("PENDING");
+        // FOR TESTING ONLY: Only grab targets that go to your personal email!
+        List<OutreachTarget> pendingTargets = targetRepository.findByStatus("PENDING").stream()
+                .filter(t -> "satgunsodhi@gmail.com".equalsIgnoreCase(t.getRecipientEmail()))
+                .toList();
+
+        if (!pendingTargets.isEmpty()) {
+            System.out.println("[BatchOutreachService] Found " + pendingTargets.size() + " pending test targets to process.");
+        }
 
         for (OutreachTarget target : pendingTargets) {
             try {
+                System.out.println("[BatchOutreachService] Starting processing for target: " + target.getCompanyName());
                 target.setStatus("PROCESSING");
                 targetRepository.save(target);
 
@@ -69,23 +80,48 @@ public class BatchOutreachService {
                 
                 String pdfPathStr = resumeOrchestrationService.generateTailoredResume(jd);
 
-                // 3. Generate Cover Letter
+                // 3. Generate Cover Letter & Subject
                 String masterResumeJson = objectMapper.writeValueAsString(masterResumeService.getMasterResume());
                 String coverLetterBody = coverLetterAgent.generateCoverLetter(masterResumeJson, jd, companyResearch);
 
+                // Upload resume to Google Drive and append link to cover letter
+                String driveLink = googleDriveService.uploadResume(pdfPathStr);
+                coverLetterBody = coverLetterBody.trim() + "\n\nResume Link: " + driveLink;
+                
+                String dynamicSubject = coverLetterAgent.generateSubject(target.getCompanyName(), jd);
+
                 String subject = target.getSubject() != null && !target.getSubject().isBlank()
                         ? target.getSubject()
-                        : "Application for Role at " + target.getCompanyName() + " - Satgun Singh Sodhi";
+                        : dynamicSubject;
+
+                String candidateName = masterResumeService.getMasterResume().personalInfo().name();
+                coverLetterBody = fillPlaceholders(coverLetterBody, candidateName, target.getCompanyName());
+                subject = fillPlaceholders(subject, candidateName, target.getCompanyName());
+
+                if (containsPlaceholderTokens(coverLetterBody) || containsPlaceholderTokens(subject)) {
+                    throw new IllegalStateException("Generated outreach text still contains placeholder tokens");
+                }
 
                 // 4. Update State to DRAFTED
                 target.setGeneratedPdfPath(pdfPathStr);
                 target.setDraftedCoverLetter(coverLetterBody);
                 target.setSubject(subject);
                 target.setStatus("DRAFTED");
-                target.setEmailScheduledAt(calculateNextWorkingDay8AmIst());
+                
+                if ("satgunsodhi@gmail.com".equalsIgnoreCase(target.getRecipientEmail())) {
+                    // Send tests immediately
+                    target.setEmailScheduledAt(LocalDateTime.now().minusMinutes(5));
+                } else {
+                    // Safety fallback: standard 8am scheduling
+                    target.setEmailScheduledAt(calculateNextWorkingDay8AmIst());
+                }
+                
                 targetRepository.save(target);
+                System.out.println("[BatchOutreachService] Successfully drafted target: " + target.getCompanyName() + ". PDF saved, status set to DRAFTED.");
 
             } catch (Exception e) {
+                System.err.println("[BatchOutreachService] Failed to process target " + target.getCompanyName() + ": " + e.getMessage());
+                e.printStackTrace();
                 target.setStatus("FAILED");
                 target.setErrorReason(e.getMessage());
                 targetRepository.save(target);
@@ -99,16 +135,27 @@ public class BatchOutreachService {
         LocalDateTime now = LocalDateTime.now();
         List<OutreachTarget> dueEmails = targetRepository.findByStatusAndEmailScheduledAtBefore("DRAFTED", now);
 
+        if (!dueEmails.isEmpty()) {
+            System.out.println("[BatchOutreachService] Found " + dueEmails.size() + " due emails to dispatch.");
+        }
+
         for (OutreachTarget target : dueEmails) {
             try {
-                byte[] resumePdf = Files.readAllBytes(Path.of(target.getGeneratedPdfPath()));
+                System.out.println("[BatchOutreachService] Dispatching email to " + target.getRecipientEmail() + " for company " + target.getCompanyName());
                 
                 emailAutomationService.sendResumeEmail(
                     target.getRecipientEmail(), 
                     target.getSubject(), 
-                    resumePdf, 
+                    null, // Do not attach resume as PDF, it is linked via Google Drive in cover letter
                     target.getDraftedCoverLetter()
                 );
+
+                // Clean up the PDF file after successful dispatch to save disk space
+                try {
+                    Files.deleteIfExists(Path.of(target.getGeneratedPdfPath()));
+                } catch (Exception ex) {
+                    System.err.println("Failed to delete PDF: " + target.getGeneratedPdfPath());
+                }
 
                 target.setStatus("EMAIL_SENT");
                 target.setEmailSentAt(LocalDateTime.now());
@@ -156,5 +203,37 @@ public class BatchOutreachService {
         }
         
         return nextDay.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    private String fillPlaceholders(String text, String candidateName, String companyName) {
+        if (text == null) {
+            return null;
+        }
+
+        return text
+                .replace("[Your Name]", candidateName)
+                .replace("<PRIVATE_PERSON>", candidateName)
+                .replace("YOUR_NAME", candidateName)
+                .replace("{name}", candidateName)
+                .replace("[Company]", companyName)
+                .replace("[Company Name]", companyName)
+                .replace("{companyName}", companyName)
+                .replace("<COMPANY_NAME>", companyName);
+    }
+
+    private boolean containsPlaceholderTokens(String text) {
+        if (text == null) {
+            return false;
+        }
+
+        String upper = text.toUpperCase();
+        return upper.contains("YOUR_NAME")
+                || upper.contains("YOUR COMPANY")
+                || upper.contains("[YOUR NAME]")
+                || upper.contains("[COMPANY NAME]")
+                || upper.contains("<PRIVATE_PERSON>")
+                || upper.contains("<COMPANY_NAME>")
+                || upper.contains("{NAME}")
+                || upper.contains("{COMPANYNAME}");
     }
 }

@@ -13,6 +13,6 @@ public class ResumeOrchestrationService {
     }
 
     public String generateTailoredResume(String jobDescription) {
-        return resumeAgent.tailorResume(jobDescription);
+        return resumeAgent.tailorResume(java.util.UUID.randomUUID(), jobDescription);
     }
 }
