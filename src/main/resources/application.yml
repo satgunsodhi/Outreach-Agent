@@ -14,10 +14,16 @@ outreach:
     maxTokens: 4000
 
 google:
+  oauth:
+    refresh-token: ${GOOGLE_REFRESH_TOKEN:}
   drive:
     service-account-json: ${GOOGLE_SERVICE_ACCOUNT_JSON:}
     folder-id: ${GOOGLE_DRIVE_FOLDER_ID:}
     tokens-directory: ${GOOGLE_DRIVE_TOKENS_DIR:tokens}
+
+app:
+  ci-batch-mode: ${CI_BATCH_MODE:false}
+  targets-file: ${TARGETS_FILE:targets.json}
 
 # Gmail sender address — used as the From: header when building MIME messages for the Gmail API
 gmail:

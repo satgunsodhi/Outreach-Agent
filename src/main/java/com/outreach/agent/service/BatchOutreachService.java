@@ -96,67 +96,40 @@ public class BatchOutreachService {
                     throw new IllegalStateException("Generated outreach text still contains placeholder tokens");
                 }
 
-                // 4. Update State to DRAFTED
-                target.setGeneratedPdfPath(pdfPathStr);
+                // 4. Create Gmail Draft immediately
+                String draftId = emailAutomationService.sendResumeEmail(
+                        target.getRecipientEmail(),
+                        subject,
+                        null, // Resume is linked via Google Drive in the cover letter body
+                        coverLetterBody
+                );
+                
+                // Clean up the local PDF after the draft is created (resume is on Drive)
+                try {
+                    if (pdfPathStr != null) {
+                        Files.deleteIfExists(Path.of(pdfPathStr));
+                    }
+                } catch (Exception ex) {
+                    System.err.println("[BatchOutreachService] Could not delete PDF: " + pdfPathStr);
+                }
+
+                // 5. Update State to DRAFT_CREATED
+                target.setGeneratedPdfPath(null);
                 target.setDraftedCoverLetter(coverLetterBody);
                 target.setSubject(subject);
-                target.setStatus("DRAFTED");
-                target.setEmailScheduledAt(calculateNextWorkingDay8AmIst());
+                target.setGmailDraftId(draftId);
+                target.setStatus("DRAFT_CREATED");
+                target.setEmailSentAt(LocalDateTime.now()); // reusing field to mean "draft created at"
+                target.setFollowUpScheduledAt(calculateNextWorkingDay8AmIst());
                 
                 targetRepository.save(target);
-                System.out.println("[BatchOutreachService] Successfully drafted target: " + target.getCompanyName() + ". PDF saved, status set to DRAFTED.");
+                System.out.println("[BatchOutreachService] Successfully drafted target: " + target.getCompanyName() + ". Draft ID: " + draftId);
 
             } catch (Exception e) {
                 System.err.println("[BatchOutreachService] Failed to process target " + target.getCompanyName() + ": " + e.getMessage());
                 e.printStackTrace();
                 target.setStatus("FAILED");
                 target.setErrorReason(e.getMessage());
-                targetRepository.save(target);
-            }
-        }
-    }
-
-    // Run every minute — create Gmail Drafts for targets whose scheduled time has arrived
-    @Scheduled(fixedDelay = 60000)
-    public void createScheduledDrafts() {
-        LocalDateTime now = LocalDateTime.now();
-        List<OutreachTarget> dueTargets = targetRepository.findByStatusAndEmailScheduledAtBefore("DRAFTED", now);
-
-        if (!dueTargets.isEmpty()) {
-            System.out.println("[BatchOutreachService] Found " + dueTargets.size() + " targets ready to create Gmail drafts.");
-        }
-
-        for (OutreachTarget target : dueTargets) {
-            try {
-                System.out.println("[BatchOutreachService] Creating Gmail draft for " + target.getRecipientEmail()
-                        + " (" + target.getCompanyName() + ")");
-
-                String draftId = emailAutomationService.sendResumeEmail(
-                        target.getRecipientEmail(),
-                        target.getSubject(),
-                        null, // Resume is linked via Google Drive in the cover letter body
-                        target.getDraftedCoverLetter()
-                );
-
-                // Clean up the local PDF after the draft is created (resume is on Drive)
-                try {
-                    if (target.getGeneratedPdfPath() != null) {
-                        Files.deleteIfExists(Path.of(target.getGeneratedPdfPath()));
-                    }
-                } catch (Exception ex) {
-                    System.err.println("[BatchOutreachService] Could not delete PDF: " + target.getGeneratedPdfPath());
-                }
-
-                target.setGmailDraftId(draftId);
-                target.setStatus("DRAFT_CREATED");
-                target.setEmailSentAt(LocalDateTime.now()); // reusing field to mean "draft created at"
-                target.setFollowUpScheduledAt(calculateNextWorkingDay8AmIst());
-                targetRepository.save(target);
-                System.out.println("[BatchOutreachService] Draft created. id=" + draftId
-                        + "  target=" + target.getCompanyName());
-            } catch (Exception e) {
-                target.setStatus("FAILED");
-                target.setErrorReason("Draft creation failed: " + e.getMessage());
                 targetRepository.save(target);
             }
         }

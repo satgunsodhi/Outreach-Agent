@@ -13,4 +13,5 @@ public interface OutreachTargetRepository extends JpaRepository<OutreachTarget, 
     List<OutreachTarget> findByStatus(String status);
     List<OutreachTarget> findByStatusAndFollowUpScheduledAtBefore(String status, LocalDateTime time);
     List<OutreachTarget> findByStatusAndEmailScheduledAtBefore(String status, LocalDateTime time);
+    boolean existsByCompanyNameAndRecipientEmail(String companyName, String recipientEmail);
 }

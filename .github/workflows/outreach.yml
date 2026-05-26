@@ -1,0 +1,38 @@
+name: Outreach Agent — Daily Run
+
+on:
+  schedule:
+    - cron: "30 2 * * 1-5"   # 8:00 AM IST (02:30 UTC), weekdays only
+  workflow_dispatch:           # also allows manual trigger
+
+jobs:
+  run-outreach:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180       # 3-hour max (8am–11am window)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build JAR
+        run: mvn package -DskipTests -B
+
+      - name: Run Outreach Agent
+        env:
+          SPRING_PROFILES_ACTIVE: production
+          CI_BATCH_MODE: "true"
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL_NAME: "openai/gpt-oss-120b:free"
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+        run: java -jar target/outreach-agent-*.jar

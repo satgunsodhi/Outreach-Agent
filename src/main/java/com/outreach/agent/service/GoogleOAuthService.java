@@ -53,6 +53,9 @@ public class GoogleOAuthService {
     @Value("${google.drive.tokens-directory:tokens}")
     private String tokensDirectoryPath;
 
+    @Value("${google.oauth.refresh-token:}")
+    private String headlessRefreshToken;
+
     private NetHttpTransport httpTransport;
     private Credential credential;
 
@@ -77,11 +80,17 @@ public class GoogleOAuthService {
                     .setAccessType("offline")
                     .build();
 
-            // On first run: opens browser for OAuth consent. On subsequent runs: loads stored token.
-            LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-            credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-
-            System.out.println("[GoogleOAuthService] Authorized successfully. Scopes: Drive + Gmail Compose.");
+            if (headlessRefreshToken != null && !headlessRefreshToken.isBlank()) {
+                com.google.api.client.auth.oauth2.TokenResponse response = new com.google.api.client.auth.oauth2.TokenResponse();
+                response.setRefreshToken(headlessRefreshToken);
+                credential = flow.createAndStoreCredential(response, "user");
+                System.out.println("[GoogleOAuthService] Headless CI Mode: Loaded OAuth credential from refresh token.");
+            } else {
+                // On first run: opens browser for OAuth consent. On subsequent runs: loads stored token.
+                LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+                credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+                System.out.println("[GoogleOAuthService] Authorized successfully. Scopes: Drive + Gmail Compose.");
+            }
         } catch (Exception e) {
             System.err.println("[GoogleOAuthService] Failed to initialize OAuth2 credential: " + e.getMessage());
             credential = null;
