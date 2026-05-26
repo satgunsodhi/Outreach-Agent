@@ -88,7 +88,7 @@ public class BatchOutreachController {
             
             long pending = targets.stream().filter(t -> "PENDING".equals(t.getStatus())).count();
             long processing = targets.stream().filter(t -> "PROCESSING".equals(t.getStatus())).count();
-            long sent = targets.stream().filter(t -> "EMAIL_SENT".equals(t.getStatus())).count();
+            long drafted = targets.stream().filter(t -> "DRAFT_CREATED".equals(t.getStatus())).count();
             long failed = targets.stream().filter(t -> "FAILED".equals(t.getStatus())).count();
 
             return ResponseEntity.ok(Map.of(
@@ -99,7 +99,7 @@ public class BatchOutreachController {
                             "total", targets.size(),
                             "pending", pending,
                             "processing", processing,
-                            "sent", sent,
+                            "drafted", drafted,
                             "failed", failed
                     )
             ));

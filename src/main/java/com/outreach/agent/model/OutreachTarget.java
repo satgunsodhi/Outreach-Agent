@@ -50,6 +50,9 @@ public class OutreachTarget {
 
     private String generatedPdfPath;
 
+    /** Gmail Draft ID returned after creating the draft via the Gmail API. */
+    private String gmailDraftId;
+
     private LocalDateTime emailScheduledAt;
 
     @PrePersist
@@ -167,6 +170,14 @@ public class OutreachTarget {
 
     public void setGeneratedPdfPath(String generatedPdfPath) {
         this.generatedPdfPath = generatedPdfPath;
+    }
+
+    public String getGmailDraftId() {
+        return gmailDraftId;
+    }
+
+    public void setGmailDraftId(String gmailDraftId) {
+        this.gmailDraftId = gmailDraftId;
     }
 
     public LocalDateTime getEmailScheduledAt() {

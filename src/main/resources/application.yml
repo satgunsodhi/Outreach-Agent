@@ -13,20 +13,19 @@ outreach:
     temperature: 0.2
     maxTokens: 4000
 
+google:
+  drive:
+    service-account-json: ${GOOGLE_SERVICE_ACCOUNT_JSON:}
+    folder-id: ${GOOGLE_DRIVE_FOLDER_ID:}
+    tokens-directory: ${GOOGLE_DRIVE_TOKENS_DIR:tokens}
+
+# Gmail sender address — used as the From: header when building MIME messages for the Gmail API
+gmail:
+  from-address: ${GMAIL_ADDRESS:}
+
 spring:
   profiles:
     active: openrouter
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${SMTP_USERNAME:}
-    password: ${SMTP_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
   datasource:
     url: jdbc:h2:file:./data/outreachdb
     driverClassName: org.h2.Driver

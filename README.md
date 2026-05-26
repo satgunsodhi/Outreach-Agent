@@ -1,28 +1,36 @@
-# AI-Driven Resume Customization Agent
+# Outreach Agent 🤖
 
-An agentic Spring Boot system designed to automatically tailor a candidate's master resume to a specific Job Description (JD). It leverages LangChain4j and Google Gemini 2.5 Flash to intelligently select the most relevant experiences, format them into an ATS-compliant layout, generate a 1-page PDF using Thymeleaf & Flying Saucer, and email the resulting document directly to the recipient.
+An autonomous AI-powered outreach pipeline built with **Java 21 + Spring Boot 3**. It scrapes company websites, researches them with an LLM, generates a tailored resume PDF, writes a personalized cover letter, uploads the resume to **Google Drive**, and schedules the outreach email for the next working day at 8:00 AM IST — all automatically.
 
-## 🚀 Key Features
+---
 
-- **Agentic Workflow:** Employs an iterative LLM-powered feedback loop (via LangChain4j Tool calling) to continually adjust the resume content until the generated PDF meets the strict 1-page layout constraints.
-- **Automated Batch Outreach Pipeline:** Uses Jsoup to scrape target company websites, feeds the content to a **CompanyResearchAgent** to identify key facts/technologies, generates a personalized cover letter using a **CoverLetterAgent**, and tailors the resume dynamically.
-- **Next-Working-Day Scheduler:** Calculates the next working day's 8:00 AM IST and schedules automated personalized outreach emails to be sent asynchronously in batches.
-- **Campaign Persistence:** Tracks batch outreach campaigns and targets using **Spring Data JPA** and an **H2 in-memory database**.
-- **HTML-to-PDF Engine:** Renders data into strict XHTML using Thymeleaf, then compiles it via Flying Saucer (OpenPDF) to produce layout-optimized, ATS-compliant PDF resumes under 300ms.
-- **Modern Stack:** Built on Java 25, Spring Boot 3.4.0, LangChain4j 1.15.0, and completely Lombok-free for compatibility and performance.
+## ✨ Key Features
+
+| Feature | Description |
+|---|---|
+| **Agentic Resume Tailoring** | LangChain4j tool-calling loop iteratively adjusts content until the PDF fits exactly one page |
+| **Company Research** | Jsoup scrapes target company websites; a `CompanyResearchAgent` extracts key talking points via LLM |
+| **Cover Letter Generation** | `CoverLetterAgent` writes a personalized cover letter grounded in real company research |
+| **Placeholder Sanitization** | Multi-pass regex system detects and fills any LLM-generated placeholder tokens before sending |
+| **Google Drive Upload** | Resumes are uploaded to a shared Drive folder via OAuth 2.0 and linked in the email |
+| **Next-Working-Day Scheduler** | Emails are dispatched asynchronously at 8:00 AM IST on the next weekday |
+| **Follow-up Automation** | Automatically sends a follow-up email if no reply after one working day |
+| **Campaign Persistence** | Tracks all targets, statuses, and drafts via Spring Data JPA + H2 (file-based) |
+| **HTML-to-PDF Engine** | Thymeleaf → XHTML → Flying Saucer/OpenPDF, producing ATS-compliant single-page PDFs |
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Core:** Java 21+ (Compatible up to JDK 25)
-- **Framework:** Spring Boot 3.4.0
+- **Core:** Java 21 / Spring Boot 3.4.0
 - **AI Orchestration:** LangChain4j 1.15.0
-- **LLM Providers:** Google AI Studio (gemini-2.5-flash) or OpenRouter (gpt-oss-120b:free)
-- **Database:** Spring Data JPA + H2 in-memory database
-- **Web Scraping:** Jsoup HTML Parser
-- **PDF Generation:** Thymeleaf (HTML templates), JSoup (XHTML compliance), Flying Saucer PDF / OpenPDF
-- **Secrets Management:** Spring Dotenv
+- **LLM Provider:** OpenRouter (`openai/gpt-oss-120b:free` by default) or Google Gemini 2.5 Flash
+- **PDF Generation:** Thymeleaf + Flying Saucer (OpenPDF)
+- **Web Scraping:** Jsoup
+- **Database:** Spring Data JPA + H2 (file-based, persisted at `./data/outreachdb`)
+- **File Storage:** Google Drive API v3 (OAuth 2.0 Installed App flow)
+- **Email:** Spring Mail (SMTP / Gmail)
+- **Secrets:** Spring Dotenv (`.env` file support)
 
 ---
 
@@ -30,128 +38,120 @@ An agentic Spring Boot system designed to automatically tailor a candidate's mas
 
 ```text
 outreach-agent/
-├── pom.xml                                  # Maven Build Configuration
-├── .env.example                             # Template for secret keys
-└── src/
-    └── main/
-        ├── java/com/outreach/agent/
-        │   ├── OutreachAgentApplication.java# Spring Boot Entrypoint
-        │   ├── agent/                       # LangChain4j AiService & Config
-        │   ├── config/                      # Properties & LLM Configurations
-        │   ├── controller/                  # REST Controllers (/api/resume/generate)
-        │   ├── dto/                         # Request/Response data models
-        │   ├── model/                       # Domain POJOs mapping the Master Resume
-        │   ├── service/                     # Business Logic (Email, PDF, Orchestration)
-        │   └── tools/                       # LangChain4j @Tool definitions
-        └── resources/
-            ├── application.yml              # Spring Boot settings
-            ├── data/
-            │   └── master_resume.json       # The central JSON knowledge base
-            └── templates/
-                └── resume.html              # The Thymeleaf XHTML Resume Template
+├── pom.xml                                  # Maven build configuration
+├── .env.example                             # Template for secrets — copy to .env
+└── src/main/
+    ├── java/com/outreach/agent/
+    │   ├── OutreachAgentApplication.java    # Spring Boot entry point
+    │   ├── agent/                           # LangChain4j AiService interfaces
+    │   │   ├── CompanyResearchAgent.java
+    │   │   └── CoverLetterAgent.java
+    │   ├── config/                          # LLM + properties configuration
+    │   ├── controller/                      # REST API controllers
+    │   │   ├── BatchOutreachController.java
+    │   │   └── ResumeController.java
+    │   ├── dto/                             # Request / response DTOs
+    │   ├── model/                           # JPA entities + resume domain models
+    │   ├── repository/                      # Spring Data JPA repositories
+    │   ├── service/                         # Business logic
+    │   │   ├── BatchOutreachService.java    # Main pipeline scheduler
+    │   │   ├── EmailAutomationService.java  # Email interface
+    │   │   ├── GoogleDriveService.java      # Drive upload (OAuth 2.0)
+    │   │   ├── MasterResumeService.java     # Loads master_resume.json
+    │   │   ├── PdfGeneratorService.java     # HTML → PDF generation
+    │   │   ├── ProjectDeepContextService.java
+    │   │   └── ResumeOrchestrationService.java
+    │   └── tools/                           # LangChain4j @Tool definitions
+    └── resources/
+        ├── application.yml                  # Spring Boot configuration
+        ├── data/
+        │   ├── master_resume.json           # Your resume knowledge base
+        │   └── project_deep_context.json    # Per-project detail for the LLM
+        └── templates/
+            └── resume.html                  # Thymeleaf XHTML resume template
 ```
 
 ---
 
-## ⚙️ Setup and Installation
+## ⚙️ Setup
 
-### 1. Prerequisites
-- **Java Development Kit (JDK):** Version 21 or higher (Tested on Java 25)
-- **Maven:** Version 3.8+
-- **Google AI Studio API Key:** [Get a free key here](https://aistudio.google.com/)
-- **SMTP Credentials:** An App Password from your email provider (e.g., Gmail) to send automated emails.
+### Prerequisites
+- Java 21+ (tested on Java 21 LTS)
+- Maven 3.8+
+- A Gmail account with OAuth enabled (Desktop app flow)
+- An [OpenRouter](https://openrouter.ai/) API key (free tier available)
+- A Google Cloud project with **Google Drive API** enabled
 
-### 2. Environment Variables
-Create a `.env` file in the root directory (alongside `pom.xml`). You can copy the provided `.env.example`:
+### 1. Clone and configure environment
 
 ```bash
+git clone https://github.com/your-username/outreach-agent.git
+cd outreach-agent
 cp .env.example .env
 ```
 
-Update your `.env` file with your credentials:
-```properties
-GEMINI_API_KEY=your_gemini_api_key_here
-SMTP_USERNAME=your_gmail_address@gmail.com
-SMTP_PASSWORD=your_gmail_app_password
-# Optional: OpenRouter keys if you switch profiles
-OPENROUTER_API_KEY=your_openrouter_key_here
-```
+Edit `.env` with your actual credentials (see the table below). Example files for ignored runtime paths live in `docs/examples/`.
 
-### 3. Build the Application
-Compile the project and download all dependencies via Maven:
-```bash
-mvn clean compile
-```
+### 2. Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `OPENROUTER_API_KEY` | ✅ | Your OpenRouter API key |
+| `OPENROUTER_MODEL_NAME` | Optional | Defaults to `openai/gpt-oss-120b:free` |
+| `GEMINI_API_KEY` | Optional | Only needed if using the `gemini` Spring profile |
+| `GMAIL_ADDRESS` | ✅ | Gmail address used as the From: header |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | ✅ | Full contents of your OAuth 2.0 client secret JSON |
+| `GOOGLE_DRIVE_FOLDER_ID` | ✅ | Target Drive folder ID for resume uploads |
+| `GOOGLE_DRIVE_TOKENS_DIR` | Optional | Path to store OAuth tokens (default: `tokens/`) |
+
+### 3. Google Drive OAuth 2.0 Setup
+
+The application uses **OAuth 2.0 (Installed App)** for Drive access. On first run, it will open a browser to complete authorization and save credentials to the `tokens/` directory.
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → **APIs & Services** → **Library** → Enable **Google Drive API**
+2. Go to **Credentials** → **Create Credentials** → **OAuth client ID** → Application type: **Desktop app**
+3. Download the JSON, copy its full contents into `GOOGLE_SERVICE_ACCOUNT_JSON` in your `.env`
+4. **Run the app locally once** to complete the browser-based authorization flow
+5. The `tokens/` directory is then populated with the `StoredCredential` file
+
+> [!IMPORTANT]
+> When deploying to a headless server, copy your local `tokens/` directory to the server before starting. The app will use the stored credential without needing a browser.
+
+### 4. Customize Your Resume
+
+Edit `src/main/resources/data/master_resume.json` with your actual experiences, skills, and projects. Use the `tags` and `priority` fields on each bullet point to help the LLM make good selection decisions.
 
 ---
 
-## 🏃 Running the Application
-
-You can start the Spring Boot server directly via the Maven plugin. The application will initialize Tomcat on port `8080`.
+## 🏃 Running Locally
 
 ```bash
 mvn spring-boot:run
 ```
 
----
-
-## 🔌 API Usage
-
-Once the application is running, you can interact with the agent via its REST APIs.
-
-### 1. Single Resume Customization and Direct Mail
-Generate a resume tailored to a JD and email it immediately.
-
-**Endpoint:** `POST /api/resume/generate`
-
-**Request Payload:**
-```json
-{
-  "jobDescription": "We are looking for a Senior Java Engineer with strong experience in Spring Boot, microservices architecture, and event-driven systems like Kafka. AWS experience is a plus.",
-  "recipientEmail": "recruiter@example.com",
-  "subject": "Application for Senior Java Engineer",
-  "coverLetterBody": "Please find my highly tailored resume attached."
-}
-```
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:8080/api/resume/generate \
--H "Content-Type: application/json" \
--d '{"jobDescription":"Looking for a Java Spring Boot developer with Kafka experience.", "recipientEmail": "test@test.com"}'
-```
+The application starts at `http://localhost:8080`.
 
 ---
 
-### 2. Batch Outreach Campaign (Scrape, Research, Tailor, Schedule)
-Submit a list of target companies and emails. The application will scrape each company's website, perform LLM research to find key talking points, draft a tailored cover letter, generate a tailored resume, and schedule the outreach email for the **next working day at 8:00 AM IST** (asynchronous batch dispatch).
 
-**Endpoint:** `POST /api/outreach/batch`
+## 🔌 API Reference
 
-**Request Payload:**
+### `POST /api/outreach/batch` — Start a batch outreach campaign
+
+Submit a list of target companies. The agent will scrape each website, draft a tailored resume + cover letter, and schedule emails for the next working day.
+
+**Request:**
 ```json
 {
-  "jobDescription": "We are looking for a Machine Learning engineer with computer vision and LLM deployment experience.",
+  "jobDescription": "Looking for a Machine Learning engineer with LLM deployment experience.",
   "targets": [
     {
-      "companyName": "Sapiens",
-      "companyUrl": "https://www.sapiens.com",
-      "recipientEmail": "hr@sapiens.com"
-    },
-    {
-      "companyName": "Reliance",
-      "companyUrl": "https://www.ril.com",
-      "recipientEmail": "recruiter@ril.com"
+      "companyName": "Acme Corp",
+      "companyUrl": "https://acmecorp.com",
+      "recipientEmail": "hiring@acmecorp.com"
     }
   ]
 }
-```
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:8080/api/outreach/batch \
--H "Content-Type: application/json" \
--d '{"jobDescription":"Machine Learning Engineer role...", "targets":[{"companyName":"Sapiens","companyUrl":"https://www.sapiens.com","recipientEmail":"hr@sapiens.com"}]}'
 ```
 
 **Response:**
@@ -165,19 +165,57 @@ curl -X POST http://localhost:8080/api/outreach/batch \
 
 ---
 
-### 3. Check Campaign Status
-Retrieve the list of campaigns and their targets.
+### `GET /api/outreach/batch` — Check campaign status
 
-**Endpoint:** `GET /api/outreach/batch`
-
-**cURL Example:**
 ```bash
 curl http://localhost:8080/api/outreach/batch
 ```
 
 ---
 
+### `GET /api/outreach/targets` — List all targets and their statuses
+
+```bash
+curl http://localhost:8080/api/outreach/targets
+```
+
+---
+
+### `POST /api/resume/generate` — Generate a single tailored resume and email it
+
+**Request:**
+```json
+{
+  "jobDescription": "Senior Java Engineer with Spring Boot and Kafka experience.",
+  "recipientEmail": "recruiter@example.com",
+  "subject": "Application for Senior Java Engineer",
+  "coverLetterBody": "Please find my tailored resume attached."
+}
+```
+
+---
+
 ## 📝 Customization
 
-- **Updating the Master Resume:** Modify `src/main/resources/data/master_resume.json` to include your actual experiences, skills, and projects. Ensure you accurately "tag" and "prioritize" your bullet points so the LLM can make informed decisions when matching to a JD.
-- **Modifying the Design:** The resume layout is defined in `src/main/resources/templates/resume.html`. Because it uses Flying Saucer, ensure that all modifications adhere strictly to **XHTML** and **CSS 2.1** standards. Modern layout features like Flexbox or Grid are not supported by the underlying rendering engine. 
+- **Resume Content:** Edit `src/main/resources/data/master_resume.json`. Tag bullet points with relevant skills and set `priority` (higher = more likely to be selected by the LLM).
+- **Resume Layout:** Modify `src/main/resources/templates/resume.html`. This file is rendered by Flying Saucer — use only **XHTML + CSS 2.1**. Flexbox and CSS Grid are not supported.
+- **Scheduling:** The `@Scheduled` intervals in `BatchOutreachService` can be adjusted (draft processing: every 10 seconds, dispatch: every minute, follow-ups: every hour).
+- **LLM Profile:** Switch between OpenRouter and Gemini by setting `spring.profiles.active` in `application.yml` (`openrouter` or `gemini`).
+
+---
+
+## 🚀 Deployment
+
+The recommended path is Railway or Render:
+
+1. Push this repo to GitHub
+2. Connect to Railway/Render → **Build with Maven (Java 21)**
+3. Set all environment variables from `.env.example` in the platform dashboard
+4. Add persistent storage for the /data (H2 database) and /tokens (OAuth credentials) directories.
+5. Copy your local `tokens/` folder contents to the server before first start (to avoid needing a browser for OAuth)
+
+---
+
+## 📄 License
+
+MIT
