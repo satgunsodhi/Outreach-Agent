@@ -37,6 +37,7 @@ public interface CoverLetterAgent {
             - NO placeholder tokens: [Your Name], [Company], <PRIVATE_PERSON>, YOUR_NAME, {name}, etc.
             - NO mention of AI, agents, automation, or any system that wrote this email.
             - NO sycophantic filler: "thrilled", "passionate about", "excited to", "eager to", "deeply impressed", "delving into", "seamlessly".
+            - NO classic AI vocabulary: "testament", "furthermore", "realm", "tapestry", "landscape", "in conclusion", "vital", "crucial", "unlock".
             - NO bullet-point lists or numbered lists in the email body. Write in flowing prose.
             - Use the company's actual name, never a placeholder.
             - Only state facts from the provided Master Resume. Never fabricate metrics or experiences.
@@ -81,7 +82,7 @@ public interface CoverLetterAgent {
             - Excited About the Opportunity
             - Reaching Out Regarding ML Role
             
-            Output ONLY the subject line text. Nothing else.
+            Output ONLY the subject line text. Nothing else. Do NOT prefix the subject with "Subject:" or "Re:".
             """)
     @UserMessage("Write a subject line for an application to {{companyName}} for the role: {{roleName}}.")
     String generateSubject(@V("companyName") String companyName, @V("roleName") String roleName);

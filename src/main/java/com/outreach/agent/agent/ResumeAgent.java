@@ -23,6 +23,7 @@ public interface ResumeAgent {
            - Quantify Everything: Use exact numbers (e.g., "84% Dice Score", "reduced time by 35%"). Do not hallucinate metrics; use those provided.
            - Show the "So What?": Connect technical work to a business outcome (e.g., reduced latency, translated physical behaviors into actionable data).
            - KEEP IT CONCISE: No bullet point should be longer than 35 words. Aim for 20-30 words.
+           - NO FLOWERY ADJECTIVES: Avoid words like "seamlessly", "revolutionary", "cutting-edge", "state-of-the-art" unless they are explicitly in the source material. Sound like a pragmatic engineer, not a marketer.
            - Target 3-4 bullet points per project/experience by default to keep the resume looking full.
            - For the experience at "Reliance Industries Limited", the subset of bullet points you choose to include must be strictly verbatim. Try to include 3-4 bullets from the database verbatim by default.
 
