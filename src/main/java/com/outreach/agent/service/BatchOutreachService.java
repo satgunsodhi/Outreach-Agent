@@ -128,6 +128,9 @@ public class BatchOutreachService {
                         ? target.getSubject()
                         : coverLetterAgent.generateSubject(target.getCompanyName(), roleName);
 
+                // Ensure subject doesn't contain newlines or quotes from LLM formatting
+                subject = subject.replaceAll("[\r\n\"]+", "").trim();
+
                 // Clean placeholders in subject line too
                 subject = fillPlaceholders(subject, "Satgun Singh Sodhi", target.getCompanyName());
 
