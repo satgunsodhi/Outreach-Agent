@@ -48,8 +48,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 
                 if (!exists) {
                     target.setStatus("PENDING");
-                    outreachTargetRepository.save(target);
-                    log.info("Seeded new OutreachTarget: {} ({})", target.getCompanyName(), target.getRecipientEmail());
+                    target = outreachTargetRepository.save(target);
+                    log.debug("Seeded new OutreachTarget: {} ({})", target.getCompanyName(), target.getRecipientEmail());
+                    log.info("Seeded new OutreachTarget ID: {}", target.getId());
                 }
             }
             log.info("Database seeding completed.");

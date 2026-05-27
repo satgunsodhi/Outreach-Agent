@@ -47,9 +47,11 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
 
         String draftId = gmailService.createDraft(recipientEmail, subject, coverLetterBody);
         if (draftId != null) {
-            log.info("Draft created for {} (draftId={})", recipientEmail, draftId);
+            log.debug("Draft created for {} (draftId={})", recipientEmail, draftId);
+            log.info("Draft created successfully (draftId={})", draftId);
         } else {
-            log.error("Draft creation failed for {}", recipientEmail);
+            log.debug("Draft creation failed for {}", recipientEmail);
+            log.error("Draft creation failed");
         }
         return draftId;
     }
@@ -73,9 +75,11 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
         String draftId = gmailService.createFollowUpDraft(recipientEmail, originalSubject, daysSinceSent,
                 companyName, roleName);
         if (draftId != null) {
-            log.info("Follow-up draft created for {} (draftId={})", recipientEmail, draftId);
+            log.debug("Follow-up draft created for {} (draftId={})", recipientEmail, draftId);
+            log.info("Follow-up draft created successfully (draftId={})", draftId);
         } else {
-            log.error("Follow-up draft creation failed for {}", recipientEmail);
+            log.debug("Follow-up draft creation failed for {}", recipientEmail);
+            log.error("Follow-up draft creation failed");
         }
         return draftId;
     }

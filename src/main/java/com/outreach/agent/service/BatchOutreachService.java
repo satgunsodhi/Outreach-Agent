@@ -77,7 +77,8 @@ public class BatchOutreachService {
 
         for (OutreachTarget target : pendingTargets) {
             try {
-                log.info("Starting processing for target: {}", target.getCompanyName());
+                log.debug("Starting processing for target: {}", target.getCompanyName());
+                log.info("Starting processing for target ID: {}", target.getId());
                 target.setStatus("PROCESSING");
                 targetRepository.save(target);
 
@@ -146,7 +147,8 @@ public class BatchOutreachService {
                 target.setFollowUpScheduledAt(calculateNextWorkingDay8AmIst());
                 
                 targetRepository.save(target);
-                log.info("Successfully drafted target: {}. Draft ID: {}", target.getCompanyName(), draftId);
+                log.debug("Successfully drafted target: {}. Draft ID: {}", target.getCompanyName(), draftId);
+                log.info("Successfully drafted target ID: {}. Draft ID: {}", target.getId(), draftId);
 
             } catch (Exception e) {
                 handleTargetFailure(target, e);
@@ -176,12 +178,14 @@ public class BatchOutreachService {
                 target.setStatus("FOLLOW_UP_DRAFT_CREATED");
                 target.setGmailDraftId(followUpDraftId); // overwrite with follow-up draft ID
                 targetRepository.save(target);
-                log.info("Follow-up draft created for {}", target.getCompanyName());
+                log.debug("Follow-up draft created for {}", target.getCompanyName());
+                log.info("Follow-up draft created for target ID: {}", target.getId());
             } catch (Exception e) {
                 target.setStatus("FAILED");
                 target.setErrorReason("Follow-up draft failed: " + e.getMessage());
                 targetRepository.save(target);
-                log.error("Follow-up draft failed for {}: {}", target.getCompanyName(), e.getMessage());
+                log.debug("Follow-up draft failed for {}: {}", target.getCompanyName(), e.getMessage());
+                log.error("Follow-up draft failed for target ID: {}: {}", target.getId(), e.getMessage());
             }
         }
     }
@@ -198,14 +202,18 @@ public class BatchOutreachService {
             target.setStatus("PENDING");
             target.setErrorReason("Retry " + (retries + 1) + "/" + MAX_RETRIES + ": " + e.getMessage());
             targetRepository.save(target);
-            log.warn("Transient failure for {} (retry {}/{}): {}",
+            log.debug("Transient failure for {} (retry {}/{}): {}",
                     target.getCompanyName(), retries + 1, MAX_RETRIES, e.getMessage());
+            log.warn("Transient failure for target ID: {} (retry {}/{}): {}",
+                    target.getId(), retries + 1, MAX_RETRIES, e.getMessage());
         } else {
             target.setStatus("FAILED");
             target.setErrorReason(e.getMessage());
             targetRepository.save(target);
-            log.error("Permanently failed target {} after {} retries: {}",
+            log.debug("Permanently failed target {} after {} retries: {}",
                     target.getCompanyName(), MAX_RETRIES, e.getMessage(), e);
+            log.error("Permanently failed target ID: {} after {} retries: {}",
+                    target.getId(), MAX_RETRIES, e.getMessage(), e);
         }
     }
 

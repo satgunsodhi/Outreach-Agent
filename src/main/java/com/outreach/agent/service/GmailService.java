@@ -85,10 +85,12 @@ public class GmailService {
             MimeMessage mimeMessage = buildMimeMessage(to, subject, body);
             Draft draft = new Draft().setMessage(toGmailMessage(mimeMessage));
             Draft created = gmailClient.users().drafts().create("me", draft).execute();
-            log.info("Draft created: id={}, to={}", created.getId(), to);
+            log.debug("Draft created: id={}, to={}", created.getId(), to);
+            log.info("Draft created: id={}", created.getId());
             return created.getId();
         } catch (Exception e) {
-            log.error("Failed to create draft for {}: {}", to, e.getMessage(), e);
+            log.debug("Failed to create draft for {}: {}", to, e.getMessage(), e);
+            log.error("Failed to create draft: {}", e.getMessage(), e);
             return null;
         }
     }

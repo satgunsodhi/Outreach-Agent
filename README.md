@@ -215,6 +215,7 @@ curl http://localhost:8080/api/outreach/targets
 - **Resume Layout:** Modify `src/main/resources/templates/resume.html`. This file is rendered by Flying Saucer — use only **XHTML + CSS 2.1**. Flexbox and CSS Grid are not supported.
 - **Scheduling:** The `@Scheduled` intervals in `BatchOutreachService` can be adjusted (draft processing: every 10 seconds, dispatch: every minute, follow-ups: every hour).
 - **LLM Profile:** Switch between OpenRouter and Gemini by setting `spring.profiles.active` in `application.yml` (`openrouter` or `gemini`).
+- **Logging & Privacy:** The application uses SLF4J and masks sensitive data (like recipient emails and company names) in `INFO` logs by default, logging only `Target ID`. Detailed data is still logged at the `DEBUG` level. You can enable debug logging by setting `logging.level.com.outreach.agent=DEBUG` in `application.yml`.
 
 ---
 
