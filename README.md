@@ -10,12 +10,14 @@ An autonomous AI-powered outreach pipeline built with **Java 21 + Spring Boot 3*
 |---|---|
 | **Agentic Resume Tailoring** | LangChain4j tool-calling loop iteratively adjusts content until the PDF fits exactly one page |
 | **Company Research** | Jsoup scrapes target company websites; a `CompanyResearchAgent` extracts key talking points via LLM |
+| **Command Center (Web UI)** | A decoupled React/Vite frontend for manually adding and managing outreach targets |
+| **Autonomous Discovery** | When idle, a `TargetDiscoveryAgent` silently searches the web (e.g. DuckDuckGo) for new targets and automatically injects them into the pipeline |
 | **Cover Letter Generation** | `CoverLetterAgent` writes a personalized cover letter grounded in real company research |
 | **Placeholder Sanitization** | Multi-pass regex system detects and fills any LLM-generated placeholder tokens before sending |
 | **Google Drive Upload** | Resumes are uploaded to a shared Drive folder via OAuth 2.0 and linked in the email |
 | **Next-Working-Day Scheduler** | Emails are dispatched asynchronously at 8:00 AM IST on the next weekday |
 | **Follow-up Automation** | Automatically sends a follow-up email if no reply after one working day |
-| **Campaign Persistence** | Tracks all targets, statuses, and drafts via Spring Data JPA + H2 (file-based) |
+| **Campaign Persistence** | Tracks all targets, statuses, and drafts via Spring Data JPA + PostgreSQL/H2 |
 | **HTML-to-PDF Engine** | Thymeleaf → XHTML → Flying Saucer/OpenPDF, producing ATS-compliant single-page PDFs |
 
 ---
@@ -62,13 +64,17 @@ outreach-agent/
     │   │   ├── ProjectDeepContextService.java
     │   │   └── ResumeOrchestrationService.java
     │   └── tools/                           # LangChain4j @Tool definitions
-    └── resources/
-        ├── application.yml                  # Spring Boot configuration
-        ├── data/
-        │   ├── master_resume.json           # Your resume knowledge base
-        │   └── project_deep_context.json    # Per-project detail for the LLM
-        └── templates/
-            └── resume.html                  # Thymeleaf XHTML resume template
+    ├── resources/
+    │   ├── application.yml                  # Spring Boot configuration
+    │   ├── data/
+    │   │   ├── master_resume.json           # Your resume knowledge base
+    │   │   └── project_deep_context.json    # Per-project detail for the LLM
+    │   └── templates/
+    │       └── resume.html                  # Thymeleaf XHTML resume template
+    └── frontend/                            # Decoupled React + Vite Web UI
+        ├── src/
+        │   ├── App.jsx                      # Main UI and auth logic
+        │   └── index.css                    # Glassmorphic vanilla CSS
 ```
 
 ---
@@ -109,6 +115,8 @@ Edit `.env` with your actual credentials (see the table below). Example files fo
 | `DATABASE_URL` | Optional | PostgreSQL JDBC URL (used with `production` profile) |
 | `DATABASE_USERNAME` | Optional | PostgreSQL username (used with `production` profile) |
 | `DATABASE_PASSWORD` | Optional | PostgreSQL password (used with `production` profile) |
+| `APP_SECURITY_USERNAME` | Optional | Admin username for Web UI (default: `admin`) |
+| `APP_SECURITY_PASSWORD` | Optional | Admin password for Web UI (default: `admin123`) |
 
 ### 3. Google Drive OAuth 2.0 Setup
 
@@ -139,11 +147,19 @@ Edit `src/main/resources/data/master_resume.json` with your actual experiences, 
 
 ## 🏃 Running Locally
 
+**Backend (Spring Boot):**
 ```bash
 mvn spring-boot:run
 ```
+The application backend starts at `http://localhost:8080`.
 
-The application starts at `http://localhost:8080`.
+**Frontend (React/Vite):**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+The frontend starts at `http://localhost:5173`. Open this in your browser to access the Command Center.
 
 ---
 
@@ -221,13 +237,22 @@ curl http://localhost:8080/api/outreach/targets
 
 ## 🚀 Deployment
 
-The recommended path is Railway or Render:
+## 🚀 Deployment
 
+### Backend (Railway/Render)
 1. Push this repo to GitHub
 2. Connect to Railway/Render → **Build with Maven (Java 21)**
-3. Set all environment variables from `.env.example` in the platform dashboard
-4. Add persistent storage for the `./data` (H2 database) and `./tokens` (OAuth credentials) directories.
+3. Set all environment variables from `.env.example` in the platform dashboard.
+4. Set CORS origins if necessary.
 5. Copy your local `tokens/` folder contents to the server before first start (to avoid needing a browser for OAuth)
+
+### Frontend (Vercel with Next.js)
+1. Import your GitHub repository to Vercel.
+2. In the Vercel project settings, set the **Root Directory** to `frontend`.
+3. Vercel will auto-detect Next.js.
+4. **Environment Variables**: You must provide the following to Vercel:
+   - `DATABASE_URL`: Your Neon PostgreSQL connection string (so Next.js can read/write targets).
+   - `ADMIN_PASSWORD`: A secure password of your choice to log into the Command Center.
 
 ---
 

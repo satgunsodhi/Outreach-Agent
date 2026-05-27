@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.outreach.agent.model.OutreachTarget;
+import com.outreach.agent.agent.TargetDiscoveryAgent;
 import com.outreach.agent.repository.OutreachTargetRepository;
 import com.outreach.agent.service.BatchOutreachService;
 import com.outreach.agent.service.GoogleOAuthService;
@@ -28,6 +29,7 @@ public class CiBatchRunner implements ApplicationRunner {
     private final OutreachTargetRepository repository;
     private final ApplicationContext context;
     private final GoogleOAuthService googleOAuthService;
+    private final TargetDiscoveryAgent targetDiscoveryAgent;
 
     @Value("${app.ci-batch-mode:false}")
     private boolean ciBatchMode;
@@ -36,11 +38,12 @@ public class CiBatchRunner implements ApplicationRunner {
     private String targetsFilePath;
 
     public CiBatchRunner(BatchOutreachService batchOutreachService, OutreachTargetRepository repository,
-            ApplicationContext context, GoogleOAuthService googleOAuthService) {
+            ApplicationContext context, GoogleOAuthService googleOAuthService, TargetDiscoveryAgent targetDiscoveryAgent) {
         this.batchOutreachService = batchOutreachService;
         this.repository = repository;
         this.context = context;
         this.googleOAuthService = googleOAuthService;
+        this.targetDiscoveryAgent = targetDiscoveryAgent;
     }
 
     @Override
@@ -85,6 +88,39 @@ public class CiBatchRunner implements ApplicationRunner {
         while (!repository.findByStatus("PROCESSING").isEmpty()) {
             log.info("Waiting for processing to complete...");
             Thread.sleep(5000);
+        }
+
+        // 4. Idle Target Discovery
+        if (repository.findByStatus("PENDING").isEmpty()) {
+            log.info("Queue is idle. Triggering autonomous target discovery...");
+            try {
+                String result = targetDiscoveryAgent.discoverTargets("ML Engineer", "Remote or India");
+                log.info("Raw discovery result: {}", result);
+                
+                ObjectMapper mapper = new ObjectMapper();
+                List<OutreachTarget> newTargets = mapper.readValue(result, new TypeReference<List<OutreachTarget>>() {});
+                int added = 0;
+                for (OutreachTarget t : newTargets) {
+                    if (!repository.existsByCompanyNameAndRecipientEmail(t.getCompanyName(), t.getRecipientEmail())) {
+                        t.setStatus("PENDING");
+                        repository.save(t);
+                        added++;
+                    }
+                }
+                
+                if (added > 0) {
+                    log.info("Found {} new targets! Processing them now.", added);
+                    batchOutreachService.processPendingTargets();
+                    while (!repository.findByStatus("PROCESSING").isEmpty()) {
+                        log.info("Waiting for new targets to finish processing...");
+                        Thread.sleep(5000);
+                    }
+                } else {
+                    log.info("No new targets discovered.");
+                }
+            } catch (Exception e) {
+                log.error("Failed during autonomous target discovery", e);
+            }
         }
 
         log.info("==================================================");
