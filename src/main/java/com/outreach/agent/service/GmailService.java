@@ -121,7 +121,9 @@ public class GmailService {
         }
         email.addRecipient(jakarta.mail.Message.RecipientType.TO, new InternetAddress(to));
         email.setSubject(subject);
-        email.setText(body, "utf-8");
+        // Convert newlines to HTML breaks to prevent rigid plain-text line-wrapping issues in email clients
+        String htmlBody = body.replace("\r\n", "<br>").replace("\n", "<br>");
+        email.setContent(htmlBody, "text/html; charset=utf-8");
         return email;
     }
 

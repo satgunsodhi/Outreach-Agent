@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
@@ -35,18 +34,20 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
 
         try (InputStream is = targetsResource.getInputStream()) {
-            List<OutreachTarget> targets = objectMapper.readValue(is, new TypeReference<List<OutreachTarget>>() {});
-            
+            List<OutreachTarget> targets = objectMapper.readValue(is, new TypeReference<List<OutreachTarget>>() {
+            });
+
             for (OutreachTarget target : targets) {
                 // Check if target with same email and company already exists
                 boolean exists = outreachTargetRepository.findAll().stream()
                         .anyMatch(t -> t.getRecipientEmail().equalsIgnoreCase(target.getRecipientEmail()) &&
-                                       t.getCompanyName().equalsIgnoreCase(target.getCompanyName()));
-                                       
+                                t.getCompanyName().equalsIgnoreCase(target.getCompanyName()));
+
                 if (!exists) {
                     target.setStatus("PENDING");
                     outreachTargetRepository.save(target);
-                    System.out.println("Seeded new OutreachTarget: " + target.getCompanyName() + " (" + target.getRecipientEmail() + ")");
+                    System.out.println("Seeded new OutreachTarget: " + target.getCompanyName() + " ("
+                            + target.getRecipientEmail() + ")");
                 }
             }
             System.out.println("Database seeding completed.");

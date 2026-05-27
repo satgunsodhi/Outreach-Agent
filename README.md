@@ -29,7 +29,7 @@ An autonomous AI-powered outreach pipeline built with **Java 21 + Spring Boot 3*
 - **Web Scraping:** Jsoup
 - **Database:** Spring Data JPA + H2 (file-based, persisted at `./data/outreachdb`)
 - **File Storage:** Google Drive API v3 (OAuth 2.0 Installed App flow)
-- **Email:** Spring Mail (SMTP / Gmail)
+- **Email:** Gmail API (OAuth 2.0)
 - **Secrets:** Spring Dotenv (`.env` file support)
 
 ---
@@ -100,9 +100,15 @@ Edit `.env` with your actual credentials (see the table below). Example files fo
 | `OPENROUTER_MODEL_NAME` | Optional | Defaults to `openai/gpt-oss-120b:free` |
 | `GEMINI_API_KEY` | Optional | Only needed if using the `gemini` Spring profile |
 | `GMAIL_ADDRESS` | ✅ | Gmail address used as the From: header |
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | ✅ | Full contents of your OAuth 2.0 client secret JSON |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | ✅ | Full contents of your OAuth 2.0 client secret JSON (see `docs/examples/credentials.json.example`) |
 | `GOOGLE_DRIVE_FOLDER_ID` | ✅ | Target Drive folder ID for resume uploads |
 | `GOOGLE_DRIVE_TOKENS_DIR` | Optional | Path to store OAuth tokens (default: `tokens/`) |
+| `GOOGLE_REFRESH_TOKEN` | Optional | Refresh token for headless CI batch mode |
+| `CI_BATCH_MODE` | Optional | Set `true` to load targets from file and run a one-shot batch |
+| `TARGETS_FILE` | Optional | Path to targets JSON file (default: `targets.json`) |
+| `DATABASE_URL` | Optional | PostgreSQL JDBC URL (used with `production` profile) |
+| `DATABASE_USERNAME` | Optional | PostgreSQL username (used with `production` profile) |
+| `DATABASE_PASSWORD` | Optional | PostgreSQL password (used with `production` profile) |
 
 ### 3. Google Drive OAuth 2.0 Setup
 
@@ -116,6 +122,14 @@ The application uses **OAuth 2.0 (Installed App)** for Drive access. On first ru
 
 > [!IMPORTANT]
 > When deploying to a headless server, copy your local `tokens/` directory to the server before starting. The app will use the stored credential without needing a browser.
+
+### 3.1 CI Batch Mode (Optional)
+
+Set `CI_BATCH_MODE=true` and provide `TARGETS_FILE` to load targets from a JSON file and run a one-shot batch. For headless runs, set `GOOGLE_REFRESH_TOKEN` and keep `GOOGLE_SERVICE_ACCOUNT_JSON` configured.
+
+### 3.2 Production Database (Optional)
+
+If you want PostgreSQL instead of H2, set `spring.profiles.active=production` and configure `DATABASE_URL`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD`.
 
 ### 4. Customize Your Resume
 
@@ -211,7 +225,7 @@ The recommended path is Railway or Render:
 1. Push this repo to GitHub
 2. Connect to Railway/Render → **Build with Maven (Java 21)**
 3. Set all environment variables from `.env.example` in the platform dashboard
-4. Add persistent storage for the /data (H2 database) and /tokens (OAuth credentials) directories.
+4. Add persistent storage for the `./data` (H2 database) and `./tokens` (OAuth credentials) directories.
 5. Copy your local `tokens/` folder contents to the server before first start (to avoid needing a browser for OAuth)
 
 ---
