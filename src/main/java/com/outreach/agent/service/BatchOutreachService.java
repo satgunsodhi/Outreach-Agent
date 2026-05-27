@@ -109,6 +109,7 @@ public class BatchOutreachService {
                         ? target.getJobDescription()
                         : "General position at " + target.getCompanyName();
                 String pdfPathStr = resumeOrchestrationService.generateTailoredResume(jd);
+                pdfPathStr = sanitizePdfPath(pdfPathStr);
 
                 // 3. Generate Cover Letter & Subject
                 String masterResumeJson = objectMapper.writeValueAsString(masterResumeService.getMasterResume());
@@ -382,5 +383,29 @@ public class BatchOutreachService {
                 || upper.contains("[RECRUITER")
                 || upper.contains("<HIRING MANAGER")
                 || upper.contains("{HIRINGMANAGER");
+    }
+
+    private String sanitizePdfPath(String rawPath) {
+        if (rawPath == null) {
+            return null;
+        }
+        String trimmed = rawPath.trim();
+        // Look for data/generated-pdfs/resume-....pdf within the output in case of markdown or extra conversational text
+        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(?:[a-zA-Z]:)?[/\\\\\\w\\.\\-]+data/generated-pdfs/resume-[\\w\\.\\-]+pdf").matcher(trimmed);
+        if (matcher.find()) {
+            return matcher.group(0).replace("\\", "/");
+        }
+        
+        // Fallback: strip quotes, backticks
+        if (trimmed.startsWith("`") && trimmed.endsWith("`")) {
+            trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+        }
+        if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
+            trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+        }
+        if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
+            trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+        }
+        return trimmed.trim().replace("\\", "/");
     }
 }
