@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -37,6 +39,9 @@ public class BatchOutreachService {
     private final MasterResumeService masterResumeService;
     private final ObjectMapper objectMapper;
     private final GoogleDriveService googleDriveService;
+
+    // Cache to prevent redundant scraping and LLM calls for the same company/URL
+    private final Map<String, String> researchCache = new ConcurrentHashMap<>();
 
     @Value("${app.ci-batch-mode:false}")
     private boolean ciBatchMode;
@@ -82,12 +87,21 @@ public class BatchOutreachService {
                 target.setStatus("PROCESSING");
                 targetRepository.save(target);
 
-                // 1. Research Company
+                // 1. Research Company (with Caching)
                 String companyResearch = "No specific research provided.";
-                if (target.getJobUrl() != null && !target.getJobUrl().isBlank()) {
-                    companyResearch = researchAgent.researchCompany(target.getJobUrl());
-                } else if (target.getCompanyName() != null && !target.getCompanyName().isBlank()) {
-                    companyResearch = researchAgent.researchCompany(target.getCompanyName());
+                String cacheKey = target.getJobUrl() != null && !target.getJobUrl().isBlank() 
+                        ? target.getJobUrl() 
+                        : target.getCompanyName();
+
+                if (cacheKey != null && !cacheKey.isBlank()) {
+                    if (researchCache.containsKey(cacheKey)) {
+                        companyResearch = researchCache.get(cacheKey);
+                        log.debug("Using cached research for {}", cacheKey);
+                    } else {
+                        log.debug("Fetching new research for {}", cacheKey);
+                        companyResearch = researchAgent.researchCompany(cacheKey);
+                        researchCache.put(cacheKey, companyResearch);
+                    }
                 }
 
                 // 2. Generate Tailored Resume (PDF)

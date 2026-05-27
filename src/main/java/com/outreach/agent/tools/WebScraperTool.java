@@ -15,6 +15,9 @@ public class WebScraperTool {
         if (url == null || url.isBlank()) {
             return "{\"error\": \"URL cannot be null or empty.\"}";
         }
+        if (!url.toLowerCase().startsWith("http")) {
+            return "{\"error\": \"Invalid URL format. Provide a full HTTP/HTTPS URL, not just a company name.\"}";
+        }
         
         try {
             // Fetch and parse the HTML document
@@ -23,7 +26,10 @@ public class WebScraperTool {
                     .timeout(10000)
                     .get();
             
-            // Extract text from the body
+            // Remove noisy elements to improve LLM token efficiency
+            doc.select("script, style, nav, footer, header, aside, noscript, iframe, .cookie-banner, #cookie-banner").remove();
+            
+            // Extract text from the cleaned body
             String text = doc.body().text();
             
             // Truncate to a reasonable length if too large (e.g., 10000 characters)
