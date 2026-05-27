@@ -37,4 +37,5 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
         run: |
           touch .env
-          java -jar target/outreach-agent-*.jar
+          echo "Running Outreach Agent... (Logs are hidden to prevent CI log bloat)"
+          java -jar target/outreach-agent-*.jar > /dev/null 2>&1
