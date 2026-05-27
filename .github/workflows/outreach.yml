@@ -24,7 +24,7 @@ jobs:
 
       - name: Run Outreach Agent
         env:
-          SPRING_PROFILES_ACTIVE: production
+          SPRING_PROFILES_ACTIVE: openrouter,production
           CI_BATCH_MODE: "true"
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
@@ -35,4 +35,6 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           OPENROUTER_MODEL_NAME: "openai/gpt-oss-120b:free"
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-        run: java -jar target/outreach-agent-*.jar
+        run: |
+          touch .env
+          java -jar target/outreach-agent-*.jar
