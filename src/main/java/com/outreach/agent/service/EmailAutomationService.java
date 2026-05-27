@@ -33,10 +33,14 @@ public interface EmailAutomationService {
      * @param recipientEmail  target recipient address
      * @param originalSubject subject of the original outreach email (will be prefixed with "Re: ")
      * @param daysSinceSent   days elapsed since the initial email — used in the body
+     * @param companyName     company name for contextual follow-up
+     * @param roleName        role name for contextual follow-up
      * @return the Gmail Draft ID, or {@code null} if draft creation failed
      */
     String sendFollowUp(
             @NonNull String recipientEmail,
             @NonNull String originalSubject,
-            int daysSinceSent);
+            int daysSinceSent,
+            String companyName,
+            String roleName);
 }

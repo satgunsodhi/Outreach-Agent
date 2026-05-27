@@ -12,6 +12,8 @@ import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ import java.util.Properties;
 @Service
 public class GmailService {
 
+    private static final Logger log = LoggerFactory.getLogger(GmailService.class);
+
     private static final String APPLICATION_NAME = "Outreach Agent";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
@@ -48,7 +52,7 @@ public class GmailService {
     @PostConstruct
     public void init() {
         if (!oauthService.isAvailable()) {
-            System.err.println("[GmailService] OAuth not available. Draft creation will be disabled.");
+            log.warn("OAuth not available. Draft creation will be disabled.");
             gmailClient = null;
             return;
         }
@@ -60,7 +64,7 @@ public class GmailService {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
-        System.out.println("[GmailService] Initialized successfully.");
+        log.info("Gmail service initialized successfully.");
     }
 
     /**
@@ -73,7 +77,7 @@ public class GmailService {
      */
     public String createDraft(String to, String subject, String body) {
         if (gmailClient == null) {
-            System.err.println("[GmailService] Gmail client not initialized — draft not created.");
+            log.warn("Gmail client not initialized - draft not created.");
             return null;
         }
 
@@ -81,11 +85,10 @@ public class GmailService {
             MimeMessage mimeMessage = buildMimeMessage(to, subject, body);
             Draft draft = new Draft().setMessage(toGmailMessage(mimeMessage));
             Draft created = gmailClient.users().drafts().create("me", draft).execute();
-            System.out.println("[GmailService] Draft created → id=" + created.getId() + "  to=" + to);
+            log.info("Draft created: id={}, to={}", created.getId(), to);
             return created.getId();
         } catch (Exception e) {
-            System.err.println("[GmailService] Failed to create draft for " + to + ": " + e.getMessage());
-            e.printStackTrace();
+            log.error("Failed to create draft for {}: {}", to, e.getMessage(), e);
             return null;
         }
     }
@@ -98,15 +101,20 @@ public class GmailService {
      * @param daysSinceSent   days elapsed since the original email — used to personalise the body
      * @return the Gmail Draft ID, or {@code null} on failure
      */
-    public String createFollowUpDraft(String to, String originalSubject, int daysSinceSent) {
+    public String createFollowUpDraft(String to, String originalSubject, int daysSinceSent,
+                                       String companyName, String roleName) {
+        String companyRef = (companyName != null && !companyName.isBlank()) ? companyName : "your team";
+        String roleRef = (roleName != null && !roleName.isBlank()) ? " regarding the " + roleName + " role" : "";
+
         String followUpBody = "Hi,\n\n"
-                + "I wanted to follow up on my previous email sent " + daysSinceSent + " day"
-                + (daysSinceSent == 1 ? "" : "s") + " ago regarding the opportunity at your company.\n\n"
-                + "I remain very interested and would love the chance to connect.\n\n"
-                + "Best regards,\nSatgun Singh Sodhi";
+                + "Just circling back on my earlier note" + roleRef + " at " + companyRef + ". "
+                + "I know inboxes get busy, so wanted to bump this up in case it got buried.\n\n"
+                + "Happy to jump on a quick call or answer any questions. Either way, no pressure.\n\n"
+                + "Best,\nSatgun";
 
         return createDraft(to, "Re: " + originalSubject, followUpBody);
     }
+
 
     // ── private helpers ───────────────────────────────────────────────────────
 

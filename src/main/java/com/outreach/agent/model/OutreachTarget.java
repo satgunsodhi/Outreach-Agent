@@ -55,6 +55,9 @@ public class OutreachTarget {
 
     private LocalDateTime emailScheduledAt;
 
+    /** Number of times this target has been retried after a transient failure. */
+    private int retryCount = 0;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -186,5 +189,13 @@ public class OutreachTarget {
 
     public void setEmailScheduledAt(LocalDateTime emailScheduledAt) {
         this.emailScheduledAt = emailScheduledAt;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public void setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
     }
 }

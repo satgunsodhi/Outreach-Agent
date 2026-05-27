@@ -6,6 +6,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import java.util.Collections;
 
 @Service
 public class GoogleDriveService {
+
+    private static final Logger log = LoggerFactory.getLogger(GoogleDriveService.class);
 
     private static final String APPLICATION_NAME = "Outreach Agent";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
@@ -39,7 +43,7 @@ public class GoogleDriveService {
     @PostConstruct
     public void init() {
         if (!oauthService.isAvailable()) {
-            System.err.println("[GoogleDriveService] OAuth not available. Drive uploads will fall back to local copy.");
+            log.warn("OAuth not available. Drive uploads will fall back to local copy.");
             driveService = null;
             return;
         }
@@ -54,13 +58,13 @@ public class GoogleDriveService {
 
             if (configuredFolderId != null && !configuredFolderId.isBlank()) {
                 resumeFolderId = configuredFolderId.trim();
-                System.out.println("[GoogleDriveService] Initialized. Using configured folder ID: " + resumeFolderId);
+                log.info("Drive service initialized. Using configured folder ID: {}", resumeFolderId);
             } else {
                 resumeFolderId = getOrCreateFolder(DRIVE_FOLDER_NAME);
-                System.out.println("[GoogleDriveService] Initialized. Resume folder ID: " + resumeFolderId);
+                log.info("Drive service initialized. Resume folder ID: {}", resumeFolderId);
             }
         } catch (Exception e) {
-            System.err.println("[GoogleDriveService] Failed to initialize Google Drive: " + e.getMessage());
+            log.error("Failed to initialize Google Drive: {}", e.getMessage());
             driveService = null;
         }
     }
@@ -71,7 +75,7 @@ public class GoogleDriveService {
      */
     public String uploadResume(String localPdfPath) {
         if (driveService == null) {
-            System.err.println("[GoogleDriveService] Drive service not initialized. Using fallback.");
+            log.warn("Drive service not initialized. Using fallback.");
             return fallbackLocalCopy(localPdfPath);
         }
 
@@ -105,16 +109,15 @@ public class GoogleDriveService {
                         .setSupportsAllDrives(true)
                         .execute();
             } catch (Exception pe) {
-                System.err.println("[GoogleDriveService] Non-critical: Failed to make file public: " + pe.getMessage());
+                log.warn("Non-critical: Failed to make file public: {}", pe.getMessage());
             }
 
             String driveLink = "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view?usp=sharing";
-            System.out.println("[GoogleDriveService] Uploaded " + localPdfPath + " → " + driveLink);
+            log.info("Uploaded {} -> {}", localPdfPath, driveLink);
             return driveLink;
 
         } catch (Exception e) {
-            System.err.println("[GoogleDriveService] Upload failed: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Upload failed: {}", e.getMessage(), e);
             return fallbackLocalCopy(localPdfPath);
         }
     }
@@ -141,7 +144,7 @@ public class GoogleDriveService {
                 .setSupportsAllDrives(true)
                 .execute();
 
-        System.out.println("[GoogleDriveService] Created Drive folder '" + folderName + "' with ID: " + folder.getId());
+        log.info("Created Drive folder '{}' with ID: {}", folderName, folder.getId());
         return folder.getId();
     }
 
@@ -162,10 +165,10 @@ public class GoogleDriveService {
             Path target = driveDir.resolve(fileName);
             Files.copy(source, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-            System.out.println("[GoogleDriveService] FALLBACK: Copied locally to " + target.toAbsolutePath());
+            log.info("FALLBACK: Copied locally to {}", target.toAbsolutePath());
             return "https://drive.google.com/file/d/FALLBACK_" + fileId + "/view?usp=sharing";
         } catch (IOException e) {
-            System.err.println("[GoogleDriveService] Fallback failed: " + e.getMessage());
+            log.error("Fallback failed: {}", e.getMessage());
             return "https://drive.google.com/file/d/ERROR_NO_DRIVE_LINK/view?usp=sharing";
         }
     }

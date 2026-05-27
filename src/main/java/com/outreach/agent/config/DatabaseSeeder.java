@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.outreach.agent.model.OutreachTarget;
 import com.outreach.agent.repository.OutreachTargetRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(DatabaseSeeder.class);
 
     private final OutreachTargetRepository outreachTargetRepository;
     private final ObjectMapper objectMapper;
@@ -29,7 +33,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if (!targetsResource.exists()) {
-            System.out.println("targets.json not found, skipping database seeding.");
+            log.info("targets.json not found, skipping database seeding.");
             return;
         }
 
@@ -39,20 +43,18 @@ public class DatabaseSeeder implements CommandLineRunner {
 
             for (OutreachTarget target : targets) {
                 // Check if target with same email and company already exists
-                boolean exists = outreachTargetRepository.findAll().stream()
-                        .anyMatch(t -> t.getRecipientEmail().equalsIgnoreCase(target.getRecipientEmail()) &&
-                                t.getCompanyName().equalsIgnoreCase(target.getCompanyName()));
+                boolean exists = outreachTargetRepository.existsByCompanyNameAndRecipientEmail(
+                        target.getCompanyName(), target.getRecipientEmail());
 
                 if (!exists) {
                     target.setStatus("PENDING");
                     outreachTargetRepository.save(target);
-                    System.out.println("Seeded new OutreachTarget: " + target.getCompanyName() + " ("
-                            + target.getRecipientEmail() + ")");
+                    log.info("Seeded new OutreachTarget: {} ({})", target.getCompanyName(), target.getRecipientEmail());
                 }
             }
-            System.out.println("Database seeding completed.");
+            log.info("Database seeding completed.");
         } catch (Exception e) {
-            System.err.println("Error seeding database from targets.json: " + e.getMessage());
+            log.error("Error seeding database from targets.json: {}", e.getMessage());
         }
     }
 }

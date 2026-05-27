@@ -3,6 +3,8 @@ package com.outreach.agent.service.impl;
 import com.outreach.agent.service.EmailAutomationService;
 import com.outreach.agent.service.GmailService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EmailAutomationServiceImpl implements EmailAutomationService {
+
+    private static final Logger log = LoggerFactory.getLogger(EmailAutomationServiceImpl.class);
 
     private final GmailService gmailService;
 
@@ -43,9 +47,9 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
 
         String draftId = gmailService.createDraft(recipientEmail, subject, coverLetterBody);
         if (draftId != null) {
-            System.out.println("[EmailAutomationService] Draft created for " + recipientEmail + " (draftId=" + draftId + ")");
+            log.info("Draft created for {} (draftId={})", recipientEmail, draftId);
         } else {
-            System.err.println("[EmailAutomationService] Draft creation failed for " + recipientEmail);
+            log.error("Draft creation failed for {}", recipientEmail);
         }
         return draftId;
     }
@@ -59,17 +63,21 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
     public String sendFollowUp(
             @NonNull String recipientEmail,
             @NonNull String originalSubject,
-            int daysSinceSent) {
+            int daysSinceSent,
+            String companyName,
+            String roleName) {
 
         if (recipientEmail.isBlank()) throw new IllegalArgumentException("recipientEmail must not be blank");
         if (originalSubject.isBlank()) throw new IllegalArgumentException("originalSubject must not be blank");
 
-        String draftId = gmailService.createFollowUpDraft(recipientEmail, originalSubject, daysSinceSent);
+        String draftId = gmailService.createFollowUpDraft(recipientEmail, originalSubject, daysSinceSent,
+                companyName, roleName);
         if (draftId != null) {
-            System.out.println("[EmailAutomationService] Follow-up draft created for " + recipientEmail + " (draftId=" + draftId + ")");
+            log.info("Follow-up draft created for {} (draftId={})", recipientEmail, draftId);
         } else {
-            System.err.println("[EmailAutomationService] Follow-up draft creation failed for " + recipientEmail);
+            log.error("Follow-up draft creation failed for {}", recipientEmail);
         }
         return draftId;
     }
+
 }

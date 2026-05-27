@@ -3,6 +3,8 @@ package com.outreach.agent.runner;
 import java.io.File;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -19,6 +21,8 @@ import com.outreach.agent.service.GoogleOAuthService;
 
 @Component
 public class CiBatchRunner implements ApplicationRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(CiBatchRunner.class);
 
     private final BatchOutreachService batchOutreachService;
     private final OutreachTargetRepository repository;
@@ -45,12 +49,12 @@ public class CiBatchRunner implements ApplicationRunner {
             return;
         }
 
-        System.out.println("==================================================");
-        System.out.println("   RUNNING OUTREACH AGENT IN CI BATCH MODE");
-        System.out.println("==================================================");
+        log.info("==================================================");
+        log.info("   RUNNING OUTREACH AGENT IN CI BATCH MODE");
+        log.info("==================================================");
 
         if (!googleOAuthService.isAvailable()) {
-            System.err.println("[CI BATCH] ERROR: Google OAuth Service is not available. Check GOOGLE_REFRESH_TOKEN and GOOGLE_SERVICE_ACCOUNT_JSON.");
+            log.error("Google OAuth Service is not available. Check GOOGLE_REFRESH_TOKEN and GOOGLE_SERVICE_ACCOUNT_JSON.");
             System.exit(SpringApplication.exit(context, () -> 1));
             return;
         }
@@ -68,24 +72,24 @@ public class CiBatchRunner implements ApplicationRunner {
                     added++;
                 }
             }
-            System.out.println("[CI BATCH] Loaded " + targets.size() + " targets. " + added + " new targets added.");
+            log.info("Loaded {} targets. {} new targets added.", targets.size(), added);
         } else {
-            System.out.println("[CI BATCH] Targets file not found at: " + targetsFilePath);
+            log.info("Targets file not found at: {}", targetsFilePath);
         }
 
         // 2. Process all PENDING targets
-        System.out.println("[CI BATCH] Starting target processing...");
+        log.info("Starting target processing...");
         batchOutreachService.processPendingTargets();
 
         // 3. Wait if there are still targets PROCESSING
         while (!repository.findByStatus("PROCESSING").isEmpty()) {
-            System.out.println("[CI BATCH] Waiting for processing to complete...");
+            log.info("Waiting for processing to complete...");
             Thread.sleep(5000);
         }
 
-        System.out.println("==================================================");
-        System.out.println("   CI BATCH MODE COMPLETE. EXITING.");
-        System.out.println("==================================================");
+        log.info("==================================================");
+        log.info("   CI BATCH MODE COMPLETE. EXITING.");
+        log.info("==================================================");
         
         System.exit(SpringApplication.exit(context, () -> 0));
     }

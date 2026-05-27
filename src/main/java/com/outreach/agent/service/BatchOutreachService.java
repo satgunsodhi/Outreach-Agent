@@ -9,6 +9,9 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,11 @@ import com.outreach.agent.repository.OutreachTargetRepository;
 @Service
 public class BatchOutreachService {
 
+    private static final Logger log = LoggerFactory.getLogger(BatchOutreachService.class);
+
+    /** Maximum number of automatic retries before a target is permanently marked FAILED. */
+    private static final int MAX_RETRIES = 2;
+
     private final OutreachTargetRepository targetRepository;
     private final CompanyResearchAgent researchAgent;
     private final ResumeOrchestrationService resumeOrchestrationService;
@@ -29,6 +37,9 @@ public class BatchOutreachService {
     private final MasterResumeService masterResumeService;
     private final ObjectMapper objectMapper;
     private final GoogleDriveService googleDriveService;
+
+    @Value("${app.ci-batch-mode:false}")
+    private boolean ciBatchMode;
 
     public BatchOutreachService(OutreachTargetRepository targetRepository,
                                 CompanyResearchAgent researchAgent,
@@ -48,18 +59,25 @@ public class BatchOutreachService {
         this.googleDriveService = googleDriveService;
     }
 
-    // Run every 10 seconds to draft targets
+    // Run every 10 seconds to draft targets (disabled in CI batch mode — CiBatchRunner calls directly)
     @Scheduled(fixedDelay = 10000)
+    public void scheduledProcessPendingTargets() {
+        if (ciBatchMode) {
+            return; // CiBatchRunner drives processing in CI mode — avoid race condition
+        }
+        processPendingTargets();
+    }
+
     public void processPendingTargets() {
         List<OutreachTarget> pendingTargets = targetRepository.findByStatus("PENDING");
 
         if (!pendingTargets.isEmpty()) {
-            System.out.println("[BatchOutreachService] Found " + pendingTargets.size() + " pending targets to process.");
+            log.info("Found {} pending targets to process.", pendingTargets.size());
         }
 
         for (OutreachTarget target : pendingTargets) {
             try {
-                System.out.println("[BatchOutreachService] Starting processing for target: " + target.getCompanyName());
+                log.info("Starting processing for target: {}", target.getCompanyName());
                 target.setStatus("PROCESSING");
                 targetRepository.save(target);
 
@@ -79,7 +97,9 @@ public class BatchOutreachService {
 
                 // 3. Generate Cover Letter & Subject
                 String masterResumeJson = objectMapper.writeValueAsString(masterResumeService.getMasterResume());
-                String coverLetterBody = coverLetterAgent.generateCoverLetter(masterResumeJson, jd, companyResearch);
+                String roleName = target.getJobDescription() != null ? target.getJobDescription() : "ML Intern";
+                String coverLetterBody = coverLetterAgent.generateCoverLetter(
+                        masterResumeJson, roleName, target.getCompanyName(), jd, companyResearch);
                 
                 // Clean up any remaining placeholders in the LLM output
                 coverLetterBody = fillPlaceholders(coverLetterBody, "Satgun Singh Sodhi", target.getCompanyName());
@@ -90,7 +110,10 @@ public class BatchOutreachService {
                 
                 String subject = target.getSubject() != null && !target.getSubject().isBlank()
                         ? target.getSubject()
-                        : "Application for " + target.getJobDescription() + " - Satgun Singh Sodhi";
+                        : coverLetterAgent.generateSubject(target.getCompanyName(), roleName);
+
+                // Clean placeholders in subject line too
+                subject = fillPlaceholders(subject, "Satgun Singh Sodhi", target.getCompanyName());
 
                 if (containsPlaceholderTokens(coverLetterBody) || containsPlaceholderTokens(subject)) {
                     throw new IllegalStateException("Generated outreach text still contains placeholder tokens");
@@ -110,7 +133,7 @@ public class BatchOutreachService {
                         Files.deleteIfExists(Path.of(pdfPathStr));
                     }
                 } catch (Exception ex) {
-                    System.err.println("[BatchOutreachService] Could not delete PDF: " + pdfPathStr);
+                    log.warn("Could not delete local PDF: {}", pdfPathStr);
                 }
 
                 // 5. Update State to DRAFT_CREATED
@@ -123,21 +146,21 @@ public class BatchOutreachService {
                 target.setFollowUpScheduledAt(calculateNextWorkingDay8AmIst());
                 
                 targetRepository.save(target);
-                System.out.println("[BatchOutreachService] Successfully drafted target: " + target.getCompanyName() + ". Draft ID: " + draftId);
+                log.info("Successfully drafted target: {}. Draft ID: {}", target.getCompanyName(), draftId);
 
             } catch (Exception e) {
-                System.err.println("[BatchOutreachService] Failed to process target " + target.getCompanyName() + ": " + e.getMessage());
-                e.printStackTrace();
-                target.setStatus("FAILED");
-                target.setErrorReason(e.getMessage());
-                targetRepository.save(target);
+                handleTargetFailure(target, e);
             }
         }
     }
 
-    // Run every hour to check for follow-ups
+    // Run every hour to check for follow-ups (disabled in CI batch mode)
     @Scheduled(fixedDelay = 3600000)
     public void processFollowUps() {
+        if (ciBatchMode) {
+            return;
+        }
+
         LocalDateTime now = LocalDateTime.now();
         List<OutreachTarget> dueFollowUps = targetRepository.findByStatusAndFollowUpScheduledAtBefore("DRAFT_CREATED", now);
 
@@ -147,17 +170,42 @@ public class BatchOutreachService {
                 if (daysSince < 1) daysSince = 1;
 
                 String followUpDraftId = emailAutomationService.sendFollowUp(
-                        target.getRecipientEmail(), target.getSubject(), daysSince);
+                        target.getRecipientEmail(), target.getSubject(), daysSince,
+                        target.getCompanyName(), target.getJobDescription());
 
                 target.setStatus("FOLLOW_UP_DRAFT_CREATED");
                 target.setGmailDraftId(followUpDraftId); // overwrite with follow-up draft ID
                 targetRepository.save(target);
-                System.out.println("[BatchOutreachService] Follow-up draft created for " + target.getCompanyName());
+                log.info("Follow-up draft created for {}", target.getCompanyName());
             } catch (Exception e) {
                 target.setStatus("FAILED");
                 target.setErrorReason("Follow-up draft failed: " + e.getMessage());
                 targetRepository.save(target);
+                log.error("Follow-up draft failed for {}: {}", target.getCompanyName(), e.getMessage());
             }
+        }
+    }
+
+    /**
+     * Handles a target processing failure with retry logic.
+     * If the target has been retried fewer than MAX_RETRIES times, it is reset to PENDING
+     * for another attempt. Otherwise, it is permanently marked FAILED.
+     */
+    private void handleTargetFailure(OutreachTarget target, Exception e) {
+        int retries = target.getRetryCount();
+        if (retries < MAX_RETRIES) {
+            target.setRetryCount(retries + 1);
+            target.setStatus("PENDING");
+            target.setErrorReason("Retry " + (retries + 1) + "/" + MAX_RETRIES + ": " + e.getMessage());
+            targetRepository.save(target);
+            log.warn("Transient failure for {} (retry {}/{}): {}",
+                    target.getCompanyName(), retries + 1, MAX_RETRIES, e.getMessage());
+        } else {
+            target.setStatus("FAILED");
+            target.setErrorReason(e.getMessage());
+            targetRepository.save(target);
+            log.error("Permanently failed target {} after {} retries: {}",
+                    target.getCompanyName(), MAX_RETRIES, e.getMessage(), e);
         }
     }
 

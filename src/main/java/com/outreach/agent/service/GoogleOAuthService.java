@@ -13,6 +13,8 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.gmail.GmailScopes;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,7 @@ import java.util.List;
 @Service
 public class GoogleOAuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(GoogleOAuthService.class);
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
     /**
@@ -62,7 +65,7 @@ public class GoogleOAuthService {
     @PostConstruct
     public void init() {
         if (oauthClientSecretJson == null || oauthClientSecretJson.isBlank()) {
-            System.err.println("[GoogleOAuthService] OAuth2 client secret JSON not configured " +
+            log.warn("OAuth2 client secret JSON not configured " +
                     "(GOOGLE_SERVICE_ACCOUNT_JSON in .env). Drive uploads and Gmail drafts will be disabled.");
             return;
         }
@@ -84,15 +87,15 @@ public class GoogleOAuthService {
                 com.google.api.client.auth.oauth2.TokenResponse response = new com.google.api.client.auth.oauth2.TokenResponse();
                 response.setRefreshToken(headlessRefreshToken);
                 credential = flow.createAndStoreCredential(response, "user");
-                System.out.println("[GoogleOAuthService] Headless CI Mode: Loaded OAuth credential from refresh token.");
+                log.info("Headless CI Mode: Loaded OAuth credential from refresh token.");
             } else {
                 // On first run: opens browser for OAuth consent. On subsequent runs: loads stored token.
                 LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
                 credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-                System.out.println("[GoogleOAuthService] Authorized successfully. Scopes: Drive + Gmail Compose.");
+                log.info("Authorized successfully. Scopes: Drive + Gmail Compose.");
             }
         } catch (Exception e) {
-            System.err.println("[GoogleOAuthService] Failed to initialize OAuth2 credential: " + e.getMessage());
+            log.error("Failed to initialize OAuth2 credential: {}", e.getMessage());
             credential = null;
             httpTransport = null;
         }

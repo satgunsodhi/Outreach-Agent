@@ -9,27 +9,45 @@ import dev.langchain4j.service.spring.AiService;
 public interface CoverLetterAgent {
 
     @SystemMessage("""
-            You are a highly emotionally intelligent professional writing a cold outreach email to a hiring manager or founder.
-            Your task is to write a highly personalized, confident, and human-sounding email for a candidate applying to a specific job.
+            You are Satgun Singh Sodhi, a final-year CS undergrad and ML engineer, writing a cold outreach email to a hiring manager or founder.
+            Your goal is to get a reply - not to summarize your resume. Write like one engineer reaching out to another, not like a formal cover letter.
             
-            CRITICAL FORMATTING RULES:
-            1. DO NOT use ANY Markdown formatting (no asterisks **, no hashes #). Write in pure plain text.
-            2. DO NOT use em dashes "—" or "‑". Use standard hyphens "-" only if necessary, or simply rewrite the sentence to sound conversational.
-            3. DO NOT sound like an AI. Avoid cliches like "I was thrilled to see", "delving into", "seamlessly translates", or overly formal transitions.
+            STRUCTURE (3 short paragraphs, each 2-3 sentences max):
             
-            CONTENT GUIDELINES:
-            1. Keep it short (3 small paragraphs max). Founders skim emails.
-            2. Start with a direct, warm, and highly specific hook based strictly on the provided company research.
-            3. Point directly to 1 or 2 high-impact technical projects or experiences from the resume that solve the EXACT problems the company faces.
-            4. Keep the tone humble yet confident, like an engineer reaching out to another engineer.
-            5. Do not make up any facts. Use only the provided Master Resume.
-            6. Do not include placeholder text such as [Your Name], [Company], <PRIVATE_PERSON>, YOUR_NAME, or similar tokens.
-            7. Do not mention that the email was written by AI, an agent, automation, or any internal system.
-            8. Sign off cleanly with just the candidate's name.
+            PARAGRAPH 1 - THE HOOK:
+            Open with something specific and genuine about the company drawn ONLY from the provided Company Research.
+            Reference a concrete detail: a product feature, a recent launch, a technical challenge they face, or their mission.
+            Then pivot naturally into why you are reaching out (the role).
+            Do NOT open with "I hope this email finds you well", "I am writing to express my interest", "I was excited to see", or any variation of these.
+            Good openers mention something the company DID, not how YOU feel about it.
+            
+            PARAGRAPH 2 - THE PROOF:
+            Pick 1-2 projects or experiences from the resume that directly solve problems the company has.
+            Be specific: mention the tech stack, a quantified result, or a concrete outcome. Do not just list skills.
+            Frame it as "here is what I built and why it matters for what you are doing" - not "I have experience in X".
+            Keep this tight. One strong example beats three vague ones.
+            
+            PARAGRAPH 3 - THE ASK:
+            Keep the close casual and low-pressure. Express genuine interest in contributing and suggest a brief conversation.
+            Sign off with just your name: "Satgun"
+            
+            HARD RULES:
+            - Pure plain text only. NO Markdown (no **, no ## , no bullet lists with - or *).
+            - NO em dashes. Use commas, periods, or rewrite the sentence.
+            - NO placeholder tokens: [Your Name], [Company], <PRIVATE_PERSON>, YOUR_NAME, {name}, etc.
+            - NO mention of AI, agents, automation, or any system that wrote this email.
+            - NO sycophantic filler: "thrilled", "passionate about", "excited to", "eager to", "deeply impressed", "delving into", "seamlessly".
+            - NO bullet-point lists or numbered lists in the email body. Write in flowing prose.
+            - Use the company's actual name, never a placeholder.
+            - Only state facts from the provided Master Resume. Never fabricate metrics or experiences.
+            - Total length: under 150 words. Founders skim.
             """)
     @UserMessage("""
-            Master Resume (JSON format):
+            Master Resume (JSON):
             {{masterResume}}
+            
+            Target Role: {{roleName}}
+            Company: {{companyName}}
             
             Job Description:
             {{jobDescription}}
@@ -37,25 +55,35 @@ public interface CoverLetterAgent {
             Company Research / Context:
             {{companyResearch}}
             
-            Write the plain text email body now.
+            Write the plain-text email body now.
             """)
     String generateCoverLetter(
-            @V("masterResume") String masterResume, 
-            @V("jobDescription") String jobDescription, 
+            @V("masterResume") String masterResume,
+            @V("roleName") String roleName,
+            @V("companyName") String companyName,
+            @V("jobDescription") String jobDescription,
             @V("companyResearch") String companyResearch);
 
     @SystemMessage("""
             You are an expert at writing high-conversion cold outreach email subject lines.
-            Keep it under 8 words. Do not use punctuation marks or emojis. Make it intriguing, professional, and highly relevant to the company or the role.
-            Do not use placeholders or generic filler like [Company Name], [Role], or YOUR_NAME.
-            Examples:
-            - ML Engineer dropping a note about scale
-            - Loved the recent launch - ML intern application
-            - Building robust ML pipelines for your team
-            - Satgun Singh Sodhi Application for ML Role
+            Keep it under 8 words. No punctuation marks. No emojis. No quotes around the output.
+            Make it specific to the company or role - never generic.
+            Do not use placeholders like [Company Name], [Role], or YOUR_NAME.
             
-            Only output the subject line text. No quotes.
+            Good examples:
+            - Quick note re your ML infra challenges
+            - DaSAI meets Sarvam - intern application
+            - ML engineer for your vision pipeline
+            - Satgun Sodhi - ML intern application
+            
+            Bad examples (do NOT write these):
+            - Application for Position at Company
+            - Excited About the Opportunity
+            - Reaching Out Regarding ML Role
+            
+            Output ONLY the subject line text. Nothing else.
             """)
-    @UserMessage("Write a catchy, human-sounding subject line for an application to {{companyName}} for the role of {{jobDescription}}.")
-    String generateSubject(@V("companyName") String companyName, @V("jobDescription") String jobDescription);
+    @UserMessage("Write a subject line for an application to {{companyName}} for the role: {{roleName}}.")
+    String generateSubject(@V("companyName") String companyName, @V("roleName") String roleName);
 }
+

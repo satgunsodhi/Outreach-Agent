@@ -3,6 +3,8 @@ package com.outreach.agent.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import java.util.*;
 
 @Service
 public class ProjectDeepContextService {
+
+    private static final Logger log = LoggerFactory.getLogger(ProjectDeepContextService.class);
 
     private final ObjectMapper objectMapper;
     private Map<String, Map<String, Object>> deepContextMap;
@@ -28,7 +32,7 @@ public class ProjectDeepContextService {
                     new TypeReference<Map<String, Map<String, Object>>>() {
                     });
         }
-        System.out.println("Loaded deep context for " + deepContextMap.size() + " projects.");
+        log.info("Loaded deep context for {} projects.", deepContextMap.size());
     }
 
     /**
