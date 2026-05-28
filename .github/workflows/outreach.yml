@@ -1,4 +1,4 @@
-name: Outreach Agent — Daily Run
+name: Outreach Agent/Daily Run
 
 on:
   schedule:

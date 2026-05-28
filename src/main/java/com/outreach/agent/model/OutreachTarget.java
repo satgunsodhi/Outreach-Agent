@@ -56,6 +56,7 @@ public class OutreachTarget {
     private LocalDateTime emailScheduledAt;
 
     /** Number of times this target has been retried after a transient failure. */
+    @Column(columnDefinition = "integer default 0")
     private int retryCount = 0;
 
     @PrePersist
