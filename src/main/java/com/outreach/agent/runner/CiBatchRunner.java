@@ -85,13 +85,13 @@ public class CiBatchRunner implements ApplicationRunner {
         batchOutreachService.processPendingTargets();
 
         // 3. Wait if there are still targets PROCESSING
-        while (!repository.findByStatus("PROCESSING").isEmpty()) {
+        while (!repository.findByStatusOrderByIdAsc("PROCESSING").isEmpty()) {
             log.info("Waiting for processing to complete...");
             Thread.sleep(5000);
         }
 
         // 4. Idle Target Discovery
-        if (repository.findByStatus("PENDING").isEmpty()) {
+        if (repository.findByStatusOrderByIdAsc("PENDING").isEmpty()) {
             log.info("Queue is idle. Triggering autonomous target discovery...");
             try {
                 String result = targetDiscoveryAgent.discoverTargets("ML Engineer", "Remote or India");
@@ -111,7 +111,7 @@ public class CiBatchRunner implements ApplicationRunner {
                 if (added > 0) {
                     log.info("Found {} new targets! Processing them now.", added);
                     batchOutreachService.processPendingTargets();
-                    while (!repository.findByStatus("PROCESSING").isEmpty()) {
+                    while (!repository.findByStatusOrderByIdAsc("PROCESSING").isEmpty()) {
                         log.info("Waiting for new targets to finish processing...");
                         Thread.sleep(5000);
                     }

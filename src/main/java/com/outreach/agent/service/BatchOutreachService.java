@@ -74,7 +74,7 @@ public class BatchOutreachService {
     }
 
     public void processPendingTargets() {
-        List<OutreachTarget> pendingTargets = targetRepository.findByStatus("PENDING");
+        List<OutreachTarget> pendingTargets = targetRepository.findByStatusOrderByIdAsc("PENDING");
 
         if (!pendingTargets.isEmpty()) {
             log.info("Found {} pending targets to process.", pendingTargets.size());
