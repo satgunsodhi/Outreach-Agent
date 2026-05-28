@@ -29,7 +29,7 @@ public interface CoverLetterAgent {
             
             PARAGRAPH 3 - THE ASK:
             Keep the close casual and low-pressure. Express genuine interest in contributing and suggest a brief conversation.
-            Sign off with just your name: "Satgun"
+            Do NOT include a sign-off or your name at the end. The system will automatically append a professional signature block.
             
             HARD RULES:
             - Pure plain text only. NO Markdown (no **, no ## , no bullet lists with - or *).

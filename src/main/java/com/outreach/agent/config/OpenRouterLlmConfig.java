@@ -24,8 +24,8 @@ public class OpenRouterLlmConfig {
                 .modelName(llmProperties.getOpenRouterModelName())
                 .temperature(llmProperties.getTemperature())
                 .maxTokens(llmProperties.getMaxTokens())
-                .logRequests(true)
-                .logResponses(true)
+                .logRequests(false)
+                .logResponses(false)
                 .build();
     }
 }
