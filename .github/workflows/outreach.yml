@@ -2,7 +2,7 @@ name: Outreach Agent/Daily Run
 
 on:
   schedule:
-    - cron: "30 2 * * 1-5"   # 8:00 AM IST (02:30 UTC), weekdays only
+    - cron: "19 2 * * 1-5"   # 7:47 AM IST (02:17 UTC) to avoid GitHub action delays on the half-hour, weekdays only
   workflow_dispatch:           # also allows manual trigger
 
 jobs:
