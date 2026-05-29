@@ -2,6 +2,7 @@ package com.outreach.agent.config;
 
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,16 +17,20 @@ public class OpenRouterLlmConfig {
         this.llmProperties = llmProperties;
     }
 
+    @Value("${logging.level.com.outreach.agent:INFO}")
+    private String logLevel;
+
     @Bean
     public ChatModel openRouterChatModel() {
+        boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
         return OpenAiChatModel.builder()
                 .baseUrl("https://openrouter.ai/api/v1")
                 .apiKey(llmProperties.getOpenRouterApiKey())
                 .modelName(llmProperties.getOpenRouterModelName())
                 .temperature(llmProperties.getTemperature())
                 .maxTokens(llmProperties.getMaxTokens())
-                .logRequests(false)
-                .logResponses(false)
+                .logRequests(isTrace)
+                .logResponses(isTrace)
                 .build();
     }
 }

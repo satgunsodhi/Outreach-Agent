@@ -48,3 +48,8 @@ spring:
 
 server:
   port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.outreach.agent: ${APP_LOG_LEVEL:INFO}

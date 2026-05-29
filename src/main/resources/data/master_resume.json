@@ -124,7 +124,6 @@
         "bayesian-optimization",
         "unsupervised-ml",
         "industrial-ml",
-        "mlops",
         "feature-engineering"
       ],
       "projects": [
@@ -200,6 +199,7 @@
     }
   ],
   "projects": [
+
     {
       "id": "proj-asympt",
       "name": "AsymPT: Asymmetric Parallel Transformer for Medical Image Segmentation",
@@ -884,7 +884,7 @@
       "id": "proj-outreach-agent",
       "name": "Outreach-Agent: AI-Driven Resume Customization System",
       "github": "https://github.com/satgunsodhi/Outreach-Agent",
-      "techStack": "Java 25, Spring Boot 3.4, LangChain4j, Thymeleaf, Flying Saucer, SMTP",
+      "techStack": "Java 21, Spring Boot 3.4, LangChain4j, H2, Gmail/Drive API, Thymeleaf",
       "tags": [
         "java",
         "spring-boot",
@@ -892,19 +892,19 @@
         "agentic-ai",
         "llm",
         "pdf-generation",
-        "thymeleaf",
         "automation",
-        "smtp"
+        "oauth"
       ],
       "bullets": [
         {
           "id": "bp-oa-001",
-          "text": "Developed an agentic Spring Boot system using LangChain4j and a local/cloud LLM to automatically customize resumes targeting job descriptions.",
+          "text": "Developed an agentic Spring Boot system backed by H2 and LangChain4j to automatically scrape companies and customize resumes targeting job descriptions.",
           "tags": [
             "java",
             "spring-boot",
             "langchain4j",
-            "agentic-ai"
+            "agentic-ai",
+            "h2"
           ],
           "priority": 1,
           "lengthCategory": "MEDIUM"
@@ -933,12 +933,13 @@
         },
         {
           "id": "bp-oa-004",
-          "text": "Integrated JavaMailSender SMTP support to automatically package and email customized resumes directly to target recruiters.",
+          "text": "Integrated Google OAuth 2.0 to upload resumes to Drive and stage outreach via Gmail Drafts with placeholder sanitization and HTML signatures.",
           "tags": [
             "java",
             "spring-boot",
             "automation",
-            "smtp"
+            "oauth",
+            "gmail"
           ],
           "priority": 3,
           "lengthCategory": "MEDIUM"

@@ -20,12 +20,17 @@ public class GoogleAiGeminiConfig {
     @Value("${langchain4j.google.ai.gemini.temperature:0.2}")
     private Double temperature;
 
+    @Value("${logging.level.com.outreach.agent:INFO}")
+    private String logLevel;
+
     @Bean
     public ChatModel googleAiGeminiChatModel() {
+        boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
         return GoogleAiGeminiChatModel.builder()
                 .apiKey(apiKey)
                 .modelName(modelName)
                 .temperature(temperature)
+                .logRequestsAndResponses(isTrace)
                 .build();
     }
 }

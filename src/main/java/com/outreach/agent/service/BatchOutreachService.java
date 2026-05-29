@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
+import jakarta.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +64,20 @@ public class BatchOutreachService {
         this.masterResumeService = masterResumeService;
         this.objectMapper = objectMapper;
         this.googleDriveService = googleDriveService;
+    }
+
+    @PostConstruct
+    public void recoverStalledTargets() {
+        log.info("Checking for any targets that were stuck in PROCESSING state from a previous run...");
+        List<OutreachTarget> stuckTargets = targetRepository.findByStatusOrderByIdAsc("PROCESSING");
+        if (!stuckTargets.isEmpty()) {
+            log.info("Found {} stuck targets. Reverting them to PENDING.", stuckTargets.size());
+            for (OutreachTarget target : stuckTargets) {
+                target.setStatus("PENDING");
+                target.setErrorReason("Server restarted or crashed during processing. Requeued.");
+                targetRepository.save(target);
+            }
+        }
     }
 
     // Run every 10 seconds to draft targets (disabled in CI batch mode — CiBatchRunner calls directly)

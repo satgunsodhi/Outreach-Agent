@@ -13,11 +13,13 @@ An autonomous AI-powered outreach pipeline built with **Java 21 + Spring Boot 3*
 | **Command Center (Web UI)** | A decoupled React/Vite frontend for manually adding and managing outreach targets |
 | **Autonomous Discovery** | When idle, a `TargetDiscoveryAgent` silently searches the web (e.g. DuckDuckGo) for new targets and automatically injects them into the pipeline |
 | **Cover Letter Generation** | `CoverLetterAgent` writes a personalized cover letter grounded in real company research |
-| **Placeholder Sanitization** | Multi-pass regex system detects and fills any LLM-generated placeholder tokens before sending |
-| **Google Drive Upload** | Resumes are uploaded to a shared Drive folder via OAuth 2.0 and linked in the email |
-| **Next-Working-Day Scheduler** | Emails are dispatched asynchronously at 8:00 AM IST on the next weekday |
-| **Follow-up Automation** | Automatically sends a follow-up email if no reply after one working day |
-| **Campaign Persistence** | Tracks all targets, statuses, and drafts via Spring Data JPA + PostgreSQL/H2 |
+| **Placeholder Sanitization** | Multi-pass regex system detects and fills any LLM-generated placeholder tokens before sending, with aggressive trimming of LLM sign-offs |
+| **Google Drive Upload** | Resumes are uploaded to a shared Drive folder via OAuth 2.0 and linked directly in the email |
+| **Atomic State Recovery** | `@PostConstruct` crash-recovery loop ensures that if the server dies during generation, targets in `PROCESSING` state are requeued |
+| **HTML Email Signatures** | Injects clean, dynamic HTML signatures linking to the generated resume, portfolio, and socials |
+| **Gmail Draft Integration** | Instead of sending immediately, emails are generated as Gmail Drafts for manual review, enabling full control |
+| **Headless CI Batch Mode** | Can be executed non-interactively via GitHub Actions or Cron using `.json` targets files and OAuth refresh tokens |
+| **Campaign Persistence** | Tracks all targets, statuses, and drafts via Spring Data JPA + H2 (Local) or PostgreSQL (Prod) |
 | **HTML-to-PDF Engine** | Thymeleaf → XHTML → Flying Saucer/OpenPDF, producing ATS-compliant single-page PDFs |
 
 ---

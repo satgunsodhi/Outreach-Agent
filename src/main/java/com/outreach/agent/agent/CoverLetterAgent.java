@@ -40,7 +40,7 @@ public interface CoverLetterAgent {
             - NO classic AI vocabulary: "testament", "furthermore", "realm", "tapestry", "landscape", "in conclusion", "vital", "crucial", "unlock".
             - NO bullet-point lists or numbered lists in the email body. Write in flowing prose.
             - Use the company's actual name, never a placeholder.
-            - Only state facts from the provided Master Resume. Never fabricate metrics or experiences.
+            - Only state facts from the provided Master Resume. Never fabricate metrics, experiences, or mix skills between different projects/internships (e.g., do not claim Docker/CI-CD was used in an internship unless explicitly stated under that exact entry).
             - Total length: under 150 words. Founders skim.
             """)
     @UserMessage("""

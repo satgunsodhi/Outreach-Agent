@@ -113,7 +113,7 @@ public class GoogleDriveService {
             }
 
             String driveLink = "https://drive.google.com/file/d/" + uploadedFile.getId() + "/view?usp=sharing";
-            log.info("Uploaded {} -> {}", localPdfPath, driveLink);
+            log.debug("Uploaded {} -> {}", localPdfPath, driveLink);
             return driveLink;
 
         } catch (Exception e) {
@@ -165,7 +165,7 @@ public class GoogleDriveService {
             Path target = driveDir.resolve(fileName);
             Files.copy(source, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-            log.info("FALLBACK: Copied locally to {}", target.toAbsolutePath());
+            log.debug("FALLBACK: Copied locally to {}", target.toAbsolutePath());
             return "https://drive.google.com/file/d/FALLBACK_" + fileId + "/view?usp=sharing";
         } catch (IOException e) {
             log.error("Fallback failed: {}", e.getMessage());
