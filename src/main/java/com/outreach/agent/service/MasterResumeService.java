@@ -62,10 +62,15 @@ public class MasterResumeService {
                             .filter(bp -> matchesAny(bp.tags(), lowerTags))
                             .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
                             .toList();
-                    return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), filteredBullets);
+                    List<BulletPoint> finalBullets = filteredBullets.isEmpty() ? proj.bullets() : filteredBullets;
+                    return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets);
                 })
                 .filter(proj -> !proj.bullets().isEmpty() || matchesAny(proj.tags(), lowerTags))
-                .sorted(Comparator.comparingInt((Project proj) -> countMatches(proj.tags(), lowerTags)).reversed())
+                .sorted(Comparator.comparingInt((Project proj) -> {
+                    int projectMatches = countMatches(proj.tags(), lowerTags);
+                    int bulletMatches = proj.bullets().stream().mapToInt(bp -> countMatches(bp.tags(), lowerTags)).sum();
+                    return projectMatches + bulletMatches;
+                }).reversed())
                 .toList();
 
         List<Extracurricular> filteredExtracurriculars = masterResume.extracurriculars() != null 
