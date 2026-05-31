@@ -15,10 +15,12 @@ public class DocumentGeneratorTool {
 
     private final PdfGeneratorService pdfGeneratorService;
     private final ObjectMapper objectMapper;
+    private final com.outreach.agent.service.MasterResumeService masterResumeService;
 
-    public DocumentGeneratorTool(PdfGeneratorService pdfGeneratorService, ObjectMapper objectMapper) {
+    public DocumentGeneratorTool(PdfGeneratorService pdfGeneratorService, ObjectMapper objectMapper, com.outreach.agent.service.MasterResumeService masterResumeService) {
         this.pdfGeneratorService = pdfGeneratorService;
         this.objectMapper = objectMapper;
+        this.masterResumeService = masterResumeService;
     }
 
     @Tool("Generate a PDF resume from selected resume data. Returns the file path of the generated PDF.")
@@ -42,6 +44,35 @@ public class DocumentGeneratorTool {
 
             if (templateData == null || templateData.isEmpty()) {
                 return "Error: No resume data provided.";
+            }
+
+            try {
+                com.outreach.agent.model.MasterResume masterResume = masterResumeService.getMasterResume();
+                java.util.Set<String> validProjectNames = masterResume.projects().stream()
+                        .map(p -> p.name().toLowerCase().trim())
+                        .collect(java.util.stream.Collectors.toSet());
+                
+                masterResume.experiences().forEach(exp -> {
+                    if (exp.projects() != null) {
+                        exp.projects().forEach(p -> validProjectNames.add(p.name().toLowerCase().trim()));
+                    }
+                });
+
+                Object projectsObj = templateData.get("projects");
+                if (projectsObj instanceof java.util.List<?> list) {
+                    for (Object p : list) {
+                        if (p instanceof java.util.Map<?,?> pMap) {
+                            Object nameObj = pMap.get("name");
+                            if (nameObj instanceof String name) {
+                                if (!validProjectNames.contains(name.toLowerCase().trim())) {
+                                    return "Error: Hallucinated project detected: '" + name + "'. You must only use projects from the provided master_resume.json. Do not invent new projects.";
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                // Ignore validation error if it fails
             }
 
             try {

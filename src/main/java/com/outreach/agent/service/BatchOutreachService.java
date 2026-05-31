@@ -94,6 +94,25 @@ public class BatchOutreachService {
 
         if (!pendingTargets.isEmpty()) {
             log.info("Found {} pending targets to process.", pendingTargets.size());
+            
+            // Clean up any orphaned PDFs from previous runs
+            try {
+                Path pdfDir = Path.of("data/generated-pdfs");
+                if (Files.exists(pdfDir)) {
+                    try (java.util.stream.Stream<Path> paths = Files.list(pdfDir)) {
+                        paths.filter(p -> p.toString().endsWith(".pdf"))
+                             .forEach(p -> {
+                                 try {
+                                     Files.deleteIfExists(p);
+                                 } catch (Exception e) {
+                                     log.debug("Failed to delete old PDF: {}", p);
+                                 }
+                             });
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("Error cleaning up old PDFs: {}", e.getMessage());
+            }
         }
 
         for (OutreachTarget target : pendingTargets) {
