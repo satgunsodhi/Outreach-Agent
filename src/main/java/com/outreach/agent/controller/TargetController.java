@@ -1,6 +1,7 @@
 package com.outreach.agent.controller;
 
 import com.outreach.agent.model.OutreachTarget;
+import com.outreach.agent.model.TargetStatus;
 import com.outreach.agent.repository.OutreachTargetRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class TargetController {
             return ResponseEntity.badRequest().body(Map.of("error", "Target with this company and email already exists."));
         }
 
-        newTarget.setStatus("PENDING");
+        newTarget.setStatus(TargetStatus.PENDING);
         OutreachTarget saved = repository.save(newTarget);
         return ResponseEntity.ok(saved);
     }

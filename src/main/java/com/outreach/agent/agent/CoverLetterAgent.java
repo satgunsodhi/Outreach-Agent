@@ -53,6 +53,8 @@ public interface CoverLetterAgent {
             Job Description:
             {{jobDescription}}
             
+            Job URL: {{jobUrl}}
+
             Company Research / Context:
             {{companyResearch}}
             
@@ -63,7 +65,8 @@ public interface CoverLetterAgent {
             @V("roleName") String roleName,
             @V("companyName") String companyName,
             @V("jobDescription") String jobDescription,
-            @V("companyResearch") String companyResearch);
+            @V("companyResearch") String companyResearch,
+            @V("jobUrl") String jobUrl);
 
     @SystemMessage("""
             You are an expert at writing high-conversion cold outreach email subject lines.

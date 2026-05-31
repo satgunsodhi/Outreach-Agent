@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,7 +36,8 @@ public class OutreachTarget {
     @Column(columnDefinition = "TEXT")
     private String jobDescription;
 
-    private String status; // PENDING, GENERATING, EMAIL_SENT, FOLLOW_UP_SCHEDULED, FOLLOW_UP_SENT, FAILED
+    @Enumerated(EnumType.STRING)
+    private TargetStatus status; // PENDING, GENERATING, EMAIL_SENT, FOLLOW_UP_SCHEDULED, FOLLOW_UP_SENT, FAILED
     
     @Column(columnDefinition = "TEXT")
     private String errorReason;
@@ -42,6 +45,8 @@ public class OutreachTarget {
     private LocalDateTime createdAt;
     private LocalDateTime emailSentAt;
     private LocalDateTime followUpScheduledAt;
+    private LocalDateTime processingStartedAt;
+    private LocalDateTime processingCompletedAt;
     
     private String subject;
 
@@ -112,11 +117,11 @@ public class OutreachTarget {
         this.jobDescription = jobDescription;
     }
 
-    public String getStatus() {
+    public TargetStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TargetStatus status) {
         this.status = status;
     }
 
@@ -150,6 +155,22 @@ public class OutreachTarget {
 
     public void setFollowUpScheduledAt(LocalDateTime followUpScheduledAt) {
         this.followUpScheduledAt = followUpScheduledAt;
+    }
+
+    public LocalDateTime getProcessingStartedAt() {
+        return processingStartedAt;
+    }
+
+    public void setProcessingStartedAt(LocalDateTime processingStartedAt) {
+        this.processingStartedAt = processingStartedAt;
+    }
+
+    public LocalDateTime getProcessingCompletedAt() {
+        return processingCompletedAt;
+    }
+
+    public void setProcessingCompletedAt(LocalDateTime processingCompletedAt) {
+        this.processingCompletedAt = processingCompletedAt;
     }
 
     public String getSubject() {

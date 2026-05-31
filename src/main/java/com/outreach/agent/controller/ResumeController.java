@@ -19,7 +19,7 @@ public class ResumeController {
     @PostMapping("/generate")
     public ResponseEntity<ResumeResponse> generateResume(@RequestBody ResumeRequest request) {
         try {
-            String pdfPath = orchestrationService.generateTailoredResume(request.getJobDescription());
+            String pdfPath = orchestrationService.generateTailoredResume(request.getJobDescription(), request.getCompanyResearch());
             ResumeResponse response = new ResumeResponse(pdfPath, "Resume generated successfully.");
             return ResponseEntity.ok(response);
         } catch (Exception e) {

@@ -131,9 +131,10 @@
     "architectureDetails": "Spring Boot REST API (POST /api/resume/generate). LangChain4j AiService with 3 tools: ResumeKnowledgeBaseTool (tag-filtered master resume search), DocumentGeneratorTool (Thymeleaf + Jsoup + Flying Saucer PDF generation), PageLengthCheckerTool (OpenPDF page count validation). MasterResumeService: loads master_resume.json at startup, filterByTags scores and sorts by match count with non-empty fallbacks. PdfGeneratorService: normalizes bullet structures, builds XHTML via Thymeleaf, parses with Jsoup XML parser, compiles via ITextRenderer. Agent system prompt enforces 7-step deterministic workflow with iterative page-length feedback loop (up to 3 retries). Dual LLM backend: GoogleAiGeminiChatModel (gemini-2.5-flash) or OpenAiChatModel via OpenRouter. MessageWindowChatMemory with max 20 messages. SMTP integration via JavaMailSender for automated resume delivery.",
     "keyTechnologies": ["Java", "Spring Boot 3.4", "LangChain4j", "Thymeleaf", "Flying Saucer", "Jsoup", "OpenPDF", "OpenRouter", "Google Gemini"],
     "suggestedBullets": [
-      "Developed an agentic Spring Boot system using LangChain4j with a 3-tool architecture (knowledge base search, PDF generation, page-length validation) to automatically customize resumes targeting job descriptions via OpenRouter or Gemini backends.",
-      "Implemented an iterative LLM feedback loop that counts generated pages and dynamically refines bullet points to enforce a <b>strict 1-page PDF layout constraint</b>, with up to 3 retry cycles.",
-      "Designed XHTML templates rendered through Thymeleaf and Flying Saucer to produce clean, ATS-compliant PDF resumes under <b>300ms</b>, with SMTP integration for automated delivery to target recruiters."
+      "Developed an agentic Spring Boot system using LangChain4j with a 3-tool architecture (knowledge base search, PDF generation, page-length validation) to automatically customize resumes targeting job descriptions.",
+      "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
+      "Engineered a persistent PDF caching system using SHA-256 hashing on job descriptions and scraped company research to bypass redundant LLM generation, saving API costs and reducing latency.",
+      "Designed an automated skill sorting algorithm to dynamically align resume keywords with parsed job requirements, eliminating LLM hallucination and enforcing strict ATS compliance."
     ]
   },
   "proj-portfolio-v3": {

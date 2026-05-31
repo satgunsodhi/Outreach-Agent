@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 import jakarta.annotation.PostConstruct;
@@ -23,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.outreach.agent.agent.CompanyResearchAgent;
 import com.outreach.agent.agent.CoverLetterAgent;
 import com.outreach.agent.model.OutreachTarget;
+import com.outreach.agent.model.TargetStatus;
 import com.outreach.agent.repository.OutreachTargetRepository;
 
 @Service
@@ -43,7 +45,11 @@ public class BatchOutreachService {
     private final GoogleDriveService googleDriveService;
 
     // Cache to prevent redundant scraping and LLM calls for the same company/URL
-    private final Map<String, String> researchCache = new ConcurrentHashMap<>();
+    private record CacheEntry(String research, LocalDateTime timestamp) {}
+    private final Map<String, CacheEntry> researchCache = new ConcurrentHashMap<>();
+
+    /** Guard to prevent overlapping scheduled runs (LLM calls take 30-60s per target). */
+    private final AtomicBoolean processingLock = new AtomicBoolean(false);
 
     @Value("${app.ci-batch-mode:false}")
     private boolean ciBatchMode;
@@ -69,11 +75,11 @@ public class BatchOutreachService {
     @PostConstruct
     public void recoverStalledTargets() {
         log.info("Checking for any targets that were stuck in PROCESSING state from a previous run...");
-        List<OutreachTarget> stuckTargets = targetRepository.findByStatusOrderByIdAsc("PROCESSING");
+        List<OutreachTarget> stuckTargets = targetRepository.findByStatusOrderByIdAsc(TargetStatus.PROCESSING);
         if (!stuckTargets.isEmpty()) {
             log.info("Found {} stuck targets. Reverting them to PENDING.", stuckTargets.size());
             for (OutreachTarget target : stuckTargets) {
-                target.setStatus("PENDING");
+                target.setStatus(TargetStatus.PENDING);
                 target.setErrorReason("Server restarted or crashed during processing. Requeued.");
                 targetRepository.save(target);
             }
@@ -90,7 +96,20 @@ public class BatchOutreachService {
     }
 
     public void processPendingTargets() {
-        List<OutreachTarget> pendingTargets = targetRepository.findByStatusOrderByIdAsc("PENDING");
+        if (!processingLock.compareAndSet(false, true)) {
+            log.debug("Skipping processPendingTargets — a previous run is still in progress.");
+            return;
+        }
+
+        try {
+            processPendingTargetsInternal();
+        } finally {
+            processingLock.set(false);
+        }
+    }
+
+    private void processPendingTargetsInternal() {
+        List<OutreachTarget> pendingTargets = targetRepository.findByStatusOrderByIdAsc(TargetStatus.PENDING);
 
         if (!pendingTargets.isEmpty()) {
             log.info("Found {} pending targets to process.", pendingTargets.size());
@@ -119,7 +138,8 @@ public class BatchOutreachService {
             try {
                 log.debug("Starting processing for target: {}", target.getCompanyName());
                 log.info("Starting processing for target ID: {}", target.getId());
-                target.setStatus("PROCESSING");
+                target.setStatus(TargetStatus.PROCESSING);
+                target.setProcessingStartedAt(LocalDateTime.now());
                 targetRepository.save(target);
 
                 // 1. Research Company (with Caching)
@@ -129,13 +149,14 @@ public class BatchOutreachService {
                         : target.getCompanyName();
 
                 if (cacheKey != null && !cacheKey.isBlank()) {
-                    if (researchCache.containsKey(cacheKey)) {
-                        companyResearch = researchCache.get(cacheKey);
+                    CacheEntry entry = researchCache.get(cacheKey);
+                    if (entry != null && entry.timestamp().isAfter(LocalDateTime.now().minusHours(24))) {
+                        companyResearch = entry.research();
                         log.debug("Using cached research for {}", cacheKey);
                     } else {
                         log.debug("Fetching new research for {}", cacheKey);
                         companyResearch = researchAgent.researchCompany(cacheKey);
-                        researchCache.put(cacheKey, companyResearch);
+                        researchCache.put(cacheKey, new CacheEntry(companyResearch, LocalDateTime.now()));
                     }
                 }
 
@@ -143,23 +164,25 @@ public class BatchOutreachService {
                 String jd = target.getJobDescription() != null && !target.getJobDescription().isBlank()
                         ? target.getJobDescription()
                         : "General position at " + target.getCompanyName();
-                String pdfPathStr = resumeOrchestrationService.generateTailoredResume(jd);
+                String pdfPathStr = resumeOrchestrationService.generateTailoredResume(jd, companyResearch);
                 pdfPathStr = sanitizePdfPath(pdfPathStr);
 
                 // 3. Generate Cover Letter & Subject
                 String masterResumeJson = objectMapper.writeValueAsString(masterResumeService.getMasterResume());
                 String roleName = target.getJobDescription() != null ? target.getJobDescription() : "ML Intern";
                 String coverLetterBody = coverLetterAgent.generateCoverLetter(
-                        masterResumeJson, roleName, target.getCompanyName(), jd, companyResearch);
+                        masterResumeJson, roleName, target.getCompanyName(), jd, companyResearch, target.getJobUrl());
                 
+                // Get personal info for dynamic links and names
+                var personalInfo = masterResumeService.getMasterResume().personalInfo();
+                String candidateName = personalInfo.name();
+                String candidateFirstName = candidateName.contains(" ") ? candidateName.substring(0, candidateName.indexOf(' ')) : candidateName;
+
                 // Clean up any remaining placeholders in the LLM output
-                coverLetterBody = fillPlaceholders(coverLetterBody, "Satgun Singh Sodhi", target.getCompanyName());
+                coverLetterBody = fillPlaceholders(coverLetterBody, candidateName, target.getCompanyName());
 
                 // Strip any existing sign-off generated by the LLM
                 String cleanBody = coverLetterBody.replaceAll("(?i)(Best|Sincerely|Regards|Thanks|Cheers|Yours|Warmly)[\\s\\S]*$", "").trim();
-
-                // Get personal info for dynamic links
-                var personalInfo = masterResumeService.getMasterResume().personalInfo();
                 String github = personalInfo.github();
                 if (github != null && !github.startsWith("http")) github = "https://" + github;
                 String linkedin = personalInfo.linkedin();
@@ -169,7 +192,7 @@ public class BatchOutreachService {
                 String driveLink = googleDriveService.uploadResume(pdfPathStr);
                 
                 String signature = "\n\nBest,\n"
-                        + "<strong>Satgun Singh Sodhi</strong>\n"
+                        + "<strong>" + candidateName + "</strong>\n"
                         + "<a href=\"https://satgunsodhi.vercel.app\">Portfolio</a> | "
                         + "<a href=\"" + github + "\">GitHub</a> | "
                         + "<a href=\"" + linkedin + "\">LinkedIn</a>\n"
@@ -185,7 +208,7 @@ public class BatchOutreachService {
                 subject = subject.replaceAll("[\r\n\"]+", "").trim();
 
                 // Clean placeholders in subject line too
-                subject = fillPlaceholders(subject, "Satgun Singh Sodhi", target.getCompanyName());
+                subject = fillPlaceholders(subject, candidateName, target.getCompanyName());
 
                 if (containsPlaceholderTokens(coverLetterBody) || containsPlaceholderTokens(subject)) {
                     throw new IllegalStateException("Generated outreach text still contains placeholder tokens");
@@ -198,6 +221,10 @@ public class BatchOutreachService {
                         null, // Resume is linked via Google Drive in the cover letter body
                         coverLetterBody
                 );
+
+                if (draftId == null) {
+                    throw new IllegalStateException("Gmail draft creation returned null — Gmail API may be unavailable or token expired");
+                }
                 
                 // Clean up the local PDF after the draft is created (resume is on Drive)
                 try {
@@ -212,10 +239,11 @@ public class BatchOutreachService {
                 target.setGeneratedPdfPath(null);
                 target.setDraftedCoverLetter(coverLetterBody);
                 target.setSubject(subject);
-                target.setGmailDraftId(draftId);
-                target.setStatus("DRAFT_CREATED");
+                // 5. Update Target Status
+                target.setStatus(TargetStatus.DRAFT_CREATED);
                 target.setEmailSentAt(LocalDateTime.now()); // reusing field to mean "draft created at"
                 target.setFollowUpScheduledAt(calculateNextWorkingDay8AmIst());
+                target.setProcessingCompletedAt(LocalDateTime.now());
                 
                 targetRepository.save(target);
                 log.debug("Successfully drafted target: {}. Draft ID: {}", target.getCompanyName(), draftId);
@@ -228,31 +256,32 @@ public class BatchOutreachService {
     }
 
     // Run every hour to check for follow-ups (disabled in CI batch mode)
-    @Scheduled(fixedDelay = 3600000)
+    @Scheduled(fixedRate = 3600000)
     public void processFollowUps() {
         if (ciBatchMode) {
             return;
         }
 
         LocalDateTime now = LocalDateTime.now();
-        List<OutreachTarget> dueFollowUps = targetRepository.findByStatusAndFollowUpScheduledAtBefore("DRAFT_CREATED", now);
+        List<OutreachTarget> dueFollowUps = targetRepository.findByStatusAndFollowUpScheduledAtBefore(TargetStatus.DRAFT_CREATED, now);
 
         for (OutreachTarget target : dueFollowUps) {
             try {
                 int daysSince = (int) java.time.temporal.ChronoUnit.DAYS.between(target.getEmailSentAt(), now);
                 if (daysSince < 1) daysSince = 1;
 
+                String candidateName = masterResumeService.getMasterResume().personalInfo().name();
                 String followUpDraftId = emailAutomationService.sendFollowUp(
                         target.getRecipientEmail(), target.getSubject(), daysSince,
-                        target.getCompanyName(), target.getJobDescription());
+                        target.getCompanyName(), target.getJobDescription(), candidateName);
 
-                target.setStatus("FOLLOW_UP_DRAFT_CREATED");
+                target.setStatus(TargetStatus.FOLLOW_UP_DRAFT_CREATED);
                 target.setGmailDraftId(followUpDraftId); // overwrite with follow-up draft ID
                 targetRepository.save(target);
                 log.debug("Follow-up draft created for {}", target.getCompanyName());
                 log.info("Follow-up draft created for target ID: {}", target.getId());
             } catch (Exception e) {
-                target.setStatus("FAILED");
+                target.setStatus(TargetStatus.FAILED);
                 target.setErrorReason("Follow-up draft failed: " + e.getMessage());
                 targetRepository.save(target);
                 log.debug("Follow-up draft failed for {}: {}", target.getCompanyName(), e.getMessage());
@@ -270,7 +299,7 @@ public class BatchOutreachService {
         int retries = target.getRetryCount();
         if (retries < MAX_RETRIES) {
             target.setRetryCount(retries + 1);
-            target.setStatus("PENDING");
+            target.setStatus(TargetStatus.PENDING);
             target.setErrorReason("Retry " + (retries + 1) + "/" + MAX_RETRIES + ": " + e.getMessage());
             targetRepository.save(target);
             log.debug("Transient failure for {} (retry {}/{}): {}",
@@ -278,7 +307,7 @@ public class BatchOutreachService {
             log.warn("Transient failure for target ID: {} (retry {}/{}): {}",
                     target.getId(), retries + 1, MAX_RETRIES, e.getMessage());
         } else {
-            target.setStatus("FAILED");
+            target.setStatus(TargetStatus.FAILED);
             target.setErrorReason(e.getMessage());
             targetRepository.save(target);
             log.debug("Permanently failed target {} after {} retries: {}",

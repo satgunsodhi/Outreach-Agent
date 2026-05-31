@@ -104,15 +104,18 @@ public class GmailService {
      * @return the Gmail Draft ID, or {@code null} on failure
      */
     public String createFollowUpDraft(String to, String originalSubject, int daysSinceSent,
-                                       String companyName, String roleName) {
+                                       String companyName, String roleName, String candidateName) {
         String companyRef = (companyName != null && !companyName.isBlank()) ? companyName : "your team";
         String roleRef = (roleName != null && !roleName.isBlank()) ? " regarding the " + roleName + " role" : "";
+        String signOff = (candidateName != null && !candidateName.isBlank())
+                ? candidateName.contains(" ") ? candidateName.substring(0, candidateName.indexOf(' ')) : candidateName
+                : "";
 
         String followUpBody = "Hi,\n\n"
                 + "Just circling back on my earlier note" + roleRef + " at " + companyRef + ". "
                 + "I know inboxes get busy, so wanted to bump this up in case it got buried.\n\n"
                 + "Happy to jump on a quick call or answer any questions. Either way, no pressure.\n\n"
-                + "Best,\nSatgun";
+                + "Best,\n" + signOff;
 
         return createDraft(to, "Re: " + originalSubject, followUpBody);
     }

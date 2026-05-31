@@ -898,7 +898,7 @@
       "bullets": [
         {
           "id": "bp-oa-001",
-          "text": "Developed an agentic Spring Boot system backed by H2 and LangChain4j to automatically scrape companies and customize resumes targeting job descriptions.",
+          "text": "Developed an agentic Spring Boot system using LangChain4j with a 3-tool architecture (knowledge base search, PDF generation, page-length validation) to automatically customize resumes targeting job descriptions.",
           "tags": [
             "java",
             "spring-boot",
@@ -911,37 +911,37 @@
         },
         {
           "id": "bp-oa-002",
-          "text": "Implemented an iterative LLM feedback loop that counts generated pages and dynamically refines bullet points to enforce a strict 1-page PDF layout constraint.",
+          "text": "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
           "tags": [
-            "agentic-ai",
-            "pdf-generation",
-            "optimization"
+            "concurrency",
+            "batch-processing",
+            "resilience",
+            "web-scraping"
           ],
           "priority": 1,
           "lengthCategory": "LONG"
         },
         {
           "id": "bp-oa-003",
-          "text": "Designed XHTML templates rendered through Thymeleaf and Flying Saucer to produce clean, ATS-compliant PDF resumes under 300ms.",
+          "text": "Engineered a persistent PDF caching system using SHA-256 hashing on job descriptions and scraped company research to bypass redundant LLM generation, saving API costs and reducing latency.",
           "tags": [
-            "pdf-generation",
-            "thymeleaf",
+            "caching",
+            "sha-256",
+            "optimization",
             "performance"
           ],
-          "priority": 2,
+          "priority": 1,
           "lengthCategory": "MEDIUM"
         },
         {
           "id": "bp-oa-004",
-          "text": "Integrated Google OAuth 2.0 to upload resumes to Drive and stage outreach via Gmail Drafts with placeholder sanitization and HTML signatures.",
+          "text": "Designed an automated skill sorting algorithm to dynamically align resume keywords with parsed job requirements, eliminating LLM hallucination and enforcing strict ATS compliance.",
           "tags": [
-            "java",
-            "spring-boot",
-            "automation",
-            "oauth",
-            "gmail"
+            "algorithm-design",
+            "ats-compliance",
+            "automation"
           ],
-          "priority": 3,
+          "priority": 2,
           "lengthCategory": "MEDIUM"
         }
       ]

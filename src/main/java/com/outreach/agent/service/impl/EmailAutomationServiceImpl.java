@@ -67,13 +67,14 @@ public class EmailAutomationServiceImpl implements EmailAutomationService {
             @NonNull String originalSubject,
             int daysSinceSent,
             String companyName,
-            String roleName) {
+            String roleName,
+            String candidateName) {
 
         if (recipientEmail.isBlank()) throw new IllegalArgumentException("recipientEmail must not be blank");
         if (originalSubject.isBlank()) throw new IllegalArgumentException("originalSubject must not be blank");
 
         String draftId = gmailService.createFollowUpDraft(recipientEmail, originalSubject, daysSinceSent,
-                companyName, roleName);
+                companyName, roleName, candidateName);
         if (draftId != null) {
             log.debug("Follow-up draft created for {} (draftId={})", recipientEmail, draftId);
             log.info("Follow-up draft created successfully (draftId={})", draftId);

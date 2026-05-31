@@ -4,6 +4,7 @@ import com.outreach.agent.dto.BatchOutreachRequest;
 import com.outreach.agent.dto.TargetDto;
 import com.outreach.agent.model.OutreachCampaign;
 import com.outreach.agent.model.OutreachTarget;
+import com.outreach.agent.model.TargetStatus;
 import com.outreach.agent.repository.OutreachCampaignRepository;
 import com.outreach.agent.repository.OutreachTargetRepository;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class BatchOutreachController {
                 .toList();
                 
         for (OutreachTarget target : testTargets) {
-            target.setStatus("PENDING");
+            target.setStatus(TargetStatus.PENDING);
             target.setErrorReason(null);
             target.setDraftedCoverLetter(null);
             target.setSubject(null);
@@ -61,20 +62,27 @@ public class BatchOutreachController {
         campaignRepository.save(campaign);
 
         for (TargetDto dto : request.getTargets()) {
+            if (targetRepository.existsByCompanyNameAndRecipientEmail(dto.getCompanyName(), dto.getRecipientEmail())) {
+                continue; // Skip duplicate targets
+            }
             OutreachTarget target = new OutreachTarget();
             target.setCampaign(campaign);
             target.setCompanyName(dto.getCompanyName());
             target.setRecipientEmail(dto.getRecipientEmail());
             target.setJobUrl(dto.getJobUrl());
             target.setJobDescription(dto.getJobDescription());
-            target.setStatus("PENDING");
+            target.setStatus(TargetStatus.PENDING);
             targetRepository.save(target);
         }
+
+        long addedCount = targetRepository.findAll().stream()
+                .filter(t -> t.getCampaign() != null && t.getCampaign().getId().equals(campaign.getId()))
+                .count();
 
         return ResponseEntity.ok(Map.of(
                 "message", "Batch outreach scheduled successfully.",
                 "campaignId", campaign.getId(),
-                "totalTargets", request.getTargets().size()
+                "totalTargets", addedCount
         ));
     }
 
@@ -86,10 +94,10 @@ public class BatchOutreachController {
                     .filter(t -> t.getCampaign().getId().equals(id))
                     .toList();
             
-            long pending = targets.stream().filter(t -> "PENDING".equals(t.getStatus())).count();
-            long processing = targets.stream().filter(t -> "PROCESSING".equals(t.getStatus())).count();
-            long drafted = targets.stream().filter(t -> "DRAFT_CREATED".equals(t.getStatus())).count();
-            long failed = targets.stream().filter(t -> "FAILED".equals(t.getStatus())).count();
+            long pending = targets.stream().filter(t -> TargetStatus.PENDING.equals(t.getStatus())).count();
+            long processing = targets.stream().filter(t -> TargetStatus.PROCESSING.equals(t.getStatus())).count();
+            long drafted = targets.stream().filter(t -> TargetStatus.DRAFT_CREATED.equals(t.getStatus())).count();
+            long failed = targets.stream().filter(t -> TargetStatus.FAILED.equals(t.getStatus())).count();
 
             return ResponseEntity.ok(Map.of(
                     "campaignId", campaign.getId(),

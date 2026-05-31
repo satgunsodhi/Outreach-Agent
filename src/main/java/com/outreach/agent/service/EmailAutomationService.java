@@ -42,5 +42,6 @@ public interface EmailAutomationService {
             @NonNull String originalSubject,
             int daysSinceSent,
             String companyName,
-            String roleName);
+            String roleName,
+            String candidateName);
 }

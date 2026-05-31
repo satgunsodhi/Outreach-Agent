@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.outreach.agent.model.OutreachTarget;
+import com.outreach.agent.model.TargetStatus;
 import com.outreach.agent.agent.TargetDiscoveryAgent;
 import com.outreach.agent.repository.OutreachTargetRepository;
 import com.outreach.agent.service.BatchOutreachService;
@@ -70,7 +71,7 @@ public class CiBatchRunner implements ApplicationRunner {
             int added = 0;
             for (OutreachTarget t : targets) {
                 if (!repository.existsByCompanyNameAndRecipientEmail(t.getCompanyName(), t.getRecipientEmail())) {
-                    t.setStatus("PENDING");
+                    t.setStatus(TargetStatus.PENDING);
                     repository.save(t);
                     added++;
                 }
@@ -85,13 +86,13 @@ public class CiBatchRunner implements ApplicationRunner {
         batchOutreachService.processPendingTargets();
 
         // 3. Wait if there are still targets PROCESSING
-        while (!repository.findByStatusOrderByIdAsc("PROCESSING").isEmpty()) {
+        while (!repository.findByStatusOrderByIdAsc(TargetStatus.PROCESSING).isEmpty()) {
             log.info("Waiting for processing to complete...");
             Thread.sleep(5000);
         }
 
         // 4. Idle Target Discovery
-        if (repository.findByStatusOrderByIdAsc("PENDING").isEmpty()) {
+        if (repository.findByStatusOrderByIdAsc(TargetStatus.PENDING).isEmpty()) {
             log.info("Queue is idle. Triggering autonomous target discovery...");
             try {
                 String result = targetDiscoveryAgent.discoverTargets("ML Engineer", "Remote or India");
@@ -102,7 +103,7 @@ public class CiBatchRunner implements ApplicationRunner {
                 int added = 0;
                 for (OutreachTarget t : newTargets) {
                     if (!repository.existsByCompanyNameAndRecipientEmail(t.getCompanyName(), t.getRecipientEmail())) {
-                        t.setStatus("PENDING");
+                        t.setStatus(TargetStatus.PENDING);
                         repository.save(t);
                         added++;
                     }
@@ -111,7 +112,7 @@ public class CiBatchRunner implements ApplicationRunner {
                 if (added > 0) {
                     log.info("Found {} new targets! Processing them now.", added);
                     batchOutreachService.processPendingTargets();
-                    while (!repository.findByStatusOrderByIdAsc("PROCESSING").isEmpty()) {
+                    while (!repository.findByStatusOrderByIdAsc(TargetStatus.PROCESSING).isEmpty()) {
                         log.info("Waiting for new targets to finish processing...");
                         Thread.sleep(5000);
                     }

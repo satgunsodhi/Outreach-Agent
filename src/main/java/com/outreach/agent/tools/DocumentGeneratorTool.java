@@ -49,12 +49,15 @@ public class DocumentGeneratorTool {
             try {
                 com.outreach.agent.model.MasterResume masterResume = masterResumeService.getMasterResume();
                 java.util.Set<String> validProjectNames = masterResume.projects().stream()
+                        .filter(p -> p.name() != null)
                         .map(p -> p.name().toLowerCase().trim())
                         .collect(java.util.stream.Collectors.toSet());
                 
                 masterResume.experiences().forEach(exp -> {
                     if (exp.projects() != null) {
-                        exp.projects().forEach(p -> validProjectNames.add(p.name().toLowerCase().trim()));
+                        exp.projects().stream()
+                            .filter(p -> p.name() != null)
+                            .forEach(p -> validProjectNames.add(p.name().toLowerCase().trim()));
                     }
                 });
 
@@ -77,8 +80,12 @@ public class DocumentGeneratorTool {
 
             try {
                 String debugJson = objectMapper.writeValueAsString(templateData);
+                java.nio.file.Path debugDir = java.nio.file.Path.of("data/debug");
+                if (!java.nio.file.Files.exists(debugDir)) {
+                    java.nio.file.Files.createDirectories(debugDir);
+                }
                 java.nio.file.Files.writeString(
-                    java.nio.file.Path.of("C:/Users/Satgu/.gemini/antigravity-ide/scratch/last_selected_data.json"),
+                    debugDir.resolve("last_selected_data.json"),
                     debugJson
                 );
             } catch (Exception ex) {

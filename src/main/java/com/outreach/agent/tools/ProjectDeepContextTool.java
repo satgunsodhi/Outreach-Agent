@@ -24,11 +24,20 @@ public class ProjectDeepContextTool {
         try {
             Map<String, Map<String, Object>> context = deepContextService.getContextForProjects(projectIds);
             if (context.isEmpty()) {
-                return "{\"message\": \"No deep context found for the given project IDs. Available IDs can be found in searchExperiences results.\"}";
+                return "{\"message\": \"No deep context found for the given project IDs. Call listAvailableProjects() to see valid IDs.\"}";
             }
             return objectMapper.writeValueAsString(context);
         } catch (Exception e) {
             return "{\"error\": \"Failed to retrieve deep context: " + e.getMessage() + "\"}";
+        }
+    }
+
+    @Tool("List all available project IDs with their core problem summary and key technologies. Use this to decide which projects to fetch deep context for via getDeepContext().")
+    public String listAvailableProjects() {
+        try {
+            return objectMapper.writeValueAsString(deepContextService.getAllProjectSummaries());
+        } catch (Exception e) {
+            return "{\"error\": \"Failed to list projects: " + e.getMessage() + "\"}";
         }
     }
 }
