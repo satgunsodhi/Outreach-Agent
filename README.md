@@ -10,7 +10,7 @@ An autonomous AI-powered outreach pipeline built with **Java 21 + Spring Boot 3*
 |---|---|
 | **Agentic Resume Tailoring** | LangChain4j tool-calling loop iteratively adjusts content until the PDF fits exactly one page |
 | **Company Research** | Jsoup scrapes target company websites; a `CompanyResearchAgent` extracts key talking points via LLM |
-| **Command Center (Web UI)** | A decoupled React/Vite frontend for manually adding and managing outreach targets |
+| **Command Center (Web UI)** | A decoupled Next.js frontend for manually adding and managing outreach targets |
 | **Autonomous Discovery** | When idle, a `TargetDiscoveryAgent` silently searches the web (e.g. DuckDuckGo) for new targets and automatically injects them into the pipeline |
 | **Cover Letter Generation** | `CoverLetterAgent` writes a personalized cover letter grounded in real company research |
 | **Placeholder Sanitization** | Multi-pass regex system detects and fills any LLM-generated placeholder tokens before sending, with aggressive trimming of LLM sign-offs |
@@ -73,10 +73,10 @@ outreach-agent/
     │   │   └── project_deep_context.json    # Per-project detail for the LLM
     │   └── templates/
     │       └── resume.html                  # Thymeleaf XHTML resume template
-    └── frontend/                            # Decoupled React + Vite Web UI
-        ├── src/
-        │   ├── App.jsx                      # Main UI and auth logic
-        │   └── index.css                    # Glassmorphic vanilla CSS
+    └── frontend/                            # Decoupled Next.js Web UI
+        ├── package.json
+        ├── src/                             # Contains Next.js app router files
+        │   └── app/                         # App layouts, pages, API routes
 ```
 
 ---
@@ -97,6 +97,13 @@ git clone https://github.com/your-username/outreach-agent.git
 cd outreach-agent
 cp .env.example .env
 ```
+
+---
+
+## 🧑‍💻 Adapting for Yourself
+This project is currently hardcoded with the portfolio links, persona, and experiences of its original author. If you want to use this pipeline to send your own outreach emails, you will need to update several files (prompts, configuration, JSON endpoints). 
+
+Please see the comprehensive **[Customization Guide](docs/CUSTOMIZATION_GUIDE.md)** for step-by-step instructions on making this repo your own!
 
 Edit `.env` with your actual credentials (see the table below). Example files for ignored runtime paths live in `docs/examples/`.
 
