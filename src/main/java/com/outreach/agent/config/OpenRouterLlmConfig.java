@@ -20,7 +20,22 @@ public class OpenRouterLlmConfig {
     @Value("${logging.level.com.outreach.agent:INFO}")
     private String logLevel;
 
-    @Bean
+    @Bean("resumeChatModel")
+    public ChatModel resumeChatModel() {
+        boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
+        return OpenAiChatModel.builder()
+                .baseUrl("https://openrouter.ai/api/v1")
+                .apiKey(llmProperties.getOpenRouterApiKey())
+                .modelName(llmProperties.getOpenRouterModelName())
+                .temperature(0.1) // strictly deterministic for resumes
+                .maxTokens(8000)  // higher token limit to avoid truncation
+                .logRequests(isTrace)
+                .logResponses(isTrace)
+                .build();
+    }
+
+    @Bean("writingChatModel")
+    @org.springframework.context.annotation.Primary
     public ChatModel openRouterChatModel() {
         boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
         return OpenAiChatModel.builder()

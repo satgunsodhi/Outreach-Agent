@@ -15,7 +15,7 @@ public class ResumeAgentConfig {
 
     @Bean
     public ResumeAgent resumeAgent(
-            ChatModel chatModel,
+            @org.springframework.beans.factory.annotation.Qualifier("resumeChatModel") ChatModel chatModel,
             ResumeKnowledgeBaseTool knowledgeBaseTool,
             DocumentGeneratorTool documentGeneratorTool,
             PageLengthCheckerTool pageLengthCheckerTool,

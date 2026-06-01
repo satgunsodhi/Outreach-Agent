@@ -25,11 +25,23 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
+
     @Value("${app.security.username:admin}")
     private String adminUsername;
 
     @Value("${app.security.password:admin123}")
     private String adminPassword;
+
+    @Value("${app.cors.allowed-origins:https://satgunsodhi.vercel.app,http://localhost:3000,http://localhost:5173}")
+    private String allowedOriginsRaw;
+
+    @jakarta.annotation.PostConstruct
+    public void validateSecurityConfig() {
+        if ("admin123".equals(adminPassword)) {
+            log.warn("SECURITY: Default admin password 'admin123' is in use. Set APP_SECURITY_PASSWORD in your .env file.");
+        }
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -58,8 +70,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow Vercel frontend or localhost
-        configuration.setAllowedOriginPatterns(List.of("*"));
+        // Origins are configured via app.cors.allowed-origins (or CORS_ALLOWED_ORIGINS env var)
+        List<String> allowedOrigins = Arrays.asList(allowedOriginsRaw.split(","));
+        configuration.setAllowedOriginPatterns(allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);

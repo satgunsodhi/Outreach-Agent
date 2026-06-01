@@ -199,7 +199,6 @@
     }
   ],
   "projects": [
-
     {
       "id": "proj-asympt",
       "name": "AsymPT: Asymmetric Parallel Transformer for Medical Image Segmentation",
@@ -254,6 +253,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-asympt-ext-1",
+          "text": "Co-designed AsymPT, an asymmetric parallel transformer for Synapse multi-organ CT segmentation (~35-40M parameters, ~28B FLOPs) achieving <b>84% Dice Score at 28B FLOPs vs TransUNet's 77.48% at 106B FLOPs</b>, delivering a superior efficiency-performance tradeoff.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-asympt-ext-2",
+          "text": "Incorporated a composite loss function with Focal Loss and label smoothing plus an EMA weight-averaging wrapper to stabilize training, reduce overconfidence, and improve small-organ Dice scores for challenging classes like gallbladder and esophagus.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-asympt-ext-3",
+          "text": "Deployed a production-ready training pipeline with mixed-precision AMP, deep supervision (3-level weighted loss), cosine annealing LR, and multi-format inference support (NIfTI, PNG, NPY), with an augmentation toolkit including elastic deformations, random scale+crop, and cutout.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -316,6 +336,27 @@
           ],
           "priority": 2,
           "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-dasai-ext-1",
+          "text": "Designed and implemented a multi-tenant Discord copilot that stores per-guild configuration, roles, message history, and pgvector-backed RAG documents in Supabase using <b>vector(384) embeddings and IVFFlat cosine indexes</b> for fast similarity search.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-dasai-ext-2",
+          "text": "Built an HF InferenceClient integration that drives both chat and embedding calls via asyncio executors, runs a classifier sub-prompt to decide when to web-search, and injects DuckDuckGo summaries plus RAG snippets into the final system prompt while enforcing channel allowlists and team-lead/member roles.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-dasai-ext-3",
+          "text": "Developed an authenticated Next.js admin console using Supabase SSR/CSR clients to manage guild-level prompts, allowed channels, conversation summaries, user roles, and RAG documents, wired into a production Docker + Railway deployment.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -374,6 +415,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-irpai-ext-1",
+          "text": "Engineered a 5-stage machine vision pipeline converting raw screenshots into structured JSON/Markdown at <b>~287ms end-to-end latency</b> for downstream LLM consumption, combining RT-DETR object detection with EasyOCR text extraction.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-irpai-ext-2",
+          "text": "Fine-tuned RT-DETR on custom UI datasets with a hybrid detector-fallback strategy, extracting bounding boxes, semantic roles, reading order, and confidence scores for desktop/mobile UI elements.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-irpai-ext-3",
+          "text": "Packaged as a pip-installable Python library with CLI, modular config system, pytest suite, and dedicated fine-tuning scripts for custom dataset adaptation.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -431,73 +493,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
-        }
-      ]
-    },
-    {
-      "id": "proj-forgery",
-      "name": "Forgery Classifier: Signature Forgery Detection System",
-      "github": "https://github.com/satgunsodhi/Forgery-Classifier",
-      "techStack": "Python, OpenCV, Scikit-Learn, Neural Style Transfer",
-      "tags": [
-        "computer-vision",
-        "classification",
-        "svc",
-        "knn",
-        "adversarial-ml",
-        "opencv",
-        "machine-learning",
-        "security"
-      ],
-      "bullets": [
+        },
         {
-          "id": "bp-f-001",
-          "text": "Benchmarked 4 ML classifiers (SVC, KNN, Logistic Regression, GaussianNB) on clean signature datasets, achieving <b>up to 94% accuracy</b>.",
-          "tags": [
-            "classification",
-            "benchmarking",
-            "svc",
-            "knn",
-            "machine-learning"
-          ],
+          "id": "bp-proj-slm-ext-1",
+          "text": "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English → financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
+          "tags": [],
           "priority": 1,
-          "lengthCategory": "MEDIUM"
+          "lengthCategory": "LONG"
         },
         {
-          "id": "bp-f-002",
-          "text": "Applied Neural Style Transfer to simulate adversarial forgeries, exposing <b>30–50% accuracy drops</b> and surfacing model fragility under distribution shift.",
-          "tags": [
-            "adversarial-ml",
-            "neural-style-transfer",
-            "robustness",
-            "computer-vision"
-          ],
+          "id": "bp-proj-slm-ext-2",
+          "text": "Applied LoRA for parameter-efficient fine-tuning on FinancialPhraseBank and FiQA, <b>reducing trainable parameters from millions to thousands</b> while preserving domain expressiveness for sentiment classification and buy/sell/hold signal generation.",
+          "tags": [],
           "priority": 1,
-          "lengthCategory": "MEDIUM"
+          "lengthCategory": "LONG"
         },
         {
-          "id": "bp-f-003",
-          "text": "Built a signature preprocessing pipeline with OpenCV for contour extraction, noise reduction, and stroke enhancement.",
-          "tags": [
-            "opencv",
-            "preprocessing",
-            "computer-vision",
-            "signal-processing"
-          ],
-          "priority": 2,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-f-004",
-          "text": "Designed a comparative evaluation framework to test model robustness under adversarial transformations.",
-          "tags": [
-            "evaluation",
-            "adversarial-ml",
-            "machine-learning",
-            "benchmarking"
-          ],
-          "priority": 3,
-          "lengthCategory": "SHORT"
+          "id": "bp-proj-slm-ext-3",
+          "text": "Deployed the model as FinPeak.ai, a Streamlit chat app that downloads safetensors weights from HuggingFace, reconstructs GPTConfig, and generates instruction-formatted financial answers with controllable temperature and response length.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -554,49 +570,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
-        }
-      ]
-    },
-    {
-      "id": "proj-pokemon",
-      "name": "Pokemon Color Classifier",
-      "github": "https://github.com/satgunsodhi/image-color-classifier",
-      "techStack": "Python, TensorFlow, Keras, OpenCV, Scikit-Learn, Pandas",
-      "tags": [
-        "computer-vision",
-        "classification",
-        "cnn",
-        "random-forest",
-        "k-means",
-        "tensorflow",
-        "keras",
-        "opencv"
-      ],
-      "bullets": [
-        {
-          "id": "bp-pc-001",
-          "text": "Developed a color extraction algorithm using K-Means clustering on RGB pixel distributions to classify Pokémon images into <b>10 dominant color categories</b>.",
-          "tags": [
-            "k-means",
-            "clustering",
-            "color-extraction",
-            "computer-vision"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
         },
         {
-          "id": "bp-pc-002",
-          "text": "Implemented and compared Random Forest and CNN models for classification using TensorFlow, Keras, and Scikit-Learn.",
-          "tags": [
-            "cnn",
-            "random-forest",
-            "classification",
-            "tensorflow",
-            "keras"
-          ],
+          "id": "bp-proj-streamflix-ext-1",
+          "text": "Built a full MERN watch-party experience where a React/Vite frontend controls shared playback state via an Express/MongoDB timer API (POST/GET/PUT /api/timers), synchronizing iframe video time across participants with cross-window messaging and periodic server polling.",
+          "tags": [],
           "priority": 1,
-          "lengthCategory": "MEDIUM"
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-streamflix-ext-2",
+          "text": "Implemented responsive movie browsing using React Router, category-aware MovieRow carousels with dynamic visibleCount computation, and a search flow that merges and filters multiple movie lists at runtime.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-streamflix-ext-3",
+          "text": "Deployed as a single production Node process that statically serves the Vite-built frontend from frontend/dist and mounts REST routes under /api/timers with MongoDB connection wiring.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -638,6 +632,20 @@
           ],
           "priority": 2,
           "lengthCategory": "SHORT"
+        },
+        {
+          "id": "bp-proj-publicstore-ext-1",
+          "text": "Developed full-stack CRUD functionality with Express, MongoDB, and React, with Zustand for efficient client-side state management and real-time UI updates.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-publicstore-ext-2",
+          "text": "Implemented responsive web design and accessibility features, ensuring smooth UX across desktop and mobile devices.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -681,6 +689,20 @@
           ],
           "priority": 1,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-sih-ext-1",
+          "text": "Deployed Dockerized n8n workflow automation and PostgreSQL services on AWS EC2 with persistent volumes and secure inter-container networking.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-sih-ext-2",
+          "text": "Integrated an AWS S3 bucket for scalable cloud storage and delivered end-to-end infrastructure setup under <b>36-hour hackathon constraints</b>.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -724,6 +746,20 @@
           ],
           "priority": 1,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-cloudtunnel-ext-1",
+          "text": "Configured a Raspberry Pi as an always-on edge node with Cloudflare Warp and Tunnel to establish persistent secure connectivity bypassing network outages and captive portals.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-cloudtunnel-ext-2",
+          "text": "Configured Docker Compose with persistent volumes and automated restart policies to keep n8n running continuously with data preserved across reboots.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -780,6 +816,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-shlagent-ext-1",
+          "text": "Built a conversational AI recommender using FastAPI and OpenRouter that indexes a 377-item SHL catalog via <b>BM25Okapi</b> with enriched search_text strings, injecting detailed and compact catalog contexts into the LLM system prompt.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-shlagent-ext-2",
+          "text": "Implemented semantic search using FAISS and Sentence Transformers (all-MiniLM-L6-v2 embeddings) to index and retrieve test metadata under <b>50ms latency</b>, with a hybrid retrieval strategy prepending curated core assessments to BM25-ranked candidates.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-shlagent-ext-3",
+          "text": "Engineered URL/name validation that auto-corrects hallucinated product references via case-insensitive name lookup and secondary BM25 fallback, with off-topic filtering and Pydantic v2 strict JSON contracts.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -834,6 +891,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-iqagent-ext-1",
+          "text": "Developed a localized Python CLI tool that parses PDF resumes with pypdf and generates structured technical interview questions with sample answers using Ollama (Gemma-3-4b), ensuring <b>100% data privacy</b> via fully offline inference.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-iqagent-ext-2",
+          "text": "Integrated target Job Description matching to align generated questions with specific role requirements, with an interactive advanced CLI that captures multi-line JDs from stdin.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-iqagent-ext-3",
+          "text": "Structured output as markdown-friendly text persisted to interview_questions.txt, enabling reuse in interview prep workflows and easy versioning under source control.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -877,6 +955,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-fundr-ext-1",
+          "text": "Developed a functional crowdfunding prototype using React 19 + TypeScript with a typed ProjectContext managing project creation and investment flows across three SPA routes.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-fundr-ext-2",
+          "text": "Implemented responsive UI dashboards using Tailwind CSS to track campaign progress, funding timelines, and equity metrics with dynamic progress bars and localized currency formatting.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-fundr-ext-3",
+          "text": "Deployed behind a minimal Express server serving the Vite-built frontend, providing clean separation between static SPA hosting and future API endpoints.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -943,6 +1042,34 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-1",
+          "text": "Developed an agentic Spring Boot system using LangChain4j with a 3-tool architecture (knowledge base search, PDF generation, page-length validation) to automatically customize resumes targeting job descriptions.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-2",
+          "text": "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-3",
+          "text": "Engineered a persistent PDF caching system using SHA-256 hashing on job descriptions and scraped company research to bypass redundant LLM generation, saving API costs and reducing latency.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-4",
+          "text": "Designed an automated skill sorting algorithm to dynamically align resume keywords with parsed job requirements, eliminating LLM hallucination and enforcing strict ATS compliance.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -983,12 +1110,26 @@
           ],
           "priority": 2,
           "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-portfolio-v3-ext-1",
+          "text": "Designed and built a dark-mode-first, cinematic developer portfolio featuring a terminal-inspired typing simulator and custom GSAP scroll-triggered animations.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-portfolio-v3-ext-2",
+          "text": "Engineered smooth-scroll navigation with active section highlighting, custom CSS property theme systems, and responsive layout tested across various viewports.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
     {
       "id": "proj-video-summary",
-      "name": "AI Video Transcription & Summary: Multimodal Meeting Summarizer",
+      "name": "AI Video Transcription & Summary – Multimodal Meeting Summarizer",
       "github": "https://github.com/satgunsodhi/AI-Video-Transcription-Summary",
       "techStack": "Python, OpenAI Whisper, OpenCV, Ollama (LLaVA + LLaMA 3.2), ffmpeg",
       "tags": [
@@ -1045,46 +1186,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
-        }
-      ]
-    },
-    {
-      "id": "proj-forgery-cnn",
-      "name": "Forgery Classifier CNN: Deep Learning Signature Verification",
-      "github": "https://github.com/satgunsodhi/Forgery-Classifier-CNN",
-      "techStack": "Python, Jupyter Notebook, TensorFlow, Keras, OpenCV",
-      "tags": [
-        "computer-vision",
-        "deep-learning",
-        "cnn",
-        "tensorflow",
-        "keras",
-        "classification",
-        "security"
-      ],
-      "bullets": [
-        {
-          "id": "bp-fc-001",
-          "text": "Designed and trained a deep Convolutional Neural Network (CNN) in TensorFlow/Keras to perform binary classification of genuine vs forged signatures.",
-          "tags": [
-            "deep-learning",
-            "cnn",
-            "tensorflow",
-            "keras"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
         },
         {
-          "id": "bp-fc-002",
-          "text": "Optimized classification boundaries using custom dropout rates and dataset augmentation, improving robustness against neural style transfer visual noise.",
-          "tags": [
-            "computer-vision",
-            "data-augmentation",
-            "robustness"
-          ],
+          "id": "bp-proj-video-summary-ext-1",
+          "text": "Engineered a resumable multimodal summarization CLI that extracts audio via ffmpeg, transcribes with OpenAI Whisper, samples key frames using OpenCV, and calls Ollama vision/text models (LLaVA + LLaMA 3.2) to produce structured markdown summaries.",
+          "tags": [],
           "priority": 1,
-          "lengthCategory": "MEDIUM"
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-video-summary-ext-2",
+          "text": "Implemented per-stage checkpointing (transcript, frames, frame descriptions, summary) with --force overrides, enabling large-file resilience and efficient iterative runs on long meetings.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-video-summary-ext-3",
+          "text": "Packaged with a portable setup.sh that validates Python/ffmpeg/Ollama prerequisites, creates a venv, and pulls required Ollama models for one-command bootstrap.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     },
@@ -1178,44 +1300,27 @@
           ],
           "priority": 2,
           "lengthCategory": "MEDIUM"
-        }
-      ]
-    },
-
-    {
-      "id": "proj-oops-trip",
-      "name": "Trip Management Planner: OOP Software Design",
-      "github": "https://github.com/satgunsodhi/OOPS-Final-Project",
-      "techStack": "C++, Object-Oriented Programming (OOP), Software Engineering",
-      "tags": [
-        "c++",
-        "object-oriented-programming",
-        "console-application",
-        "course-project",
-        "software-design"
-      ],
-      "bullets": [
-        {
-          "id": "bp-ot-001",
-          "text": "Designed a console-based Trip Management Planner utilizing core OOP principles including encapsulation, inheritance, and polymorphism.",
-          "tags": [
-            "c++",
-            "object-oriented-programming",
-            "software-design"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
         },
         {
-          "id": "bp-ot-002",
-          "text": "Implemented routing selectors that curate travel options from location parameters and generate itemized billing estimators for accommodations and activities.",
-          "tags": [
-            "course-project",
-            "algorithms",
-            "console-application"
-          ],
+          "id": "bp-proj-django-news-ext-1",
+          "text": "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom 'best' scorer combining recency (0.3 weight) and popularity (0.7 weight).",
+          "tags": [],
           "priority": 1,
-          "lengthCategory": "MEDIUM"
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-django-news-ext-2",
+          "text": "Designed a relational schema with News, Comment, apiKey, and Log models, using ModelSerializers for JSON responses while serving traditional HTML templates for authentication and browsing.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-django-news-ext-3",
+          "text": "Encoded 'latest', 'popular', and 'best' selection logic as dedicated aggregation functions over SQLite, with per-article view counters and human-readable access logs in a Log table for observability.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     }
@@ -1357,6 +1462,27 @@
           ],
           "priority": 2,
           "lengthCategory": "SHORT"
+        },
+        {
+          "id": "bp-ec-002-llama3-hackathon-ext-1",
+          "text": "Prototyped an end-to-end local medical assistant by downloading a quantized 8B-parameter med-llama .gguf model from HuggingFace, registering it in Ollama, and wiring it into LlamaIndex for offline inference inside Colab.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ec-002-llama3-hackathon-ext-2",
+          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots, providing a front-end for the local med-LLM.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ec-002-llama3-hackathon-ext-3",
+          "text": "Delivered the prototype under hackathon time constraints using colab-xterm for Ollama process management directly from Jupyter notebooks.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     }

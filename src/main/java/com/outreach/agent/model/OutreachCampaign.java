@@ -15,7 +15,8 @@ public class OutreachCampaign {
 
     private LocalDateTime createdAt;
 
-    private String status; // e.g. PENDING, ACTIVE, COMPLETED
+    @Enumerated(EnumType.STRING)
+    private CampaignStatus status;
 
     @PrePersist
     protected void onCreate() {
@@ -46,11 +47,11 @@ public class OutreachCampaign {
         this.createdAt = createdAt;
     }
 
-    public String getStatus() {
+    public CampaignStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CampaignStatus status) {
         this.status = status;
     }
 }

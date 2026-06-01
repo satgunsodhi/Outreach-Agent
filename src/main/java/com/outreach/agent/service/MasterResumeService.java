@@ -16,6 +16,8 @@ public class MasterResumeService {
 
     private final ObjectMapper objectMapper;
     private MasterResume masterResume;
+    /** Pre-serialized JSON of the master resume — computed once at startup to avoid per-request serialization overhead. */
+    private String masterResumeJson;
 
     public MasterResumeService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -27,10 +29,16 @@ public class MasterResumeService {
         try (InputStream inputStream = resource.getInputStream()) {
             this.masterResume = objectMapper.readValue(inputStream, MasterResume.class);
         }
+        this.masterResumeJson = objectMapper.writeValueAsString(this.masterResume);
     }
 
     public MasterResume getMasterResume() {
         return masterResume;
+    }
+
+    /** Returns the pre-serialized JSON string of the master resume. Avoids repeated serialization overhead in batch loops. */
+    public String getMasterResumeJson() {
+        return masterResumeJson;
     }
 
     public MasterResume filterByTags(List<String> tags) {

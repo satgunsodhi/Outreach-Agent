@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class DuckDuckGoSearchTool {
@@ -19,7 +20,7 @@ public class DuckDuckGoSearchTool {
         }
         
         try {
-            String url = "https://html.duckduckgo.com/html/?q=" + java.net.URLEncoder.encode(query, "UTF-8");
+            String url = "https://html.duckduckgo.com/html/?q=" + java.net.URLEncoder.encode(query, StandardCharsets.UTF_8);
             Document doc = Jsoup.connect(url)
                     .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
                     .timeout(10000)
@@ -40,7 +41,7 @@ public class DuckDuckGoSearchTool {
                     if (link.contains("uddg=")) {
                         String[] parts = link.split("uddg=");
                         if (parts.length > 1) {
-                            link = java.net.URLDecoder.decode(parts[1].split("&")[0], "UTF-8");
+                            link = java.net.URLDecoder.decode(parts[1].split("&")[0], StandardCharsets.UTF_8);
                         }
                     }
                     String snippet = snippetElement != null ? snippetElement.text() : "";

@@ -82,40 +82,54 @@ public class CiBatchRunner implements ApplicationRunner {
         }
 
         // 2. Process all PENDING targets
+        // processPendingTargets() is synchronous — no poll loop needed; it returns only when all targets are processed.
         log.info("Starting target processing...");
         batchOutreachService.processPendingTargets();
-
-        // 3. Wait if there are still targets PROCESSING
-        while (!repository.findByStatusOrderByIdAsc(TargetStatus.PROCESSING).isEmpty()) {
-            log.info("Waiting for processing to complete...");
-            Thread.sleep(5000);
-        }
+        log.info("Target processing complete.");
 
         // 4. Idle Target Discovery
         if (repository.findByStatusOrderByIdAsc(TargetStatus.PENDING).isEmpty()) {
             log.info("Queue is idle. Triggering autonomous target discovery...");
             try {
-                String result = targetDiscoveryAgent.discoverTargets("ML Engineer", "Remote or India");
-                log.info("Raw discovery result: {}", result);
-                
+                String rawResult = targetDiscoveryAgent.discoverTargets("ML Engineer", "Remote or India");
+                log.info("Raw discovery result: {}", rawResult);
+
+                // Strip markdown fences the LLM may have wrapped the JSON in
+                String cleanJson = rawResult.trim()
+                        .replaceAll("(?s)^```json\\s*", "")
+                        .replaceAll("(?s)```\\s*$", "");
+
                 ObjectMapper mapper = new ObjectMapper();
-                List<OutreachTarget> newTargets = mapper.readValue(result, new TypeReference<List<OutreachTarget>>() {});
+                List<OutreachTarget> newTargets;
+                try {
+                    newTargets = mapper.readValue(cleanJson, new TypeReference<List<OutreachTarget>>() {});
+                } catch (Exception parseEx) {
+                    log.error("Failed to parse target discovery JSON (LLM may have returned non-JSON): {}", parseEx.getMessage());
+                    newTargets = List.of();
+                }
+
                 int added = 0;
                 for (OutreachTarget t : newTargets) {
+                    if (t.getCompanyName() == null || t.getCompanyName().isBlank()) {
+                        log.warn("Skipping discovered target with blank companyName.");
+                        continue;
+                    }
+                    if (!isValidEmail(t.getRecipientEmail())) {
+                        log.warn("Skipping discovered target '{}' with invalid recipientEmail: {}",
+                                t.getCompanyName(), t.getRecipientEmail());
+                        continue;
+                    }
                     if (!repository.existsByCompanyNameAndRecipientEmail(t.getCompanyName(), t.getRecipientEmail())) {
                         t.setStatus(TargetStatus.PENDING);
                         repository.save(t);
                         added++;
                     }
                 }
-                
+
                 if (added > 0) {
                     log.info("Found {} new targets! Processing them now.", added);
+                    // processPendingTargets() is synchronous — no poll loop needed.
                     batchOutreachService.processPendingTargets();
-                    while (!repository.findByStatusOrderByIdAsc(TargetStatus.PROCESSING).isEmpty()) {
-                        log.info("Waiting for new targets to finish processing...");
-                        Thread.sleep(5000);
-                    }
                 } else {
                     log.info("No new targets discovered.");
                 }
@@ -129,5 +143,11 @@ public class CiBatchRunner implements ApplicationRunner {
         log.info("==================================================");
         
         System.exit(SpringApplication.exit(context, () -> 0));
+    }
+
+    /** Basic email format validation — rejects null, blank, or addresses missing an @-domain-TLD structure. */
+    private boolean isValidEmail(String email) {
+        if (email == null || email.isBlank()) return false;
+        return email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
     }
 }

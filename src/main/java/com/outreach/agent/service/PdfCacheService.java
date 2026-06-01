@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -21,6 +22,8 @@ public class PdfCacheService {
 
     private final Map<String, String> cache = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper;
+    /** Marks cache as modified since the last disk flush. Written by {@link #cachePdfPath}, read by {@link #flushCacheToDisk}. */
+    private volatile boolean dirty = false;
 
     public PdfCacheService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -59,8 +62,17 @@ public class PdfCacheService {
     public void cachePdfPath(String jobDescription, String companyResearch, String pdfPath) {
         String hash = computeHash(jobDescription, companyResearch);
         cache.put(hash, pdfPath);
-        saveCacheToDisk();
+        dirty = true; // schedule for disk flush; don't write synchronously on every put
         log.info("Cached PDF for hash {}", hash);
+    }
+
+    /** Flushes the cache to disk at most every 30 seconds, only when the cache has been modified. */
+    @Scheduled(fixedDelay = 30_000)
+    public void flushCacheToDisk() {
+        if (dirty) {
+            saveCacheToDisk();
+            dirty = false;
+        }
     }
 
     private void saveCacheToDisk() {

@@ -13,6 +13,8 @@ import java.util.Map;
 @Component
 public class DocumentGeneratorTool {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DocumentGeneratorTool.class);
+
     private final PdfGeneratorService pdfGeneratorService;
     private final ObjectMapper objectMapper;
     private final com.outreach.agent.service.MasterResumeService masterResumeService;
@@ -75,7 +77,9 @@ public class DocumentGeneratorTool {
                     }
                 }
             } catch (Exception ex) {
-                // Ignore validation error if it fails
+                // A failure in the validation infrastructure itself is a real error — do not silently proceed.
+                log.error("Project hallucination validator threw unexpectedly: {}", ex.getMessage(), ex);
+                return "Error: Could not validate project names. Aborting to prevent hallucinated data from being used.";
             }
 
             try {

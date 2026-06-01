@@ -23,7 +23,19 @@ public class GoogleAiGeminiConfig {
     @Value("${logging.level.com.outreach.agent:INFO}")
     private String logLevel;
 
-    @Bean
+    @Bean("resumeChatModel")
+    public ChatModel resumeChatModel() {
+        boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
+        return GoogleAiGeminiChatModel.builder()
+                .apiKey(apiKey)
+                .modelName(modelName)
+                .temperature(0.1) // strictly deterministic for resumes
+                .logRequestsAndResponses(isTrace)
+                .build();
+    }
+
+    @Bean("writingChatModel")
+    @org.springframework.context.annotation.Primary
     public ChatModel googleAiGeminiChatModel() {
         boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
         return GoogleAiGeminiChatModel.builder()

@@ -207,7 +207,9 @@ public class GmailService {
         }
         try {
             String cleanSubject = subject.replaceAll("^(?i)Re:\\s*", "");
-            String query = "to:" + recipientEmail + " subject:\"" + cleanSubject + "\"";
+            // Escape any embedded double-quotes so the Gmail query syntax is not broken
+            String safeSubject = cleanSubject.replace("\"", "\\\"");
+            String query = "to:" + recipientEmail + " subject:\"" + safeSubject + "\"";
             var response = gmailClient.users().threads().list("me").setQ(query).execute();
             java.util.List<com.google.api.services.gmail.model.Thread> threads = response.getThreads();
             if (threads == null || threads.isEmpty()) {

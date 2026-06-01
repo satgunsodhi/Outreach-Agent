@@ -2,6 +2,7 @@ package com.outreach.agent.controller;
 
 import com.outreach.agent.dto.BatchOutreachRequest;
 import com.outreach.agent.dto.TargetDto;
+import com.outreach.agent.model.CampaignStatus;
 import com.outreach.agent.model.OutreachCampaign;
 import com.outreach.agent.model.OutreachTarget;
 import com.outreach.agent.model.TargetStatus;
@@ -58,7 +59,7 @@ public class BatchOutreachController {
 
         OutreachCampaign campaign = new OutreachCampaign();
         campaign.setName(request.getCampaignName() != null ? request.getCampaignName() : "Batch Outreach");
-        campaign.setStatus("ACTIVE");
+        campaign.setStatus(CampaignStatus.ACTIVE);
         campaignRepository.save(campaign);
 
         for (TargetDto dto : request.getTargets()) {
@@ -89,22 +90,26 @@ public class BatchOutreachController {
     @GetMapping("/campaign/{id}")
     public ResponseEntity<?> getCampaignStatus(@PathVariable Long id) {
         return campaignRepository.findById(id).map(campaign -> {
-            List<OutreachTarget> targets = targetRepository.findAll()
-                    .stream()
-                    .filter(t -> t.getCampaign().getId().equals(id))
-                    .toList();
-            
-            long pending = targets.stream().filter(t -> TargetStatus.PENDING.equals(t.getStatus())).count();
-            long processing = targets.stream().filter(t -> TargetStatus.PROCESSING.equals(t.getStatus())).count();
-            long drafted = targets.stream().filter(t -> TargetStatus.DRAFT_CREATED.equals(t.getStatus())).count();
-            long failed = targets.stream().filter(t -> TargetStatus.FAILED.equals(t.getStatus())).count();
-
+            // Use a DB-side aggregation instead of findAll() + stream to avoid a full table scan and N+1 lazy loads.
+            List<Object[]> rows = targetRepository.countByStatusForCampaign(id);
+            long total = 0, pending = 0, processing = 0, drafted = 0, failed = 0;
+            for (Object[] row : rows) {
+                TargetStatus status = (TargetStatus) row[0];
+                long count = ((Number) row[1]).longValue();
+                total += count;
+                switch (status) {
+                    case PENDING -> pending = count;
+                    case PROCESSING -> processing = count;
+                    case DRAFT_CREATED, FOLLOW_UP_DRAFT_CREATED -> drafted += count;
+                    case FAILED -> failed = count;
+                }
+            }
             return ResponseEntity.ok(Map.of(
                     "campaignId", campaign.getId(),
                     "name", campaign.getName(),
                     "status", campaign.getStatus(),
                     "stats", Map.of(
-                            "total", targets.size(),
+                            "total", total,
                             "pending", pending,
                             "processing", processing,
                             "drafted", drafted,

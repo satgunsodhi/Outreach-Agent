@@ -32,16 +32,8 @@ public class PageLengthCheckerTool {
             byte[] pdfBytes = Files.readAllBytes(path);
             int pageCount = pdfGeneratorService.countPages(pdfBytes);
 
-            // Measure fill percentage using the cached XHTML from the last render
-            int fillPercent = -1;
-            String lastXhtml = pdfGeneratorService.getLastRenderedXhtml();
-            if (lastXhtml != null) {
-                try {
-                    fillPercent = pdfGeneratorService.measureFillPercentage(lastXhtml);
-                } catch (Exception ex) {
-                    // Fall back to page-count-only reporting
-                }
-            }
+            // Measure fill percentage using the cached fill percent from the last render
+            int fillPercent = pdfGeneratorService.getLastRenderedFillPercent();
 
             if (pageCount > 1) {
                 String msg = "FAIL: " + pageCount + " pages (fill: " + fillPercent + "%) — reduce content by removing lowest-priority bullets or swapping long projects for shorter ones";

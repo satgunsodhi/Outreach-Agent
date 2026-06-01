@@ -37,13 +37,15 @@ public class OutreachTarget {
     private String jobDescription;
 
     @Enumerated(EnumType.STRING)
-    private TargetStatus status; // PENDING, GENERATING, EMAIL_SENT, FOLLOW_UP_SCHEDULED, FOLLOW_UP_SENT, FAILED
+    private TargetStatus status;
     
     @Column(columnDefinition = "TEXT")
     private String errorReason;
 
     private LocalDateTime createdAt;
     private LocalDateTime emailSentAt;
+    /** Timestamp when the Gmail draft was created. Distinct from emailSentAt, which records the actual send time. */
+    private LocalDateTime draftCreatedAt;
     private LocalDateTime followUpScheduledAt;
     private LocalDateTime processingStartedAt;
     private LocalDateTime processingCompletedAt;
@@ -64,9 +66,20 @@ public class OutreachTarget {
     @Column(columnDefinition = "integer default 0")
     private int retryCount = 0;
 
+    /** UUID claim token to prevent multi-process concurrency races. */
+    private String claimToken;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    public String getClaimToken() {
+        return claimToken;
+    }
+
+    public void setClaimToken(String claimToken) {
+        this.claimToken = claimToken;
     }
 
     public Long getId() {
@@ -147,6 +160,14 @@ public class OutreachTarget {
 
     public void setEmailSentAt(LocalDateTime emailSentAt) {
         this.emailSentAt = emailSentAt;
+    }
+
+    public LocalDateTime getDraftCreatedAt() {
+        return draftCreatedAt;
+    }
+
+    public void setDraftCreatedAt(LocalDateTime draftCreatedAt) {
+        this.draftCreatedAt = draftCreatedAt;
     }
 
     public LocalDateTime getFollowUpScheduledAt() {

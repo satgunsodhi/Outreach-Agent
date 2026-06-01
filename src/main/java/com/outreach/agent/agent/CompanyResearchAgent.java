@@ -2,9 +2,7 @@ package com.outreach.agent.agent;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
-import dev.langchain4j.service.spring.AiService;
 
-@AiService
 public interface CompanyResearchAgent {
 
     @SystemMessage("""
