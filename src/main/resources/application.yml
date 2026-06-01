@@ -24,6 +24,8 @@ google:
 app:
   ci-batch-mode: ${CI_BATCH_MODE:false}
   targets-file: ${TARGETS_FILE:targets.json}
+  followups:
+    enabled: ${ENABLE_FOLLOWUPS:false}
 
 # Gmail sender address — used as the From: header when building MIME messages for the Gmail API
 gmail:

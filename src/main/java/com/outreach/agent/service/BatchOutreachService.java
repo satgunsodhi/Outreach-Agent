@@ -43,6 +43,7 @@ public class BatchOutreachService {
     private final MasterResumeService masterResumeService;
     private final ObjectMapper objectMapper;
     private final GoogleDriveService googleDriveService;
+    private final GmailService gmailService;
 
     // Cache to prevent redundant scraping and LLM calls for the same company/URL
     private record CacheEntry(String research, LocalDateTime timestamp) {}
@@ -54,6 +55,9 @@ public class BatchOutreachService {
     @Value("${app.ci-batch-mode:false}")
     private boolean ciBatchMode;
 
+    @Value("${app.followups.enabled:false}")
+    private boolean followupsEnabled;
+
     public BatchOutreachService(OutreachTargetRepository targetRepository,
                                 CompanyResearchAgent researchAgent,
                                 ResumeOrchestrationService resumeOrchestrationService,
@@ -61,7 +65,8 @@ public class BatchOutreachService {
                                 EmailAutomationService emailAutomationService,
                                 MasterResumeService masterResumeService,
                                 ObjectMapper objectMapper,
-                                GoogleDriveService googleDriveService) {
+                                GoogleDriveService googleDriveService,
+                                GmailService gmailService) {
         this.targetRepository = targetRepository;
         this.researchAgent = researchAgent;
         this.resumeOrchestrationService = resumeOrchestrationService;
@@ -70,6 +75,7 @@ public class BatchOutreachService {
         this.masterResumeService = masterResumeService;
         this.objectMapper = objectMapper;
         this.googleDriveService = googleDriveService;
+        this.gmailService = gmailService;
     }
 
     @PostConstruct
@@ -258,7 +264,7 @@ public class BatchOutreachService {
     // Run every hour to check for follow-ups (disabled in CI batch mode)
     @Scheduled(fixedRate = 3600000)
     public void processFollowUps() {
-        if (ciBatchMode) {
+        if (ciBatchMode || !followupsEnabled) {
             return;
         }
 
@@ -267,6 +273,29 @@ public class BatchOutreachService {
 
         for (OutreachTarget target : dueFollowUps) {
             try {
+                // 1. Check if the initial draft still exists. If it does, the user hasn't sent it yet!
+                if (target.getGmailDraftId() != null && gmailService.isDraftStillPending(target.getGmailDraftId())) {
+                    log.debug("Initial draft {} still pending in Gmail. Skipping follow-up.", target.getGmailDraftId());
+                    continue;
+                }
+
+                // 2. Check if we actually sent the email and if we received a reply.
+                GmailService.ThreadStatus threadStatus = gmailService.checkThreadStatus(target.getRecipientEmail(), target.getSubject());
+                if (threadStatus == GmailService.ThreadStatus.NO_SENT_EMAIL) {
+                    log.info("No sent email found for thread matching recipient {} and subject {}. The draft may have been deleted without sending. Skipping follow-up.", target.getRecipientEmail(), target.getSubject());
+                    target.setStatus(TargetStatus.FAILED);
+                    target.setErrorReason("Initial draft was deleted or not sent.");
+                    targetRepository.save(target);
+                    continue;
+                } else if (threadStatus == GmailService.ThreadStatus.REPLIED) {
+                    log.info("Reply already received from {} for thread: {}. Skipping follow-up.", target.getRecipientEmail(), target.getSubject());
+                    target.setStatus(TargetStatus.FOLLOW_UP_DRAFT_CREATED);
+                    target.setErrorReason("Reply received from recipient; follow-up skipped.");
+                    targetRepository.save(target);
+                    continue;
+                }
+
+                // threadStatus is NO_REPLY: We sent the email and got no reply. Proceed to generate the follow-up draft.
                 int daysSince = (int) java.time.temporal.ChronoUnit.DAYS.between(target.getEmailSentAt(), now);
                 if (daysSince < 1) daysSince = 1;
 

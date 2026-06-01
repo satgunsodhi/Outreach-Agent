@@ -1181,63 +1181,7 @@
         }
       ]
     },
-    {
-      "id": "proj-llama3-hackathon",
-      "name": "Lllama3 Hackathon: Local Medical LLM Prototype",
-      "github": "https://github.com/satgunsodhi/Lllama3-hackathon",
-      "techStack": "Python, Ollama, LlamaIndex, HuggingFace Hub, Gradio, Plotly",
-      "tags": [
-        "python",
-        "ollama",
-        "llamaindex",
-        "huggingface",
-        "gradio",
-        "plotly",
-        "hackathon",
-        "local-llm",
-        "medical-ai",
-        "rapid-prototyping"
-      ],
-      "bullets": [
-        {
-          "id": "bp-lh-001",
-          "text": "Prototyped an end-to-end local medical assistant by downloading a quantized 8B-parameter med-llama model from HuggingFace, registering it in Ollama, and wiring it into LlamaIndex for offline inference.",
-          "tags": [
-            "ollama",
-            "llamaindex",
-            "local-llm",
-            "huggingface",
-            "hackathon"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-lh-002",
-          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots for the local med-LLM.",
-          "tags": [
-            "gradio",
-            "plotly",
-            "hackathon",
-            "rapid-prototyping",
-            "medical-ai"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-lh-003",
-          "text": "Delivered the prototype under hackathon time constraints using colab-xterm for Ollama process management directly from Jupyter notebooks.",
-          "tags": [
-            "hackathon",
-            "rapid-prototyping",
-            "ollama"
-          ],
-          "priority": 2,
-          "lengthCategory": "SHORT"
-        }
-      ]
-    },
+
     {
       "id": "proj-oops-trip",
       "name": "Trip Management Planner: OOP Software Design",
@@ -1356,6 +1300,62 @@
             "algorithms"
           ],
           "priority": 1,
+          "lengthCategory": "SHORT"
+        }
+      ]
+    },
+    {
+      "id": "ec-002-llama3-hackathon",
+      "organization": "Lllama3 Hackathon: Local Medical LLM Prototype",
+      "role": "Participant",
+      "tags": [
+        "python",
+        "ollama",
+        "llamaindex",
+        "huggingface",
+        "gradio",
+        "plotly",
+        "hackathon",
+        "local-llm",
+        "medical-ai",
+        "rapid-prototyping"
+      ],
+      "bullets": [
+        {
+          "id": "bp-lh-001",
+          "text": "Prototyped an end-to-end local medical assistant by downloading a quantized 8B-parameter med-llama model from HuggingFace, registering it in Ollama, and wiring it into LlamaIndex for offline inference.",
+          "tags": [
+            "ollama",
+            "llamaindex",
+            "local-llm",
+            "huggingface",
+            "hackathon"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-lh-002",
+          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots for the local med-LLM.",
+          "tags": [
+            "gradio",
+            "plotly",
+            "hackathon",
+            "rapid-prototyping",
+            "medical-ai"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-lh-003",
+          "text": "Delivered the prototype under hackathon time constraints using colab-xterm for Ollama process management directly from Jupyter notebooks.",
+          "tags": [
+            "hackathon",
+            "rapid-prototyping",
+            "ollama"
+          ],
+          "priority": 2,
           "lengthCategory": "SHORT"
         }
       ]

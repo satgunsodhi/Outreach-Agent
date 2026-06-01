@@ -146,4 +146,114 @@ public class GmailService {
         String encodedEmail = Base64.getUrlEncoder().withoutPadding().encodeToString(buffer.toByteArray());
         return new Message().setRaw(encodedEmail);
     }
+
+    /**
+     * Deletes a Gmail Draft by its ID.
+     *
+     * @param draftId the Gmail Draft ID
+     */
+    public void deleteDraft(String draftId) {
+        if (gmailClient == null || draftId == null || draftId.isBlank()) {
+            return;
+        }
+        try {
+            gmailClient.users().drafts().delete("me", draftId).execute();
+            log.info("Deleted Gmail draft: {}", draftId);
+        } catch (Exception e) {
+            log.warn("Failed to delete Gmail draft {}: {}", draftId, e.getMessage());
+        }
+    }
+
+    public enum ThreadStatus {
+        NO_SENT_EMAIL,
+        REPLIED,
+        NO_REPLY
+    }
+
+    /**
+     * Checks if a Gmail Draft is still pending (i.e. has not been sent or deleted).
+     *
+     * @param draftId the Gmail Draft ID
+     * @return {@code true} if the draft still exists in Gmail, {@code false} otherwise
+     */
+    public boolean isDraftStillPending(String draftId) {
+        if (gmailClient == null || draftId == null || draftId.isBlank()) {
+            return false;
+        }
+        try {
+            gmailClient.users().drafts().get("me", draftId).execute();
+            return true;
+        } catch (com.google.api.client.googleapis.json.GoogleJsonResponseException e) {
+            if (e.getStatusCode() == 404) {
+                return false; // Draft no longer exists
+            }
+            log.warn("Error checking draft status for {}: {}", draftId, e.getMessage());
+        } catch (Exception e) {
+            log.warn("Error checking draft status for {}: {}", draftId, e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Checks if we sent an email and if the recipient replied.
+     *
+     * @param recipientEmail the email address of the recipient
+     * @param subject        the original subject line
+     * @return a {@link ThreadStatus} indicating the status of the thread
+     */
+    public ThreadStatus checkThreadStatus(String recipientEmail, String subject) {
+        if (gmailClient == null || recipientEmail == null || recipientEmail.isBlank() || subject == null || subject.isBlank()) {
+            return ThreadStatus.NO_SENT_EMAIL;
+        }
+        try {
+            String cleanSubject = subject.replaceAll("^(?i)Re:\\s*", "");
+            String query = "to:" + recipientEmail + " subject:\"" + cleanSubject + "\"";
+            var response = gmailClient.users().threads().list("me").setQ(query).execute();
+            java.util.List<com.google.api.services.gmail.model.Thread> threads = response.getThreads();
+            if (threads == null || threads.isEmpty()) {
+                return ThreadStatus.NO_SENT_EMAIL;
+            }
+            
+            String threadId = threads.get(0).getId();
+            com.google.api.services.gmail.model.Thread thread = gmailClient.users().threads().get("me", threadId).execute();
+            java.util.List<Message> messages = thread.getMessages();
+            if (messages == null || messages.isEmpty()) {
+                return ThreadStatus.NO_SENT_EMAIL;
+            }
+            
+            boolean sentByMe = false;
+            boolean receivedReply = false;
+            for (Message msg : messages) {
+                if (msg.getPayload() == null || msg.getPayload().getHeaders() == null) {
+                    continue;
+                }
+                java.util.List<com.google.api.services.gmail.model.MessagePartHeader> headers = msg.getPayload().getHeaders();
+                String from = "";
+                for (var header : headers) {
+                    if ("From".equalsIgnoreCase(header.getName())) {
+                        from = header.getValue();
+                        break;
+                    }
+                }
+                
+                boolean isFromMe = fromAddress != null && !fromAddress.isBlank() && from.toLowerCase().contains(fromAddress.toLowerCase());
+                if (isFromMe) {
+                    sentByMe = true;
+                } else {
+                    receivedReply = true;
+                }
+            }
+            
+            if (!sentByMe) {
+                return ThreadStatus.NO_SENT_EMAIL;
+            }
+            if (receivedReply) {
+                return ThreadStatus.REPLIED;
+            }
+            return ThreadStatus.NO_REPLY;
+        } catch (Exception e) {
+            log.warn("Failed to check thread status for {}: {}", recipientEmail, e.getMessage());
+            return ThreadStatus.NO_SENT_EMAIL;
+        }
+    }
 }
