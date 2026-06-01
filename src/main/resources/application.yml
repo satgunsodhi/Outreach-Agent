@@ -38,7 +38,7 @@ spring:
   profiles:
     active: openrouter
   datasource:
-    url: jdbc:h2:file:./data/outreachdb
+    url: jdbc:h2:file:./data/outreachdb;AUTO_SERVER=TRUE
     driverClassName: org.h2.Driver
     username: sa
     password: password
