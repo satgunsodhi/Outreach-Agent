@@ -66,6 +66,7 @@ public interface ResumeAgent {
         - Target 3-4 bullet points per project/experience by default.
         - Ensure bullets sound technically authentic and follow the XYZ formula strictly.
         - For the "Reliance Industries Limited" experience (exp-001), any bullets used must be exactly verbatim from the database, but you should try to include 3-4 bullets by default, reducing to 2-3 only if needed to prevent the resume from exceeding 1 page.
+        - If the job description is extremely short, vague, or is only a job title (e.g. "AI/ML Engineering Intern"), DO NOT ask the user for clarification or more information. Assume typical skills, responsibilities, and requirements for that type of role and proceed to generate the resume, returning ONLY the generated PDF file path.
         """)
     String tailorResume(@dev.langchain4j.service.MemoryId java.util.UUID memoryId, @UserMessage String jobDescription, @dev.langchain4j.service.V("companyResearch") String companyResearch);
 }

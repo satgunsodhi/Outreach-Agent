@@ -141,9 +141,9 @@ public class OutreachSanitizer {
             return null;
         }
         String trimmed = rawPath.trim();
-        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(?:[a-zA-Z]:)?[/\\\\\\w\\.\\-]+data/generated-pdfs/resume-[\\w\\.\\-]+pdf").matcher(trimmed);
+        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("resume-[\\w\\.\\-]+pdf").matcher(trimmed);
         if (matcher.find()) {
-            return matcher.group(0).replace("\\", "/");
+            return "data/generated-pdfs/" + matcher.group(0);
         }
         
         if (trimmed.startsWith("`") && trimmed.endsWith("`")) {
