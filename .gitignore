@@ -38,3 +38,11 @@ replay_pid*
 
 targets.json
 src/main/resources/data/targets.json
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Alternative/Local Env configs
+.env.*
+!.env.example
