@@ -13,7 +13,7 @@ outreach:
     temperature: 0.2
     maxTokens: 4000
     # Comma-separated ordered list of fallback models for OpenRouter (see .env.example).
-    fallbackModels: ${OPENROUTER_FALLBACK_MODELS:nvidia/llama-3.1-nemotron-70b-instruct:free,google/gemma-3-27b-it:free,deepseek/deepseek-r1-distill-qwen-32b:free}
+    fallbackModels: ${OPENROUTER_FALLBACK_MODELS:meta-llama/llama-3.3-70b-instruct:free,google/gemma-4-31b-it:free,qwen/qwen3-coder:free}
 
 google:
   oauth:
