@@ -115,7 +115,7 @@ Edit `.env` with your actual credentials (see the table below). Example files fo
 | `OPENROUTER_MODEL_NAME` | Optional | Defaults to `openai/gpt-oss-120b:free` |
 | `GEMINI_API_KEY` | Optional | Only needed if using the `gemini` Spring profile |
 | `GMAIL_ADDRESS` | ✅ | Gmail address used as the From: header |
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | ✅ | Full contents of your OAuth 2.0 client secret JSON (see `docs/examples/credentials.json.example`) |
+| `GOOGLE_CLIENT_SECRETS_JSON` | ✅ | Full contents of your OAuth 2.0 client secret JSON (see `docs/examples/credentials.json.example`) |
 | `GOOGLE_DRIVE_FOLDER_ID` | ✅ | Target Drive folder ID for resume uploads |
 | `GOOGLE_DRIVE_TOKENS_DIR` | Optional | Path to store OAuth tokens (default: `tokens/`) |
 | `GOOGLE_REFRESH_TOKEN` | Optional | Refresh token for headless CI batch mode |
@@ -133,7 +133,7 @@ The application uses **OAuth 2.0 (Installed App)** for Drive access. On first ru
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/) → **APIs & Services** → **Library** → Enable **Google Drive API**
 2. Go to **Credentials** → **Create Credentials** → **OAuth client ID** → Application type: **Desktop app**
-3. Download the JSON, copy its full contents into `GOOGLE_SERVICE_ACCOUNT_JSON` in your `.env`
+3. Download the JSON, copy its full contents into `GOOGLE_CLIENT_SECRETS_JSON` in your `.env`
 4. **Run the app locally once** to complete the browser-based authorization flow
 5. The `tokens/` directory is then populated with the `StoredCredential` file
 
@@ -142,7 +142,7 @@ The application uses **OAuth 2.0 (Installed App)** for Drive access. On first ru
 
 ### 3.1 CI Batch Mode (Optional)
 
-Set `CI_BATCH_MODE=true` and provide `TARGETS_FILE` to load targets from a JSON file and run a one-shot batch. For headless runs, set `GOOGLE_REFRESH_TOKEN` and keep `GOOGLE_SERVICE_ACCOUNT_JSON` configured.
+Set `CI_BATCH_MODE=true` and provide `TARGETS_FILE` to load targets from a JSON file and run a one-shot batch. For headless runs, set `GOOGLE_REFRESH_TOKEN` and keep `GOOGLE_CLIENT_SECRETS_JSON` configured.
 
 ### 3.2 Production Database (Optional)
 

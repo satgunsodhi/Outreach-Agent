@@ -66,7 +66,7 @@ public class GoogleOAuthService {
     public void init() {
         if (oauthClientSecretJson == null || oauthClientSecretJson.isBlank()) {
             log.warn("OAuth2 client secret JSON not configured " +
-                    "(GOOGLE_SERVICE_ACCOUNT_JSON in .env). Drive uploads and Gmail drafts will be disabled.");
+                    "(GOOGLE_CLIENT_SECRETS_JSON in .env). Drive uploads and Gmail drafts will be disabled.");
             return;
         }
 
