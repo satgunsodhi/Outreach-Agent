@@ -76,6 +76,55 @@ public class BatchOutreachService {
         this.fileManager = fileManager;
     }
 
+    @jakarta.annotation.PostConstruct
+    @org.springframework.transaction.annotation.Transactional
+    public void cleanDatabaseAndResetFailedTargetsOnStartup() {
+        // 1. Reset all FAILED targets to PENDING or DRAFT_CREATED
+        List<OutreachTarget> failedTargets = targetRepository.findByStatusOrderByIdAsc(TargetStatus.FAILED);
+        if (!failedTargets.isEmpty()) {
+            log.info("Found {} failed targets on startup. Resetting them for retry.", failedTargets.size());
+            for (OutreachTarget target : failedTargets) {
+                if (target.getDraftedCoverLetter() != null && !target.getDraftedCoverLetter().trim().isEmpty()) {
+                    // It failed during follow-up; reset back to DRAFT_CREATED to retry follow-up
+                    target.setStatus(TargetStatus.DRAFT_CREATED);
+                } else {
+                    // It failed during initial processing; reset to PENDING
+                    target.setStatus(TargetStatus.PENDING);
+                }
+                target.setRetryCount(0);
+                target.setClaimToken(null); // Clear claim token
+                target.setErrorReason(null);
+                targetRepository.save(target);
+            }
+        }
+
+        // 2. Revert any PROCESSING targets to PENDING (since this is a fresh startup, nothing is actively processing yet)
+        List<OutreachTarget> processingTargets = targetRepository.findByStatusOrderByIdAsc(TargetStatus.PROCESSING);
+        if (!processingTargets.isEmpty()) {
+            log.info("Found {} targets in PROCESSING on startup. Reverting them to PENDING.", processingTargets.size());
+            for (OutreachTarget target : processingTargets) {
+                target.setStatus(TargetStatus.PENDING);
+                target.setClaimToken(null); // Clear claim token
+                target.setErrorReason("Stall recovery: App restarted while target was in PROCESSING.");
+                targetRepository.save(target);
+            }
+        }
+
+        // 3. Clear claimToken for any PENDING targets that still have one set
+        List<OutreachTarget> pendingTargets = targetRepository.findByStatusOrderByIdAsc(TargetStatus.PENDING);
+        int clearedCount = 0;
+        for (OutreachTarget target : pendingTargets) {
+            if (target.getClaimToken() != null) {
+                target.setClaimToken(null);
+                targetRepository.save(target);
+                clearedCount++;
+            }
+        }
+        if (clearedCount > 0) {
+            log.info("Cleared claim token for {} PENDING targets on startup.", clearedCount);
+        }
+    }
+
     /**
      * Runs at startup (after a 30-second delay) and every 10 minutes thereafter.
      * Only recovers targets that have been stuck in PROCESSING for more than 15 minutes,
@@ -220,6 +269,7 @@ public class BatchOutreachService {
                 target.setGeneratedPdfPath(null);
                 target.setDraftedCoverLetter(coverLetterBody);
                 target.setSubject(subject);
+                target.setGmailDraftId(draftId);
                 target.setStatus(TargetStatus.DRAFT_CREATED);
                 target.setDraftCreatedAt(LocalDateTime.now());
                 target.setFollowUpScheduledAt(workingDayCalculator.calculateNextWorkingDay8AmIst());

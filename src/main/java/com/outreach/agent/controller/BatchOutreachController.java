@@ -39,6 +39,8 @@ public class BatchOutreachController {
                 
         for (OutreachTarget target : testTargets) {
             target.setStatus(TargetStatus.PENDING);
+            target.setClaimToken(null);
+            target.setRetryCount(0);
             target.setErrorReason(null);
             target.setDraftedCoverLetter(null);
             target.setSubject(null);
