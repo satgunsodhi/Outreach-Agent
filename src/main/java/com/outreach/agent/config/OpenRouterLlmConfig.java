@@ -39,30 +39,67 @@ public class OpenRouterLlmConfig {
                 .requestInterceptor(new OpenRouterInterceptor(llmProperties.getFallbackModels()));
     }
 
-    private OpenAiChatModel.OpenAiChatModelBuilder baseChatModelBuilder() {
+    private ChatModel createChatModelWithFallbacks(String primaryModel, double temperature, int maxTokens) {
         boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
-        return OpenAiChatModel.builder()
+        java.util.List<ChatModel> models = new java.util.ArrayList<>();
+        
+        // Add primary model
+        models.add(OpenAiChatModel.builder()
                 .baseUrl("https://openrouter.ai/api/v1")
                 .apiKey(llmProperties.getOpenRouterApiKey())
-                .modelName(llmProperties.getOpenRouterModelName())
+                .modelName(primaryModel)
+                .temperature(temperature)
+                .maxTokens(maxTokens)
                 .logRequests(isTrace)
-                .logResponses(isTrace);
+                .logResponses(isTrace)
+                .build());
+
+        // Add fallback models
+        for (String fallback : llmProperties.getFallbackModels()) {
+            if (!fallback.equals(primaryModel)) {
+                models.add(OpenAiChatModel.builder()
+                        .baseUrl("https://openrouter.ai/api/v1")
+                        .apiKey(llmProperties.getOpenRouterApiKey())
+                        .modelName(fallback)
+                        .temperature(temperature)
+                        .maxTokens(maxTokens)
+                        .logRequests(isTrace)
+                        .logResponses(isTrace)
+                        .build());
+            }
+        }
+
+        // Return a proxy that tries each model in order
+        return (ChatModel) java.lang.reflect.Proxy.newProxyInstance(
+                ChatModel.class.getClassLoader(),
+                new Class<?>[]{ChatModel.class},
+                (proxy, method, args) -> {
+                    Exception lastException = null;
+                    for (int i = 0; i < models.size(); i++) {
+                        ChatModel model = models.get(i);
+                        try {
+                            return method.invoke(model, args);
+                        } catch (java.lang.reflect.InvocationTargetException e) {
+                            lastException = (Exception) e.getCause();
+                            org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
+                                    .warn("OpenRouter fallback: Model {} failed with {}, trying next...", i, lastException.getMessage());
+                        } catch (Exception e) {
+                            lastException = e;
+                        }
+                    }
+                    throw lastException != null ? lastException : new RuntimeException("No models available");
+                }
+        );
     }
 
     @Bean("resumeChatModel")
     public ChatModel resumeChatModel() {
-        return baseChatModelBuilder()
-                .temperature(0.1) // strictly deterministic for resumes
-                .maxTokens(8000)  // higher token limit to avoid truncation
-                .build();
+        return createChatModelWithFallbacks(llmProperties.getOpenRouterModelName(), 0.1, 8000);
     }
 
     @Bean("writingChatModel")
     @org.springframework.context.annotation.Primary
     public ChatModel openRouterChatModel() {
-        return baseChatModelBuilder()
-                .temperature(llmProperties.getTemperature())
-                .maxTokens(llmProperties.getMaxTokens())
-                .build();
+        return createChatModelWithFallbacks(llmProperties.getOpenRouterModelName(), llmProperties.getTemperature(), llmProperties.getMaxTokens());
     }
 }

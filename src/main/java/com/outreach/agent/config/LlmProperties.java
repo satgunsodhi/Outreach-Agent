@@ -14,7 +14,7 @@ public class LlmProperties {
     private Integer maxTokens = 4000;
     /** Ordered list of fallback model IDs tried after the primary model returns a 503. */
     private List<String> fallbackModels = List.of(
-            "nvidia/llama-3.1-nemotron-ultra-253b:free",
+            "nvidia/llama-3.1-nemotron-70b-instruct:free",
             "google/gemma-3-27b-it:free",
             "deepseek/deepseek-r1-distill-qwen-32b:free"
     );
