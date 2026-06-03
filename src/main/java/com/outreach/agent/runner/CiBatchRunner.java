@@ -58,7 +58,7 @@ public class CiBatchRunner implements ApplicationRunner {
         log.info("==================================================");
 
         if (!googleOAuthService.isAvailable()) {
-            log.error("Google OAuth Service is not available. Check GOOGLE_REFRESH_TOKEN and GOOGLE_SERVICE_ACCOUNT_JSON.");
+            log.error("Google OAuth Service is not available. Check GOOGLE_REFRESH_TOKEN and GOOGLE_CLIENT_SECRETS_JSON.");
             System.exit(SpringApplication.exit(context, () -> 1));
             return;
         }
