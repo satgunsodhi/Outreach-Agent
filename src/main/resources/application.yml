@@ -23,6 +23,7 @@ google:
 
 app:
   ci-batch-mode: ${CI_BATCH_MODE:false}
+  delay-between-targets-ms: ${DELAY_BETWEEN_TARGETS_MS:10000}
   targets-file: ${TARGETS_FILE:targets.json}
   followups:
     enabled: ${ENABLE_FOLLOWUPS:false}
@@ -58,3 +59,4 @@ logging:
   level:
     root: INFO
     com.outreach.agent: ${APP_LOG_LEVEL:INFO}
+    dev.langchain4j.internal.RetryUtils: ERROR

@@ -46,6 +46,9 @@ public class BatchOutreachService {
     @Value("${app.ci-batch-mode:false}")
     private boolean ciBatchMode;
 
+    @Value("${app.delay-between-targets-ms:10000}")
+    private long delayBetweenTargetsMs;
+
     @Value("${app.followups.enabled:false}")
     private boolean followupsEnabled;
 
@@ -129,8 +132,15 @@ public class BatchOutreachService {
             fileManager.cleanOrphanedPdfs();
         }
 
+        boolean first = true;
         for (OutreachTarget target : targets) {
             try {
+                if (!first && delayBetweenTargetsMs > 0) {
+                    log.info("Sleeping for {} ms to respect rate limits...", delayBetweenTargetsMs);
+                    Thread.sleep(delayBetweenTargetsMs);
+                }
+                first = false;
+
                 log.debug("Starting processing for target: {}", target.getCompanyName());
                 log.info("Starting processing for target ID: {}", target.getId());
 
@@ -311,8 +321,13 @@ public class BatchOutreachService {
             targetRepository.save(target);
             log.debug("Permanently failed target {} after {} retries: {}",
                     target.getCompanyName(), MAX_RETRIES, e.getMessage(), e);
-            log.error("Permanently failed target ID: {} after {} retries: {}",
-                    target.getId(), MAX_RETRIES, e.getMessage(), e);
+            if (e instanceof dev.langchain4j.exception.HttpException || e.getCause() instanceof dev.langchain4j.exception.HttpException) {
+                log.error("Permanently failed target ID: {} after {} retries due to HTTP/RateLimit error: {}",
+                        target.getId(), MAX_RETRIES, e.getMessage());
+            } else {
+                log.error("Permanently failed target ID: {} after {} retries: {}",
+                        target.getId(), MAX_RETRIES, e.getMessage(), e);
+            }
         }
     }
 }
