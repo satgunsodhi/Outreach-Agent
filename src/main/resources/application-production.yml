@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DATABASE_URL:}
-    username: ${DATABASE_USERNAME:}
-    password: ${DATABASE_PASSWORD:}
+    url: ${DATABASE_URL}          # Fix #H: no default — fail fast if env var is missing rather than silently falling back to H2
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driverClassName: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -10,4 +10,6 @@ spring:
       ddl-auto: update
   h2:
     console:
-      enabled: false
+      enabled: false              # Redundant but explicit — H2 console must never be reachable in production
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.h2.H2ConsoleAutoConfiguration

@@ -12,6 +12,8 @@ outreach:
     openRouterModelName: ${OPENROUTER_MODEL_NAME:openai/gpt-oss-120b:free}
     temperature: 0.2
     maxTokens: 4000
+    # Comma-separated ordered list of fallback models for OpenRouter (see .env.example).
+    fallbackModels: ${OPENROUTER_FALLBACK_MODELS:nvidia/llama-3.1-nemotron-ultra-253b:free,google/gemma-3-27b-it:free,deepseek/deepseek-r1-distill-qwen-32b:free}
 
 google:
   oauth:

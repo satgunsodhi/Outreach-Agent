@@ -17,10 +17,11 @@ import java.util.Map;
 @Service
 public class PdfGeneratorService {
 
+    /** Fix #8: wraps xhtml + fill% in a single record so both are updated atomically via one volatile write. */
+    private record RenderResult(String xhtml, int fillPercent) {}
+    private volatile RenderResult lastRenderResult = null;
+
     private final TemplateEngine templateEngine;
-    /** Cached XHTML from the most recent generatePdf call (for fill-% measurement). */
-    private volatile String lastRenderedXhtml;
-    private volatile int lastRenderedFillPercent = -1;
 
     public PdfGeneratorService(TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
@@ -28,12 +29,14 @@ public class PdfGeneratorService {
 
     /** Returns the XHTML produced by the most recent generatePdf() call, or null. */
     public String getLastRenderedXhtml() {
-        return lastRenderedXhtml;
+        RenderResult r = lastRenderResult;
+        return r != null ? r.xhtml() : null;
     }
 
-    /** Returns the fill percentage of the most recent generatePdf() call. */
+    /** Returns the fill percentage of the most recent generatePdf() call, or -1 if not yet generated. */
     public int getLastRenderedFillPercent() {
-        return lastRenderedFillPercent;
+        RenderResult r = lastRenderResult;
+        return r != null ? r.fillPercent() : -1;
     }
 
     /**
@@ -209,7 +212,6 @@ public class PdfGeneratorService {
                 .prettyPrint(false)
                 .charset(java.nio.charset.StandardCharsets.UTF_8);
         String xhtml = document.html();
-        this.lastRenderedXhtml = xhtml; // cache for fill-% measurement
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
@@ -219,7 +221,8 @@ public class PdfGeneratorService {
             // Calculate fill percentage using the renderer's layout state
             double usableHeight = (297.0 / 25.4 - 0.25 - 0.25) * 72.0; // ≈ 806pt for A4 with margins
             double contentPt = (renderer.getRootBox().getHeight() / (double) renderer.getSharedContext().getDotsPerPixel()) * (72.0 / 96.0);
-            this.lastRenderedFillPercent = Math.max(0, (int) Math.round((contentPt / usableHeight) * 100.0));
+            // Fix #8: write both fields atomically as a single record reference
+            this.lastRenderResult = new RenderResult(xhtml, Math.max(0, (int) Math.round((contentPt / usableHeight) * 100.0)));
 
             renderer.createPDF(outputStream);
             return outputStream.toByteArray();

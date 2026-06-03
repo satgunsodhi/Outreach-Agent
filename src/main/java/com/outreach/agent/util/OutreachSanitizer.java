@@ -105,8 +105,10 @@ public class OutreachSanitizer {
     }
 
     private String replaceCompanyPlaceholders(String text, String companyName) {
+        // Fix #7: only replace genuine company placeholders here.
+        // [Role] and [Position] are role/title placeholders — replacing them with companyName produces nonsense.
         text = Pattern.compile(
-                "\\[(?:Company(?:\\s+Name)?|Role|Position|Job\\s+Title)\\]",
+                "\\[(?:Company(?:\\s+Name)?)\\]",
                 Pattern.CASE_INSENSITIVE).matcher(text).replaceAll(companyName);
         text = Pattern.compile(
                 "<(?:COMPANY_NAME|Company(?:\\s+Name)?)>",
@@ -140,12 +142,9 @@ public class OutreachSanitizer {
         if (rawPath == null) {
             return null;
         }
+        // Fix #D: strip surrounding quotes/backticks BEFORE running the filename regex
+        // so that `resume-xyz.pdf` is handled the same as resume-xyz.pdf.
         String trimmed = rawPath.trim();
-        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("resume-[\\w\\.\\-]+pdf").matcher(trimmed);
-        if (matcher.find()) {
-            return "data/generated-pdfs/" + matcher.group(0);
-        }
-        
         if (trimmed.startsWith("`") && trimmed.endsWith("`")) {
             trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
         }
@@ -155,6 +154,12 @@ public class OutreachSanitizer {
         if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
             trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
         }
+
+        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("resume-[\\w\\.\\-]+pdf").matcher(trimmed);
+        if (matcher.find()) {
+            return "data/generated-pdfs/" + matcher.group(0);
+        }
+
         return trimmed.trim().replace("\\", "/");
     }
 }

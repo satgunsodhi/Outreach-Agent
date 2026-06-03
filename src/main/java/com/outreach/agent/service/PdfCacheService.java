@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -85,25 +84,31 @@ public class PdfCacheService {
         }
     }
 
+    // Fix #F: MessageDigest is not thread-safe, so we use a ThreadLocal to avoid re-instantiating it on every call.
+    private static final ThreadLocal<java.security.MessageDigest> SHA256 = ThreadLocal.withInitial(() -> {
+        try {
+            return java.security.MessageDigest.getInstance("SHA-256");
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 not available", e);
+        }
+    });
+
     private String computeHash(String jobDescription, String companyResearch) {
         String jd = jobDescription != null ? jobDescription.toLowerCase().trim() : "";
         String cr = companyResearch != null ? companyResearch.toLowerCase().trim() : "";
         String combined = jd + "|" + cr;
 
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedhash = digest.digest(combined.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder(2 * encodedhash.length);
-            for (byte b : encodedhash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
+        java.security.MessageDigest digest = SHA256.get();
+        digest.reset();
+        byte[] encodedhash = digest.digest(combined.getBytes(StandardCharsets.UTF_8));
+        StringBuilder hexString = new StringBuilder(2 * encodedhash.length);
+        for (byte b : encodedhash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
             }
-            return hexString.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to compute SHA-256 hash", e);
+            hexString.append(hex);
         }
+        return hexString.toString();
     }
 }

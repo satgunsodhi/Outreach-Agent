@@ -87,14 +87,16 @@ public class DocumentGeneratorTool {
             }
 
             try {
-                String debugJson = objectMapper.writeValueAsString(templateData);
+                // Fix #E: write per-generation debug files with a timestamp so batch runs don't overwrite each other.
                 java.nio.file.Path debugDir = java.nio.file.Path.of("data/debug");
-                if (!java.nio.file.Files.exists(debugDir)) {
-                    java.nio.file.Files.createDirectories(debugDir);
+                if (java.nio.file.Files.exists(debugDir)) {
+                    String timestamp = java.time.LocalDateTime.now()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
+                    String debugJson = objectMapper.writeValueAsString(templateData);
+                    java.nio.file.Files.writeString(
+                            debugDir.resolve("selected_data_" + timestamp + ".json"),
+                            debugJson);
                 }
-                java.nio.file.Files.writeString(
-                        debugDir.resolve("last_selected_data.json"),
-                        debugJson);
             } catch (Exception ex) {
                 // Ignore write failure of debug file
             }

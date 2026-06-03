@@ -28,14 +28,17 @@ public class ResearchCacheService {
             return "No specific research provided.";
         }
 
-        CacheEntry cached = researchCache.compute(cacheKey, (key, existing) -> {
-            if (existing != null && existing.timestamp().isAfter(LocalDateTime.now().minusHours(24))) {
-                log.debug("Using cached research for {}", key);
-                return existing;
-            }
-            log.debug("Fetching new research for {}", key);
-            return new CacheEntry(researchAgent.researchCompany(key), LocalDateTime.now());
-        });
-        return cached.research();
+        // Fix #4: check cache without holding any lock, only enter a write-path when a miss occurs.
+        // Using compute() would hold a per-bucket lock for the entire duration of the blocking LLM call.
+        CacheEntry cached = researchCache.get(cacheKey);
+        if (cached != null && cached.timestamp().isAfter(LocalDateTime.now().minusHours(24))) {
+            log.debug("Using cached research for {}", cacheKey);
+            return cached.research();
+        }
+
+        log.debug("Fetching new research for {}", cacheKey);
+        String research = researchAgent.researchCompany(cacheKey);
+        researchCache.put(cacheKey, new CacheEntry(research, LocalDateTime.now()));
+        return research;
     }
 }

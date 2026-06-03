@@ -37,4 +37,9 @@ jobs:
           GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
         run: |
           touch .env
-          java -jar target/outreach-agent-*.jar
+          JAR=$(ls target/outreach-agent-*.jar 2>/dev/null | head -1)
+          if [ -z "$JAR" ]; then
+            echo "ERROR: outreach-agent JAR not found in target/. Build may have failed." >&2
+            exit 1
+          fi
+          java -jar "$JAR"

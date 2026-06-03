@@ -64,6 +64,7 @@ public class BatchOutreachController {
         campaign.setStatus(CampaignStatus.ACTIVE);
         campaignRepository.save(campaign);
 
+        long addedCount = 0;
         for (TargetDto dto : request.getTargets()) {
             if (targetRepository.existsByCompanyNameAndRecipientEmail(dto.getCompanyName(), dto.getRecipientEmail())) {
                 continue; // Skip duplicate targets
@@ -76,11 +77,17 @@ public class BatchOutreachController {
             target.setJobDescription(dto.getJobDescription());
             target.setStatus(TargetStatus.PENDING);
             targetRepository.save(target);
+            addedCount++;
         }
 
-        long addedCount = targetRepository.findAll().stream()
-                .filter(t -> t.getCampaign() != null && t.getCampaign().getId().equals(campaign.getId()))
-                .count();
+        // Fix A: clean up the campaign record if every target was a duplicate
+        if (addedCount == 0) {
+            campaignRepository.delete(campaign);
+            return ResponseEntity.ok(Map.of(
+                    "message", "All targets already exist — no new targets were added.",
+                    "totalTargets", 0
+            ));
+        }
 
         return ResponseEntity.ok(Map.of(
                 "message", "Batch outreach scheduled successfully.",

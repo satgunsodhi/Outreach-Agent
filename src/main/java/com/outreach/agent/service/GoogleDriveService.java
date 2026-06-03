@@ -149,27 +149,11 @@ public class GoogleDriveService {
     }
 
     private String fallbackLocalCopy(String localPdfPath) {
-        try {
-            Path source = Paths.get(localPdfPath);
-            if (!Files.exists(source)) {
-                throw new IllegalArgumentException("Source PDF file does not exist: " + localPdfPath);
-            }
-
-            Path driveDir = Paths.get("data/google-drive-fallback");
-            if (!Files.exists(driveDir)) {
-                Files.createDirectories(driveDir);
-            }
-
-            String fileId = java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 16);
-            String fileName = "Resume_" + fileId + ".pdf";
-            Path target = driveDir.resolve(fileName);
-            Files.copy(source, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-
-            log.debug("FALLBACK: Copied locally to {}", target.toAbsolutePath());
-            return "https://drive.google.com/file/d/FALLBACK_" + fileId + "/view?usp=sharing";
-        } catch (IOException e) {
-            log.error("Fallback failed: {}", e.getMessage());
-            return "https://drive.google.com/file/d/ERROR_NO_DRIVE_LINK/view?usp=sharing";
-        }
+        // Fix #9: do NOT return a fake drive.google.com URL — it will 404 for any recruiter who clicks it.
+        // Instead, throw so the caller (BatchOutreachService) can retry or mark the target FAILED cleanly.
+        throw new IllegalStateException(
+                "Google Drive is unavailable and no fallback URL can be safely embedded in an outreach email. " +
+                "Check GOOGLE_CLIENT_SECRETS_JSON / GOOGLE_REFRESH_TOKEN configuration. " +
+                "Local path that would have been used: " + localPdfPath);
     }
 }

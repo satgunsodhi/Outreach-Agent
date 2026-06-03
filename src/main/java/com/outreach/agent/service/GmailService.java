@@ -126,7 +126,7 @@ public class GmailService {
     private MimeMessage buildMimeMessage(String to, String subject, String body)
             throws MessagingException {
         Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
+        Session session = Session.getInstance(props, null); // Fix #C: getDefaultInstance is deprecated and JVM-shared
 
         MimeMessage email = new MimeMessage(session);
         if (fromAddress != null && !fromAddress.isBlank()) {
@@ -215,44 +215,47 @@ public class GmailService {
             if (threads == null || threads.isEmpty()) {
                 return ThreadStatus.NO_SENT_EMAIL;
             }
-            
-            String threadId = threads.get(0).getId();
-            com.google.api.services.gmail.model.Thread thread = gmailClient.users().threads().get("me", threadId).execute();
-            java.util.List<Message> messages = thread.getMessages();
-            if (messages == null || messages.isEmpty()) {
-                return ThreadStatus.NO_SENT_EMAIL;
-            }
-            
-            boolean sentByMe = false;
-            boolean receivedReply = false;
-            for (Message msg : messages) {
-                if (msg.getPayload() == null || msg.getPayload().getHeaders() == null) {
+
+            // Fix #6: iterate all matching threads to find one where we are the sender,
+            // instead of blindly using threads.get(0) which may be an inbound thread.
+            for (com.google.api.services.gmail.model.Thread rawThread : threads) {
+                com.google.api.services.gmail.model.Thread thread =
+                        gmailClient.users().threads().get("me", rawThread.getId()).execute();
+                java.util.List<Message> messages = thread.getMessages();
+                if (messages == null || messages.isEmpty()) {
                     continue;
                 }
-                java.util.List<com.google.api.services.gmail.model.MessagePartHeader> headers = msg.getPayload().getHeaders();
-                String from = "";
-                for (var header : headers) {
-                    if ("From".equalsIgnoreCase(header.getName())) {
-                        from = header.getValue();
-                        break;
+
+                boolean sentByMe = false;
+                boolean receivedReply = false;
+                for (Message msg : messages) {
+                    if (msg.getPayload() == null || msg.getPayload().getHeaders() == null) {
+                        continue;
+                    }
+                    java.util.List<com.google.api.services.gmail.model.MessagePartHeader> headers = msg.getPayload().getHeaders();
+                    String from = "";
+                    for (var header : headers) {
+                        if ("From".equalsIgnoreCase(header.getName())) {
+                            from = header.getValue();
+                            break;
+                        }
+                    }
+
+                    boolean isFromMe = fromAddress != null && !fromAddress.isBlank() && from.toLowerCase().contains(fromAddress.toLowerCase());
+                    if (isFromMe) {
+                        sentByMe = true;
+                    } else {
+                        receivedReply = true;
                     }
                 }
-                
-                boolean isFromMe = fromAddress != null && !fromAddress.isBlank() && from.toLowerCase().contains(fromAddress.toLowerCase());
-                if (isFromMe) {
-                    sentByMe = true;
-                } else {
-                    receivedReply = true;
+
+                if (sentByMe) {
+                    return receivedReply ? ThreadStatus.REPLIED : ThreadStatus.NO_REPLY;
                 }
+                // sentByMe == false for this thread: it's an inbound-only thread, keep searching
             }
-            
-            if (!sentByMe) {
-                return ThreadStatus.NO_SENT_EMAIL;
-            }
-            if (receivedReply) {
-                return ThreadStatus.REPLIED;
-            }
-            return ThreadStatus.NO_REPLY;
+
+            return ThreadStatus.NO_SENT_EMAIL;
         } catch (Exception e) {
             log.warn("Failed to check thread status for {}: {}", recipientEmail, e.getMessage());
             return ThreadStatus.NO_SENT_EMAIL;
