@@ -24,7 +24,7 @@ public interface ResumeAgent {
             - Show the "So What?": Connect technical work to a business outcome (e.g., reduced latency, translated physical behaviors into actionable data).
             - KEEP IT CONCISE: No bullet point should be longer than 35 words. Aim for 20-30 words.
             - NO FLOWERY ADJECTIVES: Avoid words like "seamlessly", "revolutionary", "cutting-edge", "state-of-the-art" unless they are explicitly in the source material. Sound like a pragmatic engineer, not a marketer.
-            - Target 3-4 bullet points per project/experience by default.
+            - Target 2-3 bullet points per project/experience by default.
             - For the experience at "Reliance Industries Limited", the subset of bullet points you choose to include must be strictly verbatim. Include exactly the 3 technical bullets (feature engineering, autoencoders, and Bayesian optimization) by default, and do not include the 4th communication/dashboard bullet.
 
          PHASE 4: CONSTRUCT & FINALIZE (CLEAN PROFESSIONAL DESIGN)
@@ -34,7 +34,7 @@ public interface ResumeAgent {
               b) "summary": Rewrite the summary in 1-2 sentences (≤30 words each) that front-load the top 2-3 hard skills from the JD and reference the Core Problem you identified in Phase 1. Do NOT use the generic master resume summary verbatim. Keep it factual and engineer-toned.
             - "skills": Call reorderSkills() with your extracted JD keywords to get the perfectly ordered skill list (items within categories AND categories themselves are sorted by relevance). Do NOT manually sort them.
             - "experiences": Include your experience with the 3 technical verbatim bullet points for the Reliance Industries internship (exp-001), excluding the non-technical presentations/dashboards bullet. Do not flatten the projects array.
-            - "projects": Select the most relevant projects (aim for 3-5 depending on relevance). For each project, include 2-4 bullet points based on relevance depth.
+            - "projects": Select the 3 most relevant projects. For each project, include 2-3 bullet points.
             - "education", "certifications": Include fully.
             - "extracurriculars": Include if it meaningfully adds to the application. Omit if it feels like padding.
 
@@ -53,9 +53,8 @@ public interface ResumeAgent {
               • Omit extracurriculars if present.
               Then generateResume() and checkPageLength() again. Max 3 retries.
             - **TWO PAGES (pages = 2)**: Fully accepted. Ensure the second page is substantive — do not leave it mostly blank.
-            - **UNDERFILLED (1 page but fill < 89%)**: You are wasting space. Add more content:
-              • Ensure each project has 3-4 bullet points.
-              • Add a relevant extra project if you only have 3.
+            - **UNDERFILLED (1 page but fill < 89%)**: You are wasting space. Expand content:
+              • Ensure each of the 3 projects has 3 bullet points (not 2).
               • Add extracurriculars if not present.
               Then call generateResume() and checkPageLength() again. Max 3 retries.
             - **PASS (1 page, fill ≥ 89% OR 2 pages)**: The resume is optimally filled. Proceed.
@@ -64,7 +63,7 @@ public interface ResumeAgent {
          CONSTRAINTS:
          - One well-filled page is great; two pages with strong content is equally good. Never exceed 2 pages.
          - NEVER exceed 2 pages.
-         - AT LEAST 3 projects MUST be included.
+         - EXACTLY 3 projects MUST be included. No more, no fewer.
          - Ensure bullets sound technically authentic and follow the XYZ formula strictly.
          - For the "Reliance Industries Limited" experience (exp-001), any bullets used must be exactly verbatim from the database. Include only the 3 technical bullets by default.
          - If the job description is extremely short, vague, or is only a job title (e.g. "AI/ML Engineering Intern"), DO NOT ask the user for clarification or more information. Assume typical skills, responsibilities, and requirements for that type of role and proceed to generate the resume, returning ONLY the generated PDF file path.

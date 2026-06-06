@@ -116,44 +116,28 @@ public class DocumentGeneratorTool {
                     log.info("After Step 1 (remove extracurriculars): {} pages", pageCount);
                 }
 
-                // Step 2: Reduce bullets per project/experience project to max 3
-                if (reduceBullets(templateData, 3)) {
+                // Step 2: Cut bullets to max 2 per project (baseline is 2-3, so this is the first trim)
+                if (pageCount > 2 && reduceBullets(templateData, 2)) {
                     pdfBytes = pdfGeneratorService.generatePdf(templateData);
                     pageCount = pdfGeneratorService.countPages(pdfBytes);
-                    log.info("After Step 2 (max 3 bullets): {} pages", pageCount);
+                    log.info("After Step 2 (max 2 bullets): {} pages", pageCount);
                 }
 
-                // Step 3: Reduce independent projects to max 3
-                if (pageCount > 1) {
-                    if (reduceProjects(templateData, 3)) {
-                        pdfBytes = pdfGeneratorService.generatePdf(templateData);
-                        pageCount = pdfGeneratorService.countPages(pdfBytes);
-                        log.info("After Step 3 (max 3 projects): {} pages", pageCount);
-                    }
-                }
-
-                // Step 4: Reduce bullets per project/experience project to max 2
-                if (pageCount > 1 && reduceBullets(templateData, 2)) {
-                    pdfBytes = pdfGeneratorService.generatePdf(templateData);
-                    pageCount = pdfGeneratorService.countPages(pdfBytes);
-                    log.info("After Step 4 (max 2 bullets): {} pages", pageCount);
-                }
-
-                // Step 5: Trim skills list to max 12 per category
-                if (pageCount > 1) {
+                // Step 3: Trim skills list to max 12 per category
+                if (pageCount > 2) {
                     if (trimSkills(templateData, 12)) {
                         pdfBytes = pdfGeneratorService.generatePdf(templateData);
                         pageCount = pdfGeneratorService.countPages(pdfBytes);
-                        log.info("After Step 5 (trim skills): {} pages", pageCount);
+                        log.info("After Step 3 (trim skills): {} pages", pageCount);
                     }
                 }
 
-                // Step 6: Reduce independent projects to max 2
+                // Step 4: Last resort — drop to 2 projects (should rarely fire given 3 is the baseline)
                 if (pageCount > 2) {
                     if (reduceProjects(templateData, 2)) {
                         pdfBytes = pdfGeneratorService.generatePdf(templateData);
                         pageCount = pdfGeneratorService.countPages(pdfBytes);
-                        log.info("After Step 6 (max 2 projects): {} pages", pageCount);
+                        log.info("After Step 4 (max 2 projects): {} pages", pageCount);
                     }
                 }
             }
