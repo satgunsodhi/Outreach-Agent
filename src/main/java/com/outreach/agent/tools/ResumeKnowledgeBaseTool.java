@@ -28,7 +28,7 @@ public class ResumeKnowledgeBaseTool {
         }
     }
 
-    @Tool("Reorder the items within each skill category so the skills most relevant to the provided JD keywords appear first. Returns the reordered skills list.")
+    @Tool("Reorder the items within each skill category so the skills most relevant to the provided JD keywords appear first. Also reorders skill categories themselves so the most relevant category appears first. Returns the reordered skills list.")
     public String reorderSkills(List<String> keywords) {
         try {
             var skills = masterResumeService.getMasterResume().skills();
@@ -36,6 +36,8 @@ public class ResumeKnowledgeBaseTool {
                 return objectMapper.writeValueAsString(skills);
             }
             List<String> lowerKeywords = keywords.stream().map(String::toLowerCase).toList();
+
+            // Step 1: sort items within each category by keyword match
             var reordered = skills.stream().map(category -> {
                 List<String> sortedItems = new java.util.ArrayList<>(category.items());
                 sortedItems.sort((a, b) -> {
@@ -46,7 +48,19 @@ public class ResumeKnowledgeBaseTool {
                     return 0; // maintain original relative order
                 });
                 return new com.outreach.agent.model.SkillCategory(category.category(), sortedItems);
-            }).toList();
+            }).collect(java.util.stream.Collectors.toCollection(java.util.ArrayList::new));
+
+            // Step 2: sort categories themselves by how many of their items match JD keywords
+            reordered.sort((catA, catB) -> {
+                long aMatches = catA.items().stream()
+                        .filter(item -> lowerKeywords.stream().anyMatch(item.toLowerCase()::contains))
+                        .count();
+                long bMatches = catB.items().stream()
+                        .filter(item -> lowerKeywords.stream().anyMatch(item.toLowerCase()::contains))
+                        .count();
+                return Long.compare(bMatches, aMatches); // descending
+            });
+
             return objectMapper.writeValueAsString(reordered);
         } catch (Exception e) {
             return "{\"error\": \"Failed to reorder skills: " + e.getMessage() + "\"}";

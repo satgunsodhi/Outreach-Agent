@@ -29,8 +29,10 @@ public interface ResumeAgent {
 
          PHASE 4: CONSTRUCT & FINALIZE (CLEAN PROFESSIONAL DESIGN)
          7. Construct the final JSON using standard section headers.
-            - "personalInfo": Use from search results.
-            - "skills": Call reorderSkills() with your extracted JD keywords to get the perfectly ordered skill list. Do NOT manually sort them.
+            - "personalInfo": Use from search results. You MUST add two extra fields:
+              a) "tagline": A concise 2-5 word role descriptor mirroring the JD's job title family (e.g. "ML / LLM Infrastructure Engineer", "Computer Vision Researcher", "Full-Stack ML Engineer"). Capitalize each word. Never use the literal job title verbatim from the JD — paraphrase it naturally.
+              b) "summary": Rewrite the summary in 1-2 sentences (≤30 words each) that front-load the top 2-3 hard skills from the JD and reference the Core Problem you identified in Phase 1. Do NOT use the generic master resume summary verbatim. Keep it factual and engineer-toned.
+            - "skills": Call reorderSkills() with your extracted JD keywords to get the perfectly ordered skill list (items within categories AND categories themselves are sorted by relevance). Do NOT manually sort them.
             - "experiences": Include your experience with the 3 technical verbatim bullet points for the Reliance Industries internship (exp-001), excluding the non-technical presentations/dashboards bullet. Do not flatten the projects array.
             - "projects": Select the most relevant projects (aim for 3-5 depending on relevance). For each project, include 2-4 bullet points based on relevance depth.
             - "education", "certifications": Include fully.

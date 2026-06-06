@@ -42,7 +42,7 @@ public class PageLengthCheckerTool {
             }
 
             // Single page — check utilization
-            if (fillPercent >= 0 && fillPercent < 85) {
+            if (fillPercent >= 0 && fillPercent < 89) {
                 String msg = "UNDERFILLED: 1 page but only " + fillPercent + "% filled — add more relevant bullet points, include an additional project, or add the extracurriculars section to better utilize the available space";
                 log.info("Resume check underfilled: 1 page, fill {}%. Agent will retry to add more content.", fillPercent);
                 return msg;

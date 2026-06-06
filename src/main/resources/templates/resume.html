@@ -267,7 +267,8 @@
     <!-- ══ HEADER ══════════════════════════════════════════════ -->
     <header th:if="${personalInfo != null}" class="header" itemscope itemtype="https://schema.org/Person">
         <h1 th:text="${personalInfo['name']}" itemprop="name">Name</h1>
-        <div class="tagline" itemprop="jobTitle">AI / ML Engineer</div>
+        <div class="tagline" itemprop="jobTitle"
+             th:text="${personalInfo['tagline'] != null ? personalInfo['tagline'] : 'AI / ML Engineer'}">AI / ML Engineer</div>
         <div class="contact-row">
             <span th:text="${personalInfo['location']}" itemprop="address">City, Country</span>
             <span class="contact-sep">·</span>

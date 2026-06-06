@@ -23,7 +23,7 @@ public class ResumeAgentConfig {
         
         return AiServices.builder(ResumeAgent.class)
                 .chatModel(chatModel)
-                .chatMemoryProvider(chatMemoryId -> MessageWindowChatMemory.withMaxMessages(20))
+                .chatMemoryProvider(chatMemoryId -> MessageWindowChatMemory.withMaxMessages(40))
                 .tools(knowledgeBaseTool, documentGeneratorTool, pageLengthCheckerTool, deepContextTool)
                 .build();
     }
