@@ -35,10 +35,17 @@ public class PageLengthCheckerTool {
             // Measure fill percentage using the cached fill percent from the last render
             int fillPercent = pdfGeneratorService.getLastRenderedFillPercent();
 
-            if (pageCount > 1) {
-                String msg = "FAIL: " + pageCount + " pages (fill: " + fillPercent + "%) — reduce content by removing lowest-priority bullets or swapping long projects for shorter ones";
-                log.info("Resume check failed: {} pages, fill {}% (> 100%). Agent will retry.", pageCount, fillPercent);
+            if (pageCount > 2) {
+                String msg = "FAIL: " + pageCount + " pages (fill: " + fillPercent + "%) — resume is too long. Reduce by removing lowest-priority bullets or dropping a weak project";
+                log.info("Resume check failed: {} pages. Agent will retry.", pageCount);
                 return msg;
+            }
+
+            // 2-page resumes are fully accepted — no underfill check needed (fill will be ~200%)
+            if (pageCount == 2) {
+                String fillInfo = fillPercent >= 0 ? " (fill: " + fillPercent + "%)" : "";
+                log.info("Resume check passed: 2 pages, fill {}%.", fillPercent);
+                return "PASS: 2 pages" + fillInfo;
             }
 
             // Single page — check utilization

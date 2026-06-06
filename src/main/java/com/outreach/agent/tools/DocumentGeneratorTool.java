@@ -104,12 +104,12 @@ public class DocumentGeneratorTool {
             byte[] pdfBytes = pdfGeneratorService.generatePdf(templateData);
             int pageCount = pdfGeneratorService.countPages(pdfBytes);
 
-            if (pageCount > 1) {
-                log.info("Generated PDF has {} pages (exceeds 1-page budget). Starting programmatic optimization...",
+            if (pageCount > 2) {
+                log.info("Generated PDF has {} pages (exceeds 2-page budget). Starting programmatic optimization...",
                         pageCount);
 
                 // Step 1: Remove extracurriculars to save some space
-                if (pageCount > 1 && templateData.containsKey("extracurriculars")) {
+                if (pageCount > 2 && templateData.containsKey("extracurriculars")) {
                     templateData.remove("extracurriculars");
                     pdfBytes = pdfGeneratorService.generatePdf(templateData);
                     pageCount = pdfGeneratorService.countPages(pdfBytes);
@@ -149,7 +149,7 @@ public class DocumentGeneratorTool {
                 }
 
                 // Step 6: Reduce independent projects to max 2
-                if (pageCount > 1) {
+                if (pageCount > 2) {
                     if (reduceProjects(templateData, 2)) {
                         pdfBytes = pdfGeneratorService.generatePdf(templateData);
                         pageCount = pdfGeneratorService.countPages(pdfBytes);

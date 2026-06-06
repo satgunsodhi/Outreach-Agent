@@ -265,7 +265,7 @@
 <body>
 
     <!-- ══ HEADER ══════════════════════════════════════════════ -->
-    <header th:if="${personalInfo != null}" class="header" itemscope itemtype="https://schema.org/Person">
+    <div th:if="${personalInfo != null}" class="header" itemscope itemtype="https://schema.org/Person">
         <h1 th:text="${personalInfo['name']}" itemprop="name">Name</h1>
         <div class="tagline" itemprop="jobTitle"
              th:text="${personalInfo['tagline'] != null ? personalInfo['tagline'] : 'AI / ML Engineer'}">AI / ML Engineer</div>
@@ -292,10 +292,10 @@
            style="margin-top: 5px;"
            itemprop="description">
         </p>
-    </header>
+    </div>
 
     <!-- ══ EDUCATION ════════════════════════════════════════════ -->
-    <section th:if="${education != null and !education.isEmpty()}">
+    <div th:if="${education != null and !education.isEmpty()}">
         <h2>Education</h2>
         <div th:each="edu : ${education}" style="margin-bottom: 4px;" itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
             <div style="overflow: hidden; margin-bottom: 1px;">
@@ -312,10 +312,10 @@
                       th:text="${edu['graduationDate']}">Year</span>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- ══ EXPERIENCE ════════════════════════════════════════════ -->
-    <section th:if="${experiences != null and !experiences.isEmpty()}">
+    <div th:if="${experiences != null and !experiences.isEmpty()}">
         <h2>Experience</h2>
         <div th:each="exp : ${experiences}" class="entry">
             <div class="entry-header">
@@ -347,10 +347,10 @@
                 </ul>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- ══ PROJECTS ═════════════════════════════════════════════ -->
-    <section th:if="${projects != null and !projects.isEmpty()}">
+    <div th:if="${projects != null and !projects.isEmpty()}">
         <h2>Projects</h2>
         <div th:each="proj : ${projects}" class="entry">
             <div class="proj-title-row">
@@ -372,10 +372,10 @@
                 <li th:each="bullet : ${proj['bullets']}" th:utext="${bullet['text']}">Bullet</li>
             </ul>
         </div>
-    </section>
+    </div>
 
     <!-- ══ SKILLS ════════════════════════════════════════════════ -->
-    <section th:if="${skills != null and !skills.isEmpty()}">
+    <div th:if="${skills != null and !skills.isEmpty()}">
         <h2>Skills</h2>
         <table class="skills-table">
             <tr th:each="skillCat : ${skills}">
@@ -384,10 +384,10 @@
                     th:text="${#strings.listJoin(skillCat['items'], ', ')}">Skill 1, Skill 2</td>
             </tr>
         </table>
-    </section>
+    </div>
 
     <!-- ══ CERTIFICATIONS ════════════════════════════════════════ -->
-    <section th:if="${certifications != null and !certifications.isEmpty()}">
+    <div th:if="${certifications != null and !certifications.isEmpty()}">
         <h2>Certifications</h2>
         <div th:each="cert : ${certifications}" class="cert-entry">
             <span class="cert-name" th:text="${cert['name']}">Cert Name</span>
@@ -398,10 +398,10 @@
             </span>
             <div class="clear"></div>
         </div>
-    </section>
+    </div>
 
     <!-- ══ EXTRACURRICULARS ══════════════════════════════════════ -->
-    <section th:if="${extracurriculars != null and !extracurriculars.isEmpty()}">
+    <div th:if="${extracurriculars != null and !extracurriculars.isEmpty()}">
         <h2>Extracurricular Activities</h2>
         <div th:each="ec : ${extracurriculars}" style="margin-bottom: 4px;">
             <div style="overflow:hidden; margin-bottom:1px;">
@@ -412,7 +412,7 @@
                 <li th:each="bullet : ${ec['bullets']}" th:utext="${bullet['text']}">Bullet</li>
             </ul>
         </div>
-    </section>
+    </div>
 
 </body>
 </html>
