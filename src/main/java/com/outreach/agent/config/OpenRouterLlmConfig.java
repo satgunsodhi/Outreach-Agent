@@ -80,14 +80,19 @@ public class OpenRouterLlmConfig {
                         try {
                             return method.invoke(model, args);
                         } catch (java.lang.reflect.InvocationTargetException e) {
-                            lastException = (Exception) e.getCause();
+                            // B9: getCause() can be null if the InvocationTargetException wraps nothing.
+                            Throwable cause = e.getCause();
+                            lastException = (cause instanceof Exception ex) ? ex : new RuntimeException(cause != null ? cause.getMessage() : e.getMessage(), e);
                             org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
                                     .warn("OpenRouter fallback: Model {} failed with {}, trying next...", i, lastException.getMessage());
                         } catch (Exception e) {
                             lastException = e;
+                            org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
+                                    .warn("OpenRouter fallback: Model {} threw unexpected exception, trying next: {}", i, e.getMessage());
                         }
                     }
-                    throw lastException != null ? lastException : new RuntimeException("No models available");
+                    // B9: guaranteed non-null since we always set lastException when catching.
+                    throw lastException != null ? lastException : new RuntimeException("All OpenRouter models exhausted with no specific error");
                 }
         );
     }

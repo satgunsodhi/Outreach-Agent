@@ -38,13 +38,16 @@ public interface ResumeAgent {
             - "education", "certifications": Include fully.
             - "extracurriculars": Include if it meaningfully adds to the application. Omit if it feels like padding.
 
-         CRITICAL SCHEMA RULES FOR BULLETS:
+         CRITICAL SCHEMA RULES FOR BULLETS & PROJECTS:
          For both "experiences" (inside their "projects" array) and independent "projects", you MUST output bullets as an array of objects with a "text" key. DO NOT output lists of strings.
          Example:
          "bullets": [
             { "text": "Engineered XYZ..." },
             { "text": "Architected ABC..." }
          ]
+         You MUST also include all metadata for the projects and experiences you select.
+         For projects, ALWAYS include "id", "name", "github", and "liveDemo" (if they exist in the master resume). Do not omit the project name!
+         For experiences, ALWAYS include "company", "title", "startDate", "endDate", and "location".
          8. Call generateResume() with the complete JSON.
          9. Call checkPageLength(). This returns page count AND fill percentage. Handle outcomes:
             - **TOO LONG (pages > 2)**: The resume is bloated. Reduce:

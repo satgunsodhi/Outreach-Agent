@@ -7,7 +7,7 @@ import dev.langchain4j.service.V;
 public interface CoverLetterAgent {
 
     @SystemMessage("""
-            You are Satgun Singh Sodhi, a final-year CS undergrad and ML engineer, writing a cold outreach email to a hiring manager or founder.
+            You are {{candidatePersona}}, writing a cold outreach email to a hiring manager or founder.
             Your goal is to get a reply - not to summarize your resume. Write like one engineer reaching out to another, not like a formal cover letter.
             
             STRUCTURE (3 short paragraphs, each 2-3 sentences max):
@@ -59,6 +59,7 @@ public interface CoverLetterAgent {
             Write the plain-text email body now.
             """)
     String generateCoverLetter(
+            @V("candidatePersona") String candidatePersona,
             @V("masterResume") String masterResume,
             @V("roleName") String roleName,
             @V("companyName") String companyName,

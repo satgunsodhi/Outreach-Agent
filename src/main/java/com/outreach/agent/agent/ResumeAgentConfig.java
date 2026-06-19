@@ -7,25 +7,29 @@ import com.outreach.agent.tools.ResumeKnowledgeBaseTool;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ResumeAgentConfig {
 
-    @Bean
-    public ResumeAgent resumeAgent(
-            @org.springframework.beans.factory.annotation.Qualifier("resumeChatModel") ChatModel chatModel,
-            ResumeKnowledgeBaseTool knowledgeBaseTool,
-            DocumentGeneratorTool documentGeneratorTool,
-            PageLengthCheckerTool pageLengthCheckerTool,
-            ProjectDeepContextTool deepContextTool) {
-        
-        return AiServices.builder(ResumeAgent.class)
-                .chatModel(chatModel)
-                .chatMemoryProvider(chatMemoryId -> MessageWindowChatMemory.withMaxMessages(40))
-                .tools(knowledgeBaseTool, documentGeneratorTool, pageLengthCheckerTool, deepContextTool)
-                .build();
-    }
-}
+        @Bean
+        public ResumeAgent resumeAgent(
+                        @org.springframework.beans.factory.annotation.Qualifier("resumeChatModel") ChatModel chatModel,
+                        ResumeKnowledgeBaseTool knowledgeBaseTool,
+                        DocumentGeneratorTool documentGeneratorTool,
+                        PageLengthCheckerTool pageLengthCheckerTool,
+                        ProjectDeepContextTool deepContextTool) {
 
+                return AiServices.builder(ResumeAgent.class)
+                                .chatModel(chatModel)
+                                .chatMemoryProvider(chatMemoryId -> MessageWindowChatMemory.withMaxMessages(40))
+                                .tools(knowledgeBaseTool, documentGeneratorTool, pageLengthCheckerTool, deepContextTool)
+                                .hallucinatedToolNameStrategy(request -> ToolExecutionResultMessage.from(
+                                                request,
+                                                "Error: The tool '" + request.name()
+                                                                + "' does not exist. Please call a valid tool from the available tools list."))
+                                .build();
+        }
+}

@@ -245,7 +245,13 @@ public class GmailService {
                     if (isFromMe) {
                         sentByMe = true;
                     } else {
-                        receivedReply = true;
+                        // B7: A real reply must have arrived in our INBOX (not a bounce, CC’d
+                        // auto-responder, or forwarded copy). Check for the INBOX label.
+                        boolean hasInboxLabel = msg.getLabelIds() != null
+                                && msg.getLabelIds().contains("INBOX");
+                        if (hasInboxLabel) {
+                            receivedReply = true;
+                        }
                     }
                 }
 

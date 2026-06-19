@@ -24,7 +24,7 @@ public class OutreachSanitizer {
 
     private static final Pattern CURLY_PLACEHOLDER = Pattern.compile(
             "\\{(?:name|companyName|company|hiringManager|recruiter|recipientName|" +
-            "yourName|firstName|lastName|position|role|jobTitle)\\}",
+            "yourName|firstName|lastName)\\}",
             Pattern.CASE_INSENSITIVE);
 
     // Matches common greeting lines with placeholders so we can clean them up
@@ -105,8 +105,8 @@ public class OutreachSanitizer {
     }
 
     private String replaceCompanyPlaceholders(String text, String companyName) {
-        // Fix #7: only replace genuine company placeholders here.
-        // [Role] and [Position] are role/title placeholders — replacing them with companyName produces nonsense.
+        // Fix #7 + B4: only replace genuine company placeholders here.
+        // [Role], [Position], {role}, {jobTitle} are role/title placeholders — replacing them with companyName produces nonsense.
         text = Pattern.compile(
                 "\\[(?:Company(?:\\s+Name)?)\\]",
                 Pattern.CASE_INSENSITIVE).matcher(text).replaceAll(companyName);
@@ -114,35 +114,35 @@ public class OutreachSanitizer {
                 "<(?:COMPANY_NAME|Company(?:\\s+Name)?)>",
                 Pattern.CASE_INSENSITIVE).matcher(text).replaceAll(companyName);
         text = Pattern.compile(
-                "\\{(?:companyName|company|position|role|jobTitle)\\}",
+                "\\{(?:companyName|company)\\}",
                 Pattern.CASE_INSENSITIVE).matcher(text).replaceAll(companyName);
         return text;
     }
 
+    /**
+     * E4: Uses the same compiled Patterns as fillPlaceholders() — every token variant
+     * the filler can handle is now also caught by this guard.
+     */
     public boolean containsPlaceholderTokens(String text) {
         if (text == null) {
             return false;
         }
+        // Fast path: literal tokens that the regex patterns may not cover
         String upper = text.toUpperCase();
-        return upper.contains("YOUR_NAME")
-                || upper.contains("YOUR COMPANY")
-                || upper.contains("[YOUR NAME]")
-                || upper.contains("[COMPANY NAME]")
-                || upper.contains("<PRIVATE_PERSON>")
-                || upper.contains("<COMPANY_NAME>")
-                || upper.contains("{NAME}")
-                || upper.contains("{COMPANYNAME}")
-                || upper.contains("[HIRING MANAGER")
-                || upper.contains("[RECRUITER")
-                || upper.contains("<HIRING MANAGER")
-                || upper.contains("{HIRINGMANAGER");
+        if (upper.contains("YOUR_NAME") || upper.contains("YOUR COMPANY")) {
+            return true;
+        }
+        // Pattern-based check — mirrors fillPlaceholders() logic
+        return BRACKET_PLACEHOLDER.matcher(text).find()
+                || ANGLE_PLACEHOLDER.matcher(text).find()
+                || CURLY_PLACEHOLDER.matcher(text).find();
     }
 
     public String sanitizePdfPath(String rawPath) {
         if (rawPath == null) {
             return null;
         }
-        // Fix #D: strip surrounding quotes/backticks BEFORE running the filename regex
+        // Strip surrounding quotes/backticks BEFORE running the filename regex
         // so that `resume-xyz.pdf` is handled the same as resume-xyz.pdf.
         String trimmed = rawPath.trim();
         if (trimmed.startsWith("`") && trimmed.endsWith("`")) {
@@ -155,11 +155,19 @@ public class OutreachSanitizer {
             trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
         }
 
-        java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("resume-[\\w\\.\\-]+pdf").matcher(trimmed);
+        // Match the resume stem (with or without .pdf). Always emit with .pdf guaranteed.
+        // Regex: matches "resume-" followed by word chars/dashes, optionally ending in ".pdf" or ".PDF"
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("resume-[\\w\\-]+(\\.pdf)?", java.util.regex.Pattern.CASE_INSENSITIVE)
+                .matcher(trimmed);
         if (matcher.find()) {
-            return "data/generated-pdfs/" + matcher.group(0);
+            String matched = matcher.group(0);
+            // Strip any extension already present, then re-add .pdf canonically
+            String stem = matched.replaceAll("(?i)\\.pdf$", "");
+            return "data/generated-pdfs/" + stem + ".pdf";
         }
 
-        return trimmed.trim().replace("\\", "/");
+        // Fallback: return the raw path normalized to forward slashes
+        return trimmed.replace("\\", "/");
     }
 }

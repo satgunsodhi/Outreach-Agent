@@ -13,7 +13,7 @@ public interface TargetDiscoveryAgent {
             1. Search the web for recent job postings or AI startup directories in the given niche.
             2. Extract 1-3 highly relevant companies/roles that are actively hiring.
             3. For each company, you MUST find:
-               - companyName
+               - companyName: Use the OFFICIAL, canonically registered company name exactly as it appears on the company's own website or LinkedIn page. Do NOT append suffixes like "Inc.", "Ltd.", "LLC". Do NOT abbreviate or use common shorthands. Examples: "Hugging Face" (not "HuggingFace" or "Hugging Face Inc"), "DeepMind" (not "Google DeepMind"), "Cohere" (not "Cohere AI Inc").
                - recipientEmail (look for careers@, hr@, founders@, or a specific recruiter email on their site)
                - jobUrl (the link to the job description)
                - jobDescription (a brief summary of the role, max 50 words)

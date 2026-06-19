@@ -60,7 +60,7 @@ public class MasterResumeService {
                                 return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets);
                             })
                             .toList();
-                    return new Experience(exp.id(), exp.company(), exp.title(), exp.startDate(), exp.endDate(), exp.tags(), filteredProjects);
+                    return new Experience(exp.id(), exp.company(), exp.title(), exp.startDate(), exp.endDate(), exp.location(), exp.tags(), filteredProjects);
                 })
                 .toList();
 

@@ -16,7 +16,10 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "outreach_targets")
+@Table(name = "outreach_targets", indexes = {
+        @jakarta.persistence.Index(name = "idx_target_status", columnList = "status"),
+        @jakarta.persistence.Index(name = "idx_target_claim_token", columnList = "claimToken")
+})
 public class OutreachTarget {
 
     @Id

@@ -8,6 +8,7 @@ public record Experience(
     String title,
     String startDate,
     String endDate,
+    String location,
     List<String> tags,
     List<Project> projects
 ) {}

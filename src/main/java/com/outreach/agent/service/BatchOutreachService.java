@@ -205,6 +205,22 @@ public class BatchOutreachService {
                 String pdfPathStr = resumeOrchestrationService.generateTailoredResume(jd, companyResearch);
                 pdfPathStr = sanitizer.sanitizePdfPath(pdfPathStr);
 
+                // Guard: verify the file actually exists before attempting Drive upload.
+                // The LLM sometimes returns a path without the .pdf extension; sanitizePdfPath()
+                // now guarantees the extension, but a double-check here ensures we fail fast
+                // with a clear message rather than an opaque IllegalArgumentException from DriveService.
+                if (!java.nio.file.Files.exists(java.nio.file.Path.of(pdfPathStr))) {
+                    // Last-resort: try without the .pdf in case we double-added it
+                    String altPath = pdfPathStr.replaceAll("(?i)\\.pdf\\.pdf$", ".pdf");
+                    if (!altPath.equals(pdfPathStr) && java.nio.file.Files.exists(java.nio.file.Path.of(altPath))) {
+                        pdfPathStr = altPath;
+                    } else {
+                        throw new IllegalStateException(
+                            "Generated PDF not found on disk at: " + pdfPathStr +
+                            ". The LLM may have returned a malformed or truncated path.");
+                    }
+                }
+
                 // 3. Generate Cover Letter & Subject
                 String masterResumeJson = masterResumeService.getMasterResumeJson();
                 // Fix #3: extract a concise role name — take the first line of the JD or truncate to 200 chars
@@ -214,12 +230,20 @@ public class BatchOutreachService {
                     String firstLine = target.getJobDescription().split("[\n\r]")[0].trim();
                     roleName = firstLine.length() <= 200 ? firstLine : firstLine.substring(0, 200);
                 }
-                String coverLetterBody = coverLetterAgent.generateCoverLetter(
-                        masterResumeJson, roleName, target.getCompanyName(), jd, companyResearch, target.getJobUrl());
-                
-                // Get personal info for dynamic links and names
+
+                // Get personal info for dynamic links, names, and persona
                 var personalInfo = masterResumeService.getMasterResume().personalInfo();
                 String candidateName = personalInfo.name();
+
+                // E8: Build a short persona string from personalInfo to replace the hardcoded name in CoverLetterAgent.
+                String candidatePersona = candidateName
+                        + ", a candidate"
+                        + (personalInfo.summary() != null && !personalInfo.summary().isBlank()
+                                ? " \u2014 " + personalInfo.summary()
+                                : "");
+
+                String coverLetterBody = coverLetterAgent.generateCoverLetter(
+                        candidatePersona, masterResumeJson, roleName, target.getCompanyName(), jd, companyResearch, target.getJobUrl());
 
                 // Clean up any remaining placeholders in the LLM output
                 coverLetterBody = sanitizer.fillPlaceholders(coverLetterBody, candidateName, target.getCompanyName());

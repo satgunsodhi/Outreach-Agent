@@ -42,4 +42,38 @@ jobs:
             echo "ERROR: outreach-agent JAR not found in target/. Build may have failed." >&2
             exit 1
           fi
-          java -jar "$JAR"
+
+          echo "Waiting for PostgreSQL database to be reachable..."
+          for i in {1..12}; do
+            if pg_isready -d "$DATABASE_URL" -t 5 > /dev/null 2>&1; then
+              echo "Database is ready!"
+              break
+            fi
+            echo "Database not ready, waiting 5 seconds... ($i/12)"
+            sleep 5
+          done
+          
+          max_attempts=3
+          attempt=1
+          success=false
+          
+          while [ $attempt -le $max_attempts ]; do
+            echo "Starting execution attempt $attempt of $max_attempts..."
+            if java -jar "$JAR"; then
+              echo "Execution completed successfully!"
+              success=true
+              break
+            else
+              echo "WARNING: Attempt $attempt failed."
+              if [ $attempt -lt $max_attempts ]; then
+                echo "Sleeping for 30 seconds before retrying..."
+                sleep 30
+              fi
+            fi
+            attempt=$((attempt + 1))
+          done
+          
+          if [ "$success" = "false" ]; then
+            echo "ERROR: Outreach Agent failed after $max_attempts attempts." >&2
+            exit 1
+          fi

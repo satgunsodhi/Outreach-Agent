@@ -94,12 +94,27 @@ public class DocumentGeneratorTool {
                             .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
                     String debugJson = objectMapper.writeValueAsString(templateData);
                     java.nio.file.Files.writeString(
-                            debugDir.resolve("selected_data_" + timestamp + ".json"),
+                            debugDir.resolve("selected_data_raw_" + timestamp + ".json"),
                             debugJson);
                 }
             } catch (Exception ex) {
                 // Ignore write failure of debug file
             }
+
+            enrichTemplateData(templateData);
+
+            try {
+                // Write enriched data for debugging as well
+                java.nio.file.Path debugDir = java.nio.file.Path.of("data/debug");
+                if (java.nio.file.Files.exists(debugDir)) {
+                    String timestamp = java.time.LocalDateTime.now()
+                            .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
+                    String debugJson = objectMapper.writeValueAsString(templateData);
+                    java.nio.file.Files.writeString(
+                            debugDir.resolve("selected_data_enriched_" + timestamp + ".json"),
+                            debugJson);
+                }
+            } catch (Exception ex) {}
 
             byte[] pdfBytes = pdfGeneratorService.generatePdf(templateData);
             int pageCount = pdfGeneratorService.countPages(pdfBytes);
@@ -228,6 +243,90 @@ public class DocumentGeneratorTool {
             }
         }
         return changed;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void enrichTemplateData(Map<String, Object> templateData) {
+        try {
+            com.outreach.agent.model.MasterResume masterResume = masterResumeService.getMasterResume();
+
+            // Create lookup maps
+            java.util.Map<String, com.outreach.agent.model.Project> projectMap = new java.util.HashMap<>();
+            if (masterResume.projects() != null) {
+                for (com.outreach.agent.model.Project p : masterResume.projects()) {
+                    if (p.id() != null) projectMap.put(p.id(), p);
+                }
+            }
+
+            java.util.Map<String, com.outreach.agent.model.Experience> experienceMap = new java.util.HashMap<>();
+            java.util.Map<String, com.outreach.agent.model.Project> expProjectMap = new java.util.HashMap<>();
+            if (masterResume.experiences() != null) {
+                for (com.outreach.agent.model.Experience e : masterResume.experiences()) {
+                    if (e.id() != null) experienceMap.put(e.id(), e);
+                    if (e.projects() != null) {
+                        for (com.outreach.agent.model.Project p : e.projects()) {
+                            if (p.id() != null) expProjectMap.put(p.id(), p);
+                        }
+                    }
+                }
+            }
+
+            // Enrich independent projects
+            Object projectsObj = templateData.get("projects");
+            if (projectsObj instanceof java.util.List<?> projectsList) {
+                for (Object proj : projectsList) {
+                    if (proj instanceof Map<?, ?> projMap) {
+                        Map<String, Object> pm = (Map<String, Object>) projMap;
+                        Object idObj = pm.get("id");
+                        if (idObj instanceof String id && projectMap.containsKey(id)) {
+                            com.outreach.agent.model.Project masterProj = projectMap.get(id);
+                            pm.putIfAbsent("name", masterProj.name());
+                            if (masterProj.github() != null) pm.putIfAbsent("github", masterProj.github());
+                            if (masterProj.liveDemo() != null) pm.putIfAbsent("liveDemo", masterProj.liveDemo());
+                            if (masterProj.techStack() != null) pm.putIfAbsent("techStack", masterProj.techStack());
+                        }
+                    }
+                }
+            }
+
+            // Enrich experiences and their projects
+            Object experiencesObj = templateData.get("experiences");
+            if (experiencesObj instanceof java.util.List<?> expList) {
+                for (Object exp : expList) {
+                    if (exp instanceof Map<?, ?> expMap) {
+                        Map<String, Object> em = (Map<String, Object>) expMap;
+                        Object idObj = em.get("id");
+                        if (idObj instanceof String id && experienceMap.containsKey(id)) {
+                            com.outreach.agent.model.Experience masterExp = experienceMap.get(id);
+                            em.putIfAbsent("company", masterExp.company());
+                            em.putIfAbsent("title", masterExp.title());
+                            em.putIfAbsent("startDate", masterExp.startDate());
+                            em.putIfAbsent("endDate", masterExp.endDate());
+                            if (masterExp.location() != null) em.putIfAbsent("location", masterExp.location());
+                        }
+
+                        // Enrich projects inside experience
+                        Object expProjectsObj = em.get("projects");
+                        if (expProjectsObj instanceof java.util.List<?> expProjList) {
+                            for (Object proj : expProjList) {
+                                if (proj instanceof Map<?, ?> projMap) {
+                                    Map<String, Object> pm = (Map<String, Object>) projMap;
+                                    Object pIdObj = pm.get("id");
+                                    if (pIdObj instanceof String pId && expProjectMap.containsKey(pId)) {
+                                        com.outreach.agent.model.Project masterProj = expProjectMap.get(pId);
+                                        // Some experience projects intentionally have null names, that's fine.
+                                        if (masterProj.name() != null) pm.putIfAbsent("name", masterProj.name());
+                                        if (masterProj.github() != null) pm.putIfAbsent("github", masterProj.github());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            log.warn("Failed to enrich template data from master resume: {}", ex.getMessage());
+        }
     }
 
     public static class ResumeDataWrapper {

@@ -65,6 +65,17 @@ public class PdfCacheService {
         log.info("Cached PDF for hash {}", hash);
     }
 
+    /**
+     * B3: Removes any cache entry whose stored file path equals {@code pdfPath}.
+     * Must be called whenever a local PDF is deleted so stale cache entries are evicted immediately.
+     */
+    public void invalidatePath(String pdfPath) {
+        if (pdfPath == null || pdfPath.isBlank()) return;
+        cache.entrySet().removeIf(entry -> pdfPath.equals(entry.getValue()));
+        dirty = true;
+        log.debug("Invalidated PDF cache entry for path: {}", pdfPath);
+    }
+
     /** Flushes the cache to disk at most every 30 seconds, only when the cache has been modified. */
     @Scheduled(fixedDelay = 30_000)
     public void flushCacheToDisk() {

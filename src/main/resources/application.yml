@@ -29,6 +29,10 @@ app:
   targets-file: ${TARGETS_FILE:targets.json}
   followups:
     enabled: ${ENABLE_FOLLOWUPS:false}
+  # B5: Role and region for autonomous target discovery — override via env vars in CI.
+  discovery:
+    role: ${DISCOVERY_ROLE:ML Engineer}
+    region: ${DISCOVERY_REGION:Remote or India}
   cors:
     # Comma-separated list of allowed CORS origins. Override via CORS_ALLOWED_ORIGINS env var.
     allowed-origins: ${CORS_ALLOWED_ORIGINS:https://satgunsodhi.vercel.app,http://localhost:3000,http://localhost:5173}

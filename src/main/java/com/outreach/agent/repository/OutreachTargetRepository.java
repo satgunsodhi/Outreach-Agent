@@ -2,6 +2,7 @@ package com.outreach.agent.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,14 @@ public interface OutreachTargetRepository extends JpaRepository<OutreachTarget, 
     List<OutreachTarget> findByStatusAndEmailScheduledAtBefore(TargetStatus status, LocalDateTime time);
     boolean existsByCompanyNameAndRecipientEmail(String companyName, String recipientEmail);
     List<OutreachTarget> findByClaimTokenOrderByIdAsc(String claimToken);
+
+    /** Returns all distinct company names stored in the DB — used for in-memory fuzzy deduplication. */
+    @Query("SELECT DISTINCT t.companyName FROM OutreachTarget t WHERE t.companyName IS NOT NULL")
+    Set<String> findAllCompanyNames();
+
+    /** Returns true if any target has a jobUrl containing the given domain fragment. */
+    @Query("SELECT COUNT(t) > 0 FROM OutreachTarget t WHERE t.jobUrl LIKE %:domain%")
+    boolean existsByJobUrlDomain(@Param("domain") String domain);
 
     @Modifying
     @Transactional
@@ -42,3 +51,4 @@ public interface OutreachTargetRepository extends JpaRepository<OutreachTarget, 
     @Query("SELECT t.status, COUNT(t) FROM OutreachTarget t WHERE t.campaign.id = :campaignId GROUP BY t.status")
     List<Object[]> countByStatusForCampaign(@Param("campaignId") Long campaignId);
 }
+
