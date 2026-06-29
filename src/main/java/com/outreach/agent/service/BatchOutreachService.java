@@ -52,6 +52,9 @@ public class BatchOutreachService {
     @Value("${app.followups.enabled:false}")
     private boolean followupsEnabled;
 
+    @Value("${app.discovery.role:ML Engineer}")
+    private String targetRoleName;
+
     public BatchOutreachService(OutreachTargetRepository targetRepository,
                                 ResumeOrchestrationService resumeOrchestrationService,
                                 CoverLetterAgent coverLetterAgent,
@@ -225,7 +228,7 @@ public class BatchOutreachService {
                 String masterResumeJson = masterResumeService.getMasterResumeJson();
                 // Fix #3: extract a concise role name — take the first line of the JD or truncate to 200 chars
                 // rather than passing the entire JD text to generateSubject's 8-word prompt.
-                String roleName = "ML Intern";
+                String roleName = targetRoleName;
                 if (target.getJobDescription() != null && !target.getJobDescription().isBlank()) {
                     String firstLine = target.getJobDescription().split("[\n\r]")[0].trim();
                     roleName = firstLine.length() <= 200 ? firstLine : firstLine.substring(0, 200);
