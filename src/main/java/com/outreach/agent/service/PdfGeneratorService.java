@@ -263,7 +263,29 @@ public class PdfGeneratorService {
             this.lastRenderResult = new RenderResult(xhtml, Math.max(0, (int) Math.round((contentPt / usableHeight) * 100.0)));
 
             renderer.createPDF(outputStream);
-            return outputStream.toByteArray();
+            byte[] generatedPdf = outputStream.toByteArray();
+            
+            // Remove empty pages using PDFBox
+            try (org.apache.pdfbox.pdmodel.PDDocument pdDocument = org.apache.pdfbox.Loader.loadPDF(generatedPdf)) {
+                org.apache.pdfbox.text.PDFTextStripper stripper = new org.apache.pdfbox.text.PDFTextStripper();
+                boolean modified = false;
+                for (int i = pdDocument.getNumberOfPages(); i >= 1; i--) {
+                    stripper.setStartPage(i);
+                    stripper.setEndPage(i);
+                    String text = stripper.getText(pdDocument);
+                    if (text == null || text.trim().isEmpty()) {
+                        pdDocument.removePage(i - 1);
+                        modified = true;
+                    }
+                }
+                if (modified) {
+                    try (ByteArrayOutputStream cleanedOut = new ByteArrayOutputStream()) {
+                        pdDocument.save(cleanedOut);
+                        return cleanedOut.toByteArray();
+                    }
+                }
+            }
+            return generatedPdf;
         }
     }
 

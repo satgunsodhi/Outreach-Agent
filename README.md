@@ -3,7 +3,7 @@
 An autonomous AI-powered outreach pipeline built with **Java 21 + Spring Boot 3**. It scrapes company websites, researches them with an LLM, generates a tailored resume PDF, writes a personalized cover letter, uploads the resume to **Google Drive**, and schedules the outreach email for the next working day at 8:00 AM IST — all automatically.
 
 > [!NOTE]
-> My personal data and original `master_resume.json` are kept on the [`actions`](https://github.com/satgunsodhi/Outreach-Agent/blob/actions/src/main/resources/data/master_resume.json) branch. The `main` branch contains a placeholder resume structure.
+> This is the base branch with placeholder data and configurations. To see what a fully configured version looks like in action (including my personal data and original `master_resume.json`), check out the [`actions` branch](https://github.com/satgunsodhi/Outreach-Agent/tree/actions)!
 ---
 
 ## ✨ Key Features
