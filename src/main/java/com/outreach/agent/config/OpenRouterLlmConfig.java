@@ -69,7 +69,7 @@ public class OpenRouterLlmConfig {
             }
         }
 
-        // Return a proxy that tries each model in order
+        // Return a proxy that tries each model in order with exponential backoff for 429/503 errors
         return (ChatModel) java.lang.reflect.Proxy.newProxyInstance(
                 ChatModel.class.getClassLoader(),
                 new Class<?>[]{ChatModel.class},
@@ -77,18 +77,37 @@ public class OpenRouterLlmConfig {
                     Exception lastException = null;
                     for (int i = 0; i < models.size(); i++) {
                         ChatModel model = models.get(i);
-                        try {
-                            return method.invoke(model, args);
-                        } catch (java.lang.reflect.InvocationTargetException e) {
-                            // B9: getCause() can be null if the InvocationTargetException wraps nothing.
-                            Throwable cause = e.getCause();
-                            lastException = (cause instanceof Exception ex) ? ex : new RuntimeException(cause != null ? cause.getMessage() : e.getMessage(), e);
-                            org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
-                                    .warn("OpenRouter fallback: Model {} failed with {}, trying next...", i, lastException.getMessage());
-                        } catch (Exception e) {
-                            lastException = e;
-                            org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
-                                    .warn("OpenRouter fallback: Model {} threw unexpected exception, trying next: {}", i, e.getMessage());
+                        int maxRetries = 3;
+                        long backoffMs = 1000;
+                        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+                            try {
+                                return method.invoke(model, args);
+                            } catch (java.lang.reflect.InvocationTargetException e) {
+                                // B9: getCause() can be null if the InvocationTargetException wraps nothing.
+                                Throwable cause = e.getCause();
+                                lastException = (cause instanceof Exception ex) ? ex : new RuntimeException(cause != null ? cause.getMessage() : e.getMessage(), e);
+                                String errorMsg = lastException.getMessage() != null ? lastException.getMessage() : "";
+                                
+                                // Check for rate limits or server errors
+                                if (errorMsg.contains("429") || errorMsg.contains("503") || errorMsg.contains("Too Many Requests") || errorMsg.contains("Service Unavailable")) {
+                                    org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
+                                            .warn("OpenRouter retry: Model {} (attempt {}/{}) hit rate limit/unavailable. Sleeping for {}ms...", i, attempt, maxRetries, backoffMs);
+                                    if (attempt < maxRetries) {
+                                        try { Thread.sleep(backoffMs); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
+                                        backoffMs *= 2;
+                                    }
+                                } else {
+                                    // Not a retryable error, break to try the next fallback model
+                                    org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
+                                            .warn("OpenRouter fallback: Model {} failed with {}, trying next...", i, lastException.getMessage());
+                                    break;
+                                }
+                            } catch (Exception e) {
+                                lastException = e;
+                                org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class)
+                                        .warn("OpenRouter fallback: Model {} threw unexpected exception, trying next: {}", i, e.getMessage());
+                                break;
+                            }
                         }
                     }
                     // B9: guaranteed non-null since we always set lastException when catching.
