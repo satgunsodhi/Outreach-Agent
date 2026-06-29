@@ -46,7 +46,7 @@ public class MasterResumeService {
             return masterResume;
         }
 
-        List<String> lowerTags = tags.stream().map(String::toLowerCase).toList();
+        List<String> lowerTags = tags.stream().map(t -> t.toLowerCase()).toList();
 
         List<Experience> filteredExperiences = masterResume.experiences().stream()
                 .map(exp -> {
@@ -114,14 +114,14 @@ public class MasterResumeService {
     private boolean matchesAny(List<String> itemTags, List<String> searchTags) {
         if (itemTags == null || itemTags.isEmpty()) return false;
         return itemTags.stream()
-                .map(String::toLowerCase)
+                .map(t -> t.toLowerCase())
                 .anyMatch(searchTags::contains);
     }
 
     private int countMatches(List<String> itemTags, List<String> searchTags) {
         if (itemTags == null || itemTags.isEmpty()) return 0;
         return (int) itemTags.stream()
-                .map(String::toLowerCase)
+                .map(t -> t.toLowerCase())
                 .filter(searchTags::contains)
                 .count();
     }
