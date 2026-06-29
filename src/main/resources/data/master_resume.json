@@ -234,7 +234,7 @@
         },
         {
           "id": "bp-a-002",
-          "text": "Outperformed TransUNet on the Synapse Multi-Organ benchmark \u2014 <b>84% Dice Score at 28B FLOPs vs 77.48% at 106B FLOPs</b>, achieving a superior efficiency-performance tradeoff.",
+          "text": "Outperformed TransUNet on the Synapse Multi-Organ benchmark — <b>84% Dice Score at 28B FLOPs vs 77.48% at 106B FLOPs</b>, achieving a superior efficiency-performance tradeoff.",
           "tags": [
             "benchmarking",
             "efficiency",
@@ -278,7 +278,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 5
     },
     {
       "id": "proj-dasai",
@@ -361,7 +362,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 5
     },
     {
       "id": "proj-irpai",
@@ -440,7 +442,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 5
     },
     {
       "id": "proj-slm",
@@ -499,7 +502,7 @@
         },
         {
           "id": "bp-proj-slm-ext-1",
-          "text": "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English \u2192 financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
+          "text": "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English → financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -518,11 +521,12 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 4
     },
     {
       "id": "proj-sih",
-      "name": "Smart India Hackathon \u2014 Cloud & Network Infrastructure",
+      "name": "Smart India Hackathon — Cloud & Network Infrastructure",
       "github": null,
       "techStack": "AWS EC2, Docker, PostgreSQL, n8n, AWS S3",
       "tags": [
@@ -575,7 +579,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 4
     },
     {
       "id": "proj-cloudtunnel",
@@ -632,7 +637,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 3
     },
     {
       "id": "proj-shlagent",
@@ -709,7 +715,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 4
     },
     {
       "id": "proj-iqagent",
@@ -784,7 +791,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 3
     },
     {
       "id": "proj-fundr",
@@ -848,7 +856,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 3
     },
     {
       "id": "proj-outreach-agent",
@@ -942,11 +951,12 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 5
     },
     {
       "id": "proj-video-summary",
-      "name": "AI Video Transcription & Summary \u2013 Multimodal Meeting Summarizer",
+      "name": "AI Video Transcription & Summary – Multimodal Meeting Summarizer",
       "github": "https://github.com/satgunsodhi/AI-Video-Transcription-Summary",
       "techStack": "Python, OpenAI Whisper, OpenCV, Ollama (LLaVA + LLaMA 3.2), ffmpeg",
       "tags": [
@@ -1025,7 +1035,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 2
     },
     {
       "id": "proj-request-cli",
@@ -1062,7 +1073,8 @@
           "priority": 2,
           "lengthCategory": "MEDIUM"
         }
-      ]
+      ],
+      "priority": 2
     },
     {
       "id": "proj-django-news",
@@ -1139,7 +1151,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 2
     },
     {
       "id": "proj-iqilo",
@@ -1206,7 +1219,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 5
     },
     {
       "id": "proj-nvidia-claude-bridge",
@@ -1270,7 +1284,8 @@
           "priority": 1,
           "lengthCategory": "LONG"
         }
-      ]
+      ],
+      "priority": 5
     }
   ],
   "education": [
@@ -1311,8 +1326,8 @@
   ],
   "certifications": [
     {
-      "name": "Alliance Fran\u00e7aise B1 (Concours Romain Rolland)",
-      "issuer": "Alliance Fran\u00e7aise",
+      "name": "Alliance Française B1 (Concours Romain Rolland)",
+      "issuer": "Alliance Française",
       "date": "2019",
       "tags": [
         "french",
