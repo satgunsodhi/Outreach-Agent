@@ -353,18 +353,18 @@
     <div th:if="${projects != null and !projects.isEmpty()}">
         <h2>Projects</h2>
         <div th:each="proj : ${projects}" class="entry">
-            <div class="proj-title-row">
+            <div th:if="${proj['name'] != null and !#strings.isEmpty(proj['name'])}" class="proj-title-row">
                 <span class="proj-name" th:text="${proj['name']}">Project Name</span>
                 <span class="proj-links">
                     <a th:if="${proj['github'] != null}"
                        th:href="${proj['github']}"
-                       th:text="${#strings.replace(#strings.replace(proj['github'],'https://',''),'http://','')}"
-                    ></a>
+                       th:text="${#strings.replace(#strings.replace(proj['github'],'https://',''),'http://','')}">
+                    </a>
                     <span th:if="${proj['github'] != null and proj['liveDemo'] != null}" class="link-sep">|</span>
                     <a th:if="${proj['liveDemo'] != null}"
                        th:href="${proj['liveDemo']}"
-                       th:text="${#strings.replace(#strings.replace(proj['liveDemo'],'https://',''),'http://','')}"
-                    ></a>
+                       th:text="${#strings.replace(#strings.replace(proj['liveDemo'],'https://',''),'http://','')}">
+                    </a>
                 </span>
                 <div class="clear"></div>
             </div>

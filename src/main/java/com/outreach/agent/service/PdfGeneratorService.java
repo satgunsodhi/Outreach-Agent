@@ -114,6 +114,43 @@ public class PdfGeneratorService {
     }
 
     /**
+     * Strip null values from project/experience maps so that putIfAbsent in
+     * enrichTemplateData can overwrite them with values from the master resume.
+     *
+     * The LLM sometimes emits {"id": "proj-foo", "name": null, "bullets": [...]}
+     * — in that case the key "name" IS present (value = null), so putIfAbsent
+     * does nothing and the project renders with no header in the PDF.
+     * By removing the null entries first, enrichTemplateData's putIfAbsent calls
+     * can fill in the correct name/github/techStack from the master resume.
+     */
+    @SuppressWarnings("unchecked")
+    private void stripNullValuesFromProjects(Map<String, Object> data) {
+        // Independent projects
+        if (data.get("projects") instanceof List<?> projects) {
+            for (Object p : projects) {
+                if (p instanceof Map<?, ?> pm) {
+                    ((Map<String, Object>) pm).entrySet().removeIf(e -> e.getValue() == null);
+                }
+            }
+        }
+        // Experience projects
+        if (data.get("experiences") instanceof List<?> exps) {
+            for (Object exp : exps) {
+                if (exp instanceof Map<?, ?> em) {
+                    ((Map<String, Object>) em).entrySet().removeIf(e -> e.getValue() == null);
+                    if (((Map<?, ?>) em).get("projects") instanceof List<?> expProjects) {
+                        for (Object p : expProjects) {
+                            if (p instanceof Map<?, ?> pm) {
+                                ((Map<String, Object>) pm).entrySet().removeIf(e -> e.getValue() == null);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Recursively normalize all bullet lists within the template data map.
      */
     @SuppressWarnings("unchecked")
@@ -196,6 +233,7 @@ public class PdfGeneratorService {
         templateData = (Map<String, Object>) cleanData(templateData);
 
         // Fix flattened experience structure, then normalize bullet shapes
+        stripNullValuesFromProjects(templateData);
         normalizeExperiences(templateData);
         normalizeBulletsInData(templateData);
 
