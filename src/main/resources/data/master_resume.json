@@ -73,7 +73,10 @@
         "TypeScript",
         "Zustand",
         "WebSockets",
-        "Chakra UI"
+        "Chakra UI",
+        "TailwindCSS v4",
+        "App Router",
+        "litellm"
       ]
     },
     {
@@ -1319,6 +1322,137 @@
           "id": "bp-proj-django-news-ext-3",
           "text": "Encoded 'latest', 'popular', and 'best' selection logic as dedicated aggregation functions over SQLite, with per-article view counters and human-readable access logs in a Log table for observability.",
           "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-iqilo",
+      "name": "Iqilo: Gamified Tech Roadmap Learning OS",
+      "github": "https://github.com/satgunsodhi/Iqilo",
+      "techStack": "Next.js, TypeScript, TailwindCSS v4, useSyncExternalStore, localStorage",
+      "tags": [
+        "next-js",
+        "typescript",
+        "react",
+        "app-router",
+        "gamification",
+        "tailwindcss",
+        "state-management",
+        "frontend",
+        "web",
+        "fullstack",
+        "learning-platform",
+        "dsa",
+        "competitive-programming",
+        "quantitative-finance",
+        "external-store",
+        "localstorage",
+        "cross-tab-sync"
+      ],
+      "bullets": [
+        {
+          "id": "bp-iq-001",
+          "text": "Architected a Next.js/TypeScript learning OS where immutable course roadmaps and day-level units are wired into an external ProgressStore via useSyncExternalStore, supporting instant 'continue where you left off' redirects based on lastVisitedDay per course.",
+          "tags": [
+            "next-js",
+            "typescript",
+            "state-management",
+            "app-router",
+            "external-store",
+            "frontend"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-iq-002",
+          "text": "Built a gamification subsystem that derives XP levels, streaks, and badges from localStorage-backed stores, synchronizing changes across tabs via storage and custom events while keeping UI reactive through external-store subscriptions.",
+          "tags": [
+            "gamification",
+            "cross-tab-sync",
+            "localstorage",
+            "react",
+            "state-management"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-iq-003",
+          "text": "Implemented a fully client-side progress API exposing day/resource toggles, per-week/per-course completion stats, JSON export, and auto-redirect logic alongside a Tailwind-driven dashboard with recommended quests, certificate cards, and learning velocity graphs.",
+          "tags": [
+            "tailwindcss",
+            "frontend",
+            "dashboard",
+            "learning-platform",
+            "next-js"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-nvidia-claude-bridge",
+      "name": "nvidia-claude-code-bridge: Rate-Limited LLM Proxy for NVIDIA NIM + Claude Code",
+      "github": "https://github.com/satgunsodhi/nvidia-claude-code-bridge",
+      "techStack": "Python, litellm, asyncio, NVIDIA NIM, Claude Code, Rate Limiting",
+      "tags": [
+        "python",
+        "litellm",
+        "llm-proxy",
+        "rate-limiting",
+        "asyncio",
+        "nvidia-nim",
+        "claude-code",
+        "multimodal",
+        "devtools",
+        "mlops",
+        "agentic-ai",
+        "llms",
+        "api-gateway",
+        "safety",
+        "custom-callback"
+      ],
+      "bullets": [
+        {
+          "id": "bp-ncb-001",
+          "text": "Implemented a per-model async rate limiter (ModelRateLimiter + AsyncRateLimiter) around litellm that enforces a 40 RPM cap using a lock-protected timestamp deque, preventing downstream NVIDIA NIM 429 responses.",
+          "tags": [
+            "python",
+            "asyncio",
+            "rate-limiting",
+            "litellm",
+            "nvidia-nim"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ncb-002",
+          "text": "Built a multimodal safety layer in async_pre_call_hook that clamps max_tokens and strips image payloads from messages for text-only models, injecting a dummy text block and logging explicit warnings when Claude Code sends images to non-vision backends.",
+          "tags": [
+            "multimodal",
+            "safety",
+            "litellm",
+            "claude-code",
+            "api-gateway"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ncb-003",
+          "text": "Engineered a failure introspection system that detects HTTP 429 rate-limit conditions, dumps exception attributes, NIM response headers (retry-after/limit fields), and raw/parsed JSON bodies to enable rapid debugging of bridge failures.",
+          "tags": [
+            "debugging",
+            "devtools",
+            "python",
+            "mlops",
+            "llm-proxy"
+          ],
           "priority": 1,
           "lengthCategory": "LONG"
         }
