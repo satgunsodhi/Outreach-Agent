@@ -5,7 +5,7 @@ Consolidated Report for Internship.pdf
 Deep Codebase analysis.md
 *.class
 target/
-data/
+
 tokens/
 *.db
 
@@ -37,7 +37,7 @@ hs_err_pid*
 replay_pid*
 
 targets.json
-src/main/resources/data/targets.json
+
 
 # Operating System Files
 .DS_Store
