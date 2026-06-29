@@ -1,46 +1,197 @@
 {
   "personalInfo": {
-    "name": "[Your Name]",
-    "email": "[Your Email]",
-    "phone": "[Your Phone]",
-    "linkedin": "[Your LinkedIn]",
-    "github": "[Your GitHub]",
-    "location": "[Your Location]",
-    "summary": "[Your Summary]"
+    "name": "Satgun Singh Sodhi",
+    "email": "satgunsodhi@gmail.com",
+    "phone": "+91 93231 22190",
+    "linkedin": "linkedin.com/in/satgunsodhi",
+    "github": "github.com/satgunsodhi",
+    "location": "Navi Mumbai, Maharashtra, India",
+    "summary": "AI/ML Engineer and B.Tech CSE student at VIT Vellore (9.42 CGPA) with hands-on experience in deep learning, LLM systems, computer vision, and production ML infrastructure."
   },
   "skills": [
     {
-      "category": "[Skill Category]",
+      "category": "Programming Languages",
       "items": [
-        "[Skill 1]",
-        "[Skill 2]"
+        "Python",
+        "C++",
+        "Java",
+        "SQL",
+        "Shell Scripting",
+        "JavaScript"
+      ]
+    },
+    {
+      "category": "Machine Learning & Deep Learning",
+      "items": [
+        "PyTorch",
+        "TensorFlow",
+        "Keras",
+        "Scikit-Learn",
+        "OpenCV",
+        "Deep Learning",
+        "CNNs",
+        "Transformer Architecture",
+        "Autoencoders",
+        "LoRA Fine-tuning",
+        "Instruction Tuning",
+        "Bayesian Optimization",
+        "Gaussian Processes",
+        "Sentence Transformers",
+        "RAG",
+        "Agentic AI",
+        "LLMs",
+        "MLOps",
+        "CI/CD",
+        "FAISS",
+        "Vector Databases"
+      ]
+    },
+    {
+      "category": "Computer Vision",
+      "items": [
+        "OpenCV",
+        "RT-DETR",
+        "EasyOCR",
+        "Swin Transformer",
+        "EfficientNet-B3",
+        "Medical Image Segmentation",
+        "Neural Style Transfer",
+        "K-Means Clustering"
+      ]
+    },
+    {
+      "category": "Web & Backend",
+      "items": [
+        "React.js",
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "Oracle XE",
+        "Spring Boot",
+        "FastAPI",
+        "Next.js",
+        "TypeScript",
+        "Zustand",
+        "WebSockets",
+        "Chakra UI",
+        "TailwindCSS v4",
+        "App Router",
+        "litellm"
+      ]
+    },
+    {
+      "category": "Cloud & Infrastructure",
+      "items": [
+        "Docker",
+        "Docker Compose",
+        "AWS EC2",
+        "AWS S3",
+        "Cloudflare Warp & Tunnel",
+        "Supabase",
+        "pgvector",
+        "Railway",
+        "Vercel",
+        "Raspberry Pi",
+        "n8n"
+      ]
+    },
+    {
+      "category": "Data & Analytics",
+      "items": [
+        "Pandas",
+        "NumPy",
+        "Plotly",
+        "Time-Series Analysis",
+        "Anomaly Detection",
+        "Statistical Modelling",
+        "Feature Engineering"
       ]
     }
   ],
   "experiences": [
     {
       "id": "exp-001",
-      "company": "[Company Name]",
-      "title": "[Job Title]",
-      "startDate": "[Start Date]",
-      "endDate": "[End Date]",
-      "location": "[Location]",
+      "company": "Reliance Industries Limited",
+      "title": "Machine Learning Intern",
+      "startDate": "May 2025",
+      "endDate": "Jul 2025",
+      "location": "RCP, Ghansoli, Navi Mumbai",
       "tags": [
-        "[tag1]"
+        "python",
+        "pytorch",
+        "tensorflow",
+        "keras",
+        "anomaly-detection",
+        "time-series",
+        "autoencoders",
+        "bayesian-optimization",
+        "unsupervised-ml",
+        "industrial-ml",
+        "feature-engineering"
       ],
       "projects": [
         {
-          "id": "proj-1",
-          "name": "[Project Name]",
+          "id": "proj-reliance-001",
+          "name": null,
           "tags": [
-            "[tag1]"
+            "python",
+            "pytorch",
+            "tensorflow",
+            "keras",
+            "anomaly-detection",
+            "time-series",
+            "autoencoders",
+            "bayesian-optimization",
+            "unsupervised-ml",
+            "feature-engineering"
           ],
           "bullets": [
             {
-              "id": "bp-1",
-              "text": "[Bullet point description]",
+              "id": "bp-r-001",
+              "text": "Engineered RMS-normalized flow deltas and cosine similarity features on sliding windows across all pairwise sensor combinations, improving anomaly detection recall by 14% and reducing processing latency by 25%.",
               "tags": [
-                "[tag1]"
+                "feature-engineering",
+                "time-series",
+                "signal-processing",
+                "scale-invariance",
+                "anomaly-detection"
+              ],
+              "priority": 1,
+              "lengthCategory": "LONG"
+            },
+            {
+              "id": "bp-r-002",
+              "text": "Built deep Autoencoder models (SELU, AlphaDropout, MAE loss) for unsupervised anomaly detection across 5 industrial systems, achieving up to 99.47% training accuracy and 93.05% validation accuracy on large multi-sensor time-series data.",
+              "tags": [
+                "autoencoder",
+                "deep-learning",
+                "unsupervised-ml",
+                "anomaly-detection",
+                "keras"
+              ],
+              "priority": 1,
+              "lengthCategory": "LONG"
+            },
+            {
+              "id": "bp-r-003",
+              "text": "Implemented Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune training parameters, accelerating search efficiency by 3.5x over standard grid search.",
+              "tags": [
+                "bayesian-optimization",
+                "gaussian-processes",
+                "hyperparameter-tuning",
+                "from-scratch"
+              ],
+              "priority": 1,
+              "lengthCategory": "LONG"
+            },
+            {
+              "id": "bp-r-004",
+              "text": "Delivered dashboards, technical documentation, and presentations to mentors, leads, and stakeholders, honing cross-functional communication in a production ML environment.",
+              "tags": [
+                "dashboards",
+                "documentation",
+                "communication",
+                "stakeholders"
               ],
               "priority": 1,
               "lengthCategory": "LONG"
@@ -52,22 +203,1420 @@
   ],
   "projects": [
     {
-      "id": "proj-example",
-      "name": "[Project Name]",
-      "github": "[GitHub URL]",
-      "techStack": "[Tech Stack]",
+      "id": "proj-asympt",
+      "name": "AsymPT: Asymmetric Parallel Transformer for Medical Image Segmentation",
+      "github": "https://github.com/satgunsodhi/AsymPT-showcase",
+      "techStack": "Python, PyTorch, Swin Transformer, EfficientNet-B3",
       "tags": [
-        "[tag1]"
+        "computer-vision",
+        "deep-learning",
+        "transformers",
+        "medical-imaging",
+        "pytorch",
+        "cnn",
+        "research",
+        "swin-transformer",
+        "efficientnet"
       ],
       "bullets": [
         {
-          "id": "bp-ex-001",
-          "text": "[Bullet point description]",
+          "id": "bp-a-001",
+          "text": "Designed a hybrid CNN-Transformer architecture with asymmetric placement: CNNs at high resolutions, a Parallel Hybrid Block with Gated Fusion at mid-scale, and Dual-Swin blocks at the bottleneck for global context modelling.",
           "tags": [
-            "[tag1]"
+            "architecture-design",
+            "cnn",
+            "transformer",
+            "swin-transformer",
+            "computer-vision"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-a-002",
+          "text": "Outperformed TransUNet on the Synapse Multi-Organ benchmark — <b>84% Dice Score at 28B FLOPs vs 77.48% at 106B FLOPs</b>, achieving a superior efficiency-performance tradeoff.",
+          "tags": [
+            "benchmarking",
+            "efficiency",
+            "medical-imaging",
+            "segmentation",
+            "research"
           ],
           "priority": 1,
           "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-a-003",
+          "text": "Deployed a production-ready training pipeline with mixed-precision AMP, deep supervision (3-level weighted loss), cosine annealing LR, and multi-format inference support (NIfTI, PNG, NPY).",
+          "tags": [
+            "mlops",
+            "training-pipeline",
+            "mixed-precision",
+            "pytorch"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-asympt-ext-1",
+          "text": "Co-designed AsymPT, an asymmetric parallel transformer for Synapse multi-organ CT segmentation (~35-40M parameters, ~28B FLOPs) achieving <b>84% Dice Score at 28B FLOPs vs TransUNet's 77.48% at 106B FLOPs</b>, delivering a superior efficiency-performance tradeoff.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-asympt-ext-2",
+          "text": "Incorporated a composite loss function with Focal Loss and label smoothing plus an EMA weight-averaging wrapper to stabilize training, reduce overconfidence, and improve small-organ Dice scores for challenging classes like gallbladder and esophagus.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-asympt-ext-3",
+          "text": "Deployed a production-ready training pipeline with mixed-precision AMP, deep supervision (3-level weighted loss), cosine annealing LR, and multi-format inference support (NIfTI, PNG, NPY), with an augmentation toolkit including elastic deformations, random scale+crop, and cutout.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-dasai",
+      "name": "DasAI: AI-Powered Discord Assistant",
+      "github": "https://github.com/satgunsodhi/DasAI",
+      "techStack": "Python, Discord.py, Supabase, PostgreSQL (pgvector), HuggingFace Inference API",
+      "tags": [
+        "rag",
+        "llm",
+        "discord-bot",
+        "supabase",
+        "pgvector",
+        "semantic-search",
+        "python",
+        "multi-tenant",
+        "next.js",
+        "typescript",
+        "sentence-transformers"
+      ],
+      "bullets": [
+        {
+          "id": "bp-d-001",
+          "text": "Built a self-hostable Discord AI assistant with a RAG pipeline using Supabase pgvector (384-dim embeddings) for semantic knowledge base search with per-server data isolation.",
+          "tags": [
+            "rag",
+            "embeddings",
+            "pgvector",
+            "semantic-search",
+            "supabase"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-d-002",
+          "text": "Integrated Sentence Transformers to index messages for similarity-based retrieval, and implemented rolling conversation summaries with Llama-3.2-3B and DuckDuckGo for real-time context-aware responses.",
+          "tags": [
+            "llm",
+            "rag",
+            "context-management",
+            "huggingface",
+            "real-time",
+            "sentence-transformers"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-d-003",
+          "text": "Shipped a Next.js + TypeScript admin dashboard on Vercel with role-based access control and Supabase RLS authentication; bot containerized on Railway via Docker.",
+          "tags": [
+            "multi-tenant",
+            "deployment",
+            "docker",
+            "access-control",
+            "production",
+            "next.js"
+          ],
+          "priority": 2,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-dasai-ext-1",
+          "text": "Designed and implemented a multi-tenant Discord copilot that stores per-guild configuration, roles, message history, and pgvector-backed RAG documents in Supabase using <b>vector(384) embeddings and IVFFlat cosine indexes</b> for fast similarity search.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-dasai-ext-2",
+          "text": "Built an HF InferenceClient integration that drives both chat and embedding calls via asyncio executors, runs a classifier sub-prompt to decide when to web-search, and injects DuckDuckGo summaries plus RAG snippets into the final system prompt while enforcing channel allowlists and team-lead/member roles.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-dasai-ext-3",
+          "text": "Developed an authenticated Next.js admin console using Supabase SSR/CSR clients to manage guild-level prompts, allowed channels, conversation summaries, user roles, and RAG documents, wired into a production Docker + Railway deployment.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-irpai",
+      "name": "IrpAI: Image Resolution Pipeline AI",
+      "github": "https://github.com/satgunsodhi/IrpAI",
+      "techStack": "Python, RT-DETR, EasyOCR, PyTorch, Transformers",
+      "tags": [
+        "computer-vision",
+        "multimodal",
+        "rt-detr",
+        "ocr",
+        "llm",
+        "python-library",
+        "object-detection",
+        "fine-tuning"
+      ],
+      "bullets": [
+        {
+          "id": "bp-i-001",
+          "text": "Engineered a 5-stage machine vision pipeline converting raw screenshots into structured JSON/Markdown at <b>~287ms end-to-end latency</b> for downstream LLM consumption.",
+          "tags": [
+            "multimodal",
+            "computer-vision",
+            "ocr",
+            "rt-detr",
+            "pipeline",
+            "latency"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-i-002",
+          "text": "Fine-tuned RT-DETR on custom UI datasets with a hybrid detector-fallback strategy, extracting bounding boxes, semantic roles, reading order, and confidence scores.",
+          "tags": [
+            "object-detection",
+            "rt-detr",
+            "fine-tuning",
+            "computer-vision",
+            "architecture"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-i-003",
+          "text": "Packaged as a pip-installable Python library with CLI, modular config system, pytest suite, and dedicated fine-tuning scripts for custom dataset adaptation.",
+          "tags": [
+            "python-library",
+            "mlops",
+            "testing",
+            "cli",
+            "documentation"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-irpai-ext-1",
+          "text": "Engineered a 5-stage machine vision pipeline converting raw screenshots into structured JSON/Markdown at <b>~287ms end-to-end latency</b> for downstream LLM consumption, combining RT-DETR object detection with EasyOCR text extraction.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-irpai-ext-2",
+          "text": "Fine-tuned RT-DETR on custom UI datasets with a hybrid detector-fallback strategy, extracting bounding boxes, semantic roles, reading order, and confidence scores for desktop/mobile UI elements.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-irpai-ext-3",
+          "text": "Packaged as a pip-installable Python library with CLI, modular config system, pytest suite, and dedicated fine-tuning scripts for custom dataset adaptation.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-slm",
+      "name": "SLM: Financial Sentiment Analysis via Transformer Architecture",
+      "github": "https://github.com/satgunsodhi/SLM",
+      "techStack": "Python, PyTorch, Tiktoken, LoRA, HuggingFace Transformers",
+      "tags": [
+        "nlp",
+        "llm",
+        "transformer",
+        "lora",
+        "fine-tuning",
+        "pytorch",
+        "sentiment-analysis",
+        "finance"
+      ],
+      "bullets": [
+        {
+          "id": "bp-s-001",
+          "text": "Built a transformer-based SLM from scratch in PyTorch using GPT-2 Tiktoken for financial sentiment classification and automated buy/sell/hold trading signal generation.",
+          "tags": [
+            "nlp",
+            "transformer",
+            "from-scratch",
+            "pytorch",
+            "sentiment-analysis",
+            "finance"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-s-002",
+          "text": "Applied LoRA for parameter-efficient fine-tuning on FinancialPhraseBank and FiQA, <b>reducing trainable parameters from millions to thousands</b> while preserving domain expressiveness.",
+          "tags": [
+            "lora",
+            "fine-tuning",
+            "parameter-efficient",
+            "nlp",
+            "llm"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-s-003",
+          "text": "Used instruction tuning to align outputs to standardized sentiment categories for robust inference on financial jargon, negations, and implicit market cues.",
+          "tags": [
+            "instruction-tuning",
+            "alignment",
+            "nlp",
+            "llm"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-slm-ext-1",
+          "text": "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English → financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-slm-ext-2",
+          "text": "Applied LoRA for parameter-efficient fine-tuning on FinancialPhraseBank and FiQA, <b>reducing trainable parameters from millions to thousands</b> while preserving domain expressiveness for sentiment classification and buy/sell/hold signal generation.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-slm-ext-3",
+          "text": "Deployed the model as FinPeak.ai, a Streamlit chat app that downloads safetensors weights from HuggingFace, reconstructs GPTConfig, and generates instruction-formatted financial answers with controllable temperature and response length.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-streamflix",
+      "name": "StreamFlix: Netflix Clone with Watch Party Feature",
+      "github": "https://github.com/satgunsodhi/StreamFlix",
+      "liveDemo": "https://stream-watch-party.onrender.com",
+      "techStack": "React 19, Zustand, Chakra UI, WebSockets, Node.js",
+      "tags": [
+        "web",
+        "react",
+        "websockets",
+        "real-time",
+        "zustand",
+        "chakra-ui",
+        "full-stack",
+        "team-project"
+      ],
+      "bullets": [
+        {
+          "id": "bp-sf-001",
+          "text": "Implemented real-time bi-directional video synchronization using WebSockets for seamless multi-user watch parties.",
+          "tags": [
+            "websockets",
+            "real-time",
+            "synchronization",
+            "full-stack"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-sf-002",
+          "text": "Architected modular content browsing and playback components with React 19, Zustand, and Chakra UI with responsive theme switching.",
+          "tags": [
+            "react",
+            "zustand",
+            "chakra-ui",
+            "component-architecture",
+            "web"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-sf-003",
+          "text": "Collaborated in a team of 3 to deliver full-stack features including content browsing, playback controls, and user sessions under course evaluation.",
+          "tags": [
+            "teamwork",
+            "full-stack",
+            "agile",
+            "course-project"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-streamflix-ext-1",
+          "text": "Built a full MERN watch-party experience where a React/Vite frontend controls shared playback state via an Express/MongoDB timer API (POST/GET/PUT /api/timers), synchronizing iframe video time across participants with cross-window messaging and periodic server polling.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-streamflix-ext-2",
+          "text": "Implemented responsive movie browsing using React Router, category-aware MovieRow carousels with dynamic visibleCount computation, and a search flow that merges and filters multiple movie lists at runtime.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-streamflix-ext-3",
+          "text": "Deployed as a single production Node process that statically serves the Vite-built frontend from frontend/dist and mounts REST routes under /api/timers with MongoDB connection wiring.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-publicstore",
+      "name": "Public-Store: Full-Stack Product Listing App",
+      "github": "https://github.com/satgunsodhi/Public-Store",
+      "techStack": "React.js, Node.js, Express.js, MongoDB, Zustand",
+      "tags": [
+        "web",
+        "react",
+        "express",
+        "mongodb",
+        "zustand",
+        "full-stack",
+        "crud"
+      ],
+      "bullets": [
+        {
+          "id": "bp-ps-001",
+          "text": "Developed full-stack CRUD functionality with Express, MongoDB, and React, with Zustand for efficient client-side state management and real-time UI updates.",
+          "tags": [
+            "crud",
+            "zustand",
+            "full-stack",
+            "mongodb"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-ps-002",
+          "text": "Implemented responsive web design and accessibility features, ensuring smooth UX across desktop and mobile devices.",
+          "tags": [
+            "responsive-design",
+            "accessibility",
+            "ux",
+            "web"
+          ],
+          "priority": 2,
+          "lengthCategory": "SHORT"
+        },
+        {
+          "id": "bp-proj-publicstore-ext-1",
+          "text": "Developed full-stack CRUD functionality with Express, MongoDB, and React, with Zustand for efficient client-side state management and real-time UI updates.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-publicstore-ext-2",
+          "text": "Implemented responsive web design and accessibility features, ensuring smooth UX across desktop and mobile devices.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-sih",
+      "name": "Smart India Hackathon — Cloud & Network Infrastructure",
+      "github": null,
+      "techStack": "AWS EC2, Docker, PostgreSQL, n8n, AWS S3",
+      "tags": [
+        "cloud",
+        "aws",
+        "docker",
+        "n8n",
+        "postgresql",
+        "hackathon",
+        "infrastructure",
+        "devops"
+      ],
+      "bullets": [
+        {
+          "id": "bp-sih-001",
+          "text": "Deployed Dockerized n8n workflow automation and PostgreSQL services on AWS EC2 with persistent volumes and secure inter-container networking.",
+          "tags": [
+            "aws",
+            "docker",
+            "n8n",
+            "postgresql",
+            "infrastructure"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-sih-002",
+          "text": "Integrated an AWS S3 bucket for scalable cloud storage and delivered end-to-end infrastructure setup under <b>36-hour hackathon constraints</b>.",
+          "tags": [
+            "aws-s3",
+            "cloud",
+            "hackathon",
+            "devops"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-sih-ext-1",
+          "text": "Deployed Dockerized n8n workflow automation and PostgreSQL services on AWS EC2 with persistent volumes and secure inter-container networking.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-sih-ext-2",
+          "text": "Integrated an AWS S3 bucket for scalable cloud storage and delivered end-to-end infrastructure setup under <b>36-hour hackathon constraints</b>.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-cloudtunnel",
+      "name": "Persistent Cloud Tunnel & Automated ML Workflow Engine",
+      "github": null,
+      "techStack": "Raspberry Pi, Cloudflare Warp & Tunnel, Docker Compose, n8n",
+      "tags": [
+        "raspberry-pi",
+        "cloudflare",
+        "docker",
+        "n8n",
+        "iot",
+        "infrastructure",
+        "self-hosted",
+        "automation"
+      ],
+      "bullets": [
+        {
+          "id": "bp-ct-001",
+          "text": "Configured a Raspberry Pi as an always-on edge node with Cloudflare Warp and Tunnel to establish persistent secure connectivity bypassing network outages and captive portals.",
+          "tags": [
+            "raspberry-pi",
+            "cloudflare",
+            "networking",
+            "iot"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-ct-002",
+          "text": "Configured Docker Compose with persistent volumes and automated restart policies to keep n8n running continuously with data preserved across reboots.",
+          "tags": [
+            "docker",
+            "n8n",
+            "infrastructure",
+            "self-hosted",
+            "automation"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-cloudtunnel-ext-1",
+          "text": "Configured a Raspberry Pi as an always-on edge node with Cloudflare Warp and Tunnel to establish persistent secure connectivity bypassing network outages and captive portals.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-cloudtunnel-ext-2",
+          "text": "Configured Docker Compose with persistent volumes and automated restart policies to keep n8n running continuously with data preserved across reboots.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-shlagent",
+      "name": "SHL Conversational Assessment Recommender",
+      "github": "https://github.com/satgunsodhi/SHL-Agent",
+      "techStack": "FastAPI, Python, FAISS, Sentence Transformers, OpenRouter LLM",
+      "tags": [
+        "fastapi",
+        "python",
+        "faiss",
+        "semantic-search",
+        "embeddings",
+        "vector-database",
+        "agentic-ai",
+        "conversational-ai",
+        "openrouter"
+      ],
+      "bullets": [
+        {
+          "id": "bp-shl-001",
+          "text": "Built a conversational AI recommender using FastAPI and OpenRouter to guide recruiters in choosing assessment tests from a 377-item SHL catalog.",
+          "tags": [
+            "fastapi",
+            "python",
+            "agentic-ai",
+            "conversational-ai",
+            "openrouter"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-shl-002",
+          "text": "Implemented semantic search using FAISS and Sentence Transformers (all-MiniLM-L6-v2 embeddings) to index and retrieve test metadata under 50ms latency.",
+          "tags": [
+            "faiss",
+            "semantic-search",
+            "embeddings",
+            "vector-database"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-shl-003",
+          "text": "Designed custom Scope Guards and Response Validators in FastAPI to bound LLM conversational behavior and prevent hallucinations.",
+          "tags": [
+            "validation",
+            "security",
+            "guardrails",
+            "llm"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-shlagent-ext-1",
+          "text": "Built a conversational AI recommender using FastAPI and OpenRouter that indexes a 377-item SHL catalog via <b>BM25Okapi</b> with enriched search_text strings, injecting detailed and compact catalog contexts into the LLM system prompt.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-shlagent-ext-2",
+          "text": "Implemented semantic search using FAISS and Sentence Transformers (all-MiniLM-L6-v2 embeddings) to index and retrieve test metadata under <b>50ms latency</b>, with a hybrid retrieval strategy prepending curated core assessments to BM25-ranked candidates.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-shlagent-ext-3",
+          "text": "Engineered URL/name validation that auto-corrects hallucinated product references via case-insensitive name lookup and secondary BM25 fallback, with off-topic filtering and Pydantic v2 strict JSON contracts.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-iqagent",
+      "name": "IQAgent: Local LLM Interview Question Generator",
+      "github": "https://github.com/satgunsodhi/IQAgent",
+      "techStack": "Python, Ollama, Gemma3:4b, PDF Plumber, CLI",
+      "tags": [
+        "python",
+        "cli",
+        "pdf-parser",
+        "ollama",
+        "local-llm",
+        "interview-questions-generator",
+        "gemma3"
+      ],
+      "bullets": [
+        {
+          "id": "bp-iq-001",
+          "text": "Developed a localized Python CLI tool that parses PDF resumes and generates structured technical interview questions with sample answers using Ollama (Gemma-3-4b).",
+          "tags": [
+            "python",
+            "cli",
+            "pdf-parser",
+            "ollama",
+            "local-llm",
+            "gemma3"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-iq-002",
+          "text": "Integrated target Job Description matching to align generated questions with specific role requirements, enhancing interviewer screening efficacy.",
+          "tags": [
+            "alignment",
+            "job-matching",
+            "interview-prep"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-iq-003",
+          "text": "Ensured 100% data privacy of candidate PII by routing all LLM inference through a fully localized, offline Ollama pipeline.",
+          "tags": [
+            "data-privacy",
+            "security",
+            "local-llm",
+            "ollama"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-iqagent-ext-1",
+          "text": "Developed a localized Python CLI tool that parses PDF resumes with pypdf and generates structured technical interview questions with sample answers using Ollama (Gemma-3-4b), ensuring <b>100% data privacy</b> via fully offline inference.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-iqagent-ext-2",
+          "text": "Integrated target Job Description matching to align generated questions with specific role requirements, with an interactive advanced CLI that captures multi-line JDs from stdin.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-iqagent-ext-3",
+          "text": "Structured output as markdown-friendly text persisted to interview_questions.txt, enabling reuse in interview prep workflows and easy versioning under source control.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-fundr",
+      "name": "Fundr: Startup Crowdfunding & Consumer Investment Platform",
+      "github": "https://github.com/satgunsodhi/Fundr",
+      "liveDemo": "https://fundr.onrender.com",
+      "techStack": "React 19, TypeScript, Vite, Tailwind CSS",
+      "tags": [
+        "web",
+        "react",
+        "typescript",
+        "vite",
+        "tailwind-css",
+        "crowdfunding",
+        "startup-funding"
+      ],
+      "bullets": [
+        {
+          "id": "bp-fu-001",
+          "text": "Developed a functional crowdfunding prototype connecting early-stage startups and consumer investors, supporting dual Rolling and Goal-Based investment models.",
+          "tags": [
+            "web",
+            "react",
+            "typescript",
+            "vite",
+            "crowdfunding"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-fu-002",
+          "text": "Implemented responsive UI dashboards using React 19 and Tailwind CSS to track campaign progress, funding timelines, and equity metrics.",
+          "tags": [
+            "react",
+            "tailwind-css",
+            "responsive-design",
+            "frontend"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-fundr-ext-1",
+          "text": "Developed a functional crowdfunding prototype using React 19 + TypeScript with a typed ProjectContext managing project creation and investment flows across three SPA routes.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-fundr-ext-2",
+          "text": "Implemented responsive UI dashboards using Tailwind CSS to track campaign progress, funding timelines, and equity metrics with dynamic progress bars and localized currency formatting.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-fundr-ext-3",
+          "text": "Deployed behind a minimal Express server serving the Vite-built frontend, providing clean separation between static SPA hosting and future API endpoints.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-outreach-agent",
+      "name": "Outreach-Agent: AI-Driven Resume Customization System",
+      "github": "https://github.com/satgunsodhi/Outreach-Agent",
+      "techStack": "Java 21, Spring Boot 3.4, LangChain4j, H2, Gmail/Drive API, Thymeleaf",
+      "tags": [
+        "java",
+        "spring-boot",
+        "langchain4j",
+        "agentic-ai",
+        "llm",
+        "pdf-generation",
+        "automation",
+        "oauth"
+      ],
+      "bullets": [
+        {
+          "id": "bp-oa-001",
+          "text": "Developed an agentic Spring Boot system using LangChain4j with a 3-tool architecture (knowledge base search, PDF generation, page-length validation) to automatically customize resumes targeting job descriptions.",
+          "tags": [
+            "java",
+            "spring-boot",
+            "langchain4j",
+            "agentic-ai",
+            "h2"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-oa-002",
+          "text": "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
+          "tags": [
+            "concurrency",
+            "batch-processing",
+            "resilience",
+            "web-scraping"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-oa-003",
+          "text": "Engineered a persistent PDF caching system using SHA-256 hashing on job descriptions and scraped company research to bypass redundant LLM generation, saving API costs and reducing latency.",
+          "tags": [
+            "caching",
+            "sha-256",
+            "optimization",
+            "performance"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-oa-004",
+          "text": "Designed an automated skill sorting algorithm to dynamically align resume keywords with parsed job requirements, eliminating LLM hallucination and enforcing strict ATS compliance.",
+          "tags": [
+            "algorithm-design",
+            "ats-compliance",
+            "automation"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-1",
+          "text": "Developed an agentic Spring Boot system using LangChain4j with a 3-tool architecture (knowledge base search, PDF generation, page-length validation) to automatically customize resumes targeting job descriptions.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-2",
+          "text": "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-3",
+          "text": "Engineered a persistent PDF caching system using SHA-256 hashing on job descriptions and scraped company research to bypass redundant LLM generation, saving API costs and reducing latency.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-outreach-agent-ext-4",
+          "text": "Designed an automated skill sorting algorithm to dynamically align resume keywords with parsed job requirements, eliminating LLM hallucination and enforcing strict ATS compliance.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-portfolio-v3",
+      "name": "Portfolio v3: Dark-Mode Cinematic Portfolio",
+      "github": "https://github.com/satgunsodhi/portfolio-v3-redesign",
+      "techStack": "HTML5, CSS3, JavaScript, GSAP, ScrollTrigger",
+      "tags": [
+        "web",
+        "frontend",
+        "gsap",
+        "animation",
+        "responsive-design",
+        "vanilla-js"
+      ],
+      "bullets": [
+        {
+          "id": "bp-pv3-001",
+          "text": "Designed and built a dark-mode-first, cinematic developer portfolio featuring a terminal-inspired typing simulator and custom GSAP scroll-triggered animations.",
+          "tags": [
+            "web",
+            "frontend",
+            "gsap",
+            "animation"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-pv3-002",
+          "text": "Engineered smooth-scroll navigation with active section highlighting, custom CSS property theme systems, and responsive layout tested across various viewports.",
+          "tags": [
+            "web",
+            "frontend",
+            "responsive-design",
+            "vanilla-js"
+          ],
+          "priority": 2,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-portfolio-v3-ext-1",
+          "text": "Designed and built a dark-mode-first, cinematic developer portfolio featuring a terminal-inspired typing simulator and custom GSAP scroll-triggered animations.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-portfolio-v3-ext-2",
+          "text": "Engineered smooth-scroll navigation with active section highlighting, custom CSS property theme systems, and responsive layout tested across various viewports.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-video-summary",
+      "name": "AI Video Transcription & Summary – Multimodal Meeting Summarizer",
+      "github": "https://github.com/satgunsodhi/AI-Video-Transcription-Summary",
+      "techStack": "Python, OpenAI Whisper, OpenCV, Ollama (LLaVA + LLaMA 3.2), ffmpeg",
+      "tags": [
+        "python",
+        "whisper",
+        "opencv",
+        "ollama",
+        "ffmpeg",
+        "multimodal",
+        "cli",
+        "llava",
+        "llama",
+        "asr",
+        "computer-vision",
+        "nlp",
+        "video-processing"
+      ],
+      "bullets": [
+        {
+          "id": "bp-vs-001",
+          "text": "Engineered a resumable multimodal summarization CLI that extracts audio via ffmpeg, transcribes with OpenAI Whisper, samples key frames using OpenCV, and calls Ollama vision/text models (LLaVA + LLaMA 3.2) to produce structured markdown summaries.",
+          "tags": [
+            "whisper",
+            "opencv",
+            "ollama",
+            "multimodal",
+            "cli",
+            "llava",
+            "ffmpeg"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-vs-002",
+          "text": "Implemented per-stage checkpointing (transcript, frames, frame descriptions, summary) with <b>--force overrides</b>, enabling large-file resilience and efficient iterative runs on long meetings.",
+          "tags": [
+            "checkpointing",
+            "resilience",
+            "cli",
+            "python"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-vs-003",
+          "text": "Packaged with a portable setup.sh that validates Python/ffmpeg/Ollama prerequisites, creates a venv, and pulls required Ollama models for one-command bootstrap.",
+          "tags": [
+            "devops",
+            "automation",
+            "cli",
+            "deployment"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-video-summary-ext-1",
+          "text": "Engineered a resumable multimodal summarization CLI that extracts audio via ffmpeg, transcribes with OpenAI Whisper, samples key frames using OpenCV, and calls Ollama vision/text models (LLaVA + LLaMA 3.2) to produce structured markdown summaries.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-video-summary-ext-2",
+          "text": "Implemented per-stage checkpointing (transcript, frames, frame descriptions, summary) with --force overrides, enabling large-file resilience and efficient iterative runs on long meetings.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-video-summary-ext-3",
+          "text": "Packaged with a portable setup.sh that validates Python/ffmpeg/Ollama prerequisites, creates a venv, and pulls required Ollama models for one-command bootstrap.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-request-cli",
+      "name": "Requester CLI: Command-Line HTTP Client",
+      "github": "https://github.com/satgunsodhi/Request-wrapper-CLI",
+      "techStack": "Python, CLI, HTTP/REST, Network Utilities",
+      "tags": [
+        "python",
+        "cli",
+        "http-client",
+        "network-utility",
+        "tooling"
+      ],
+      "bullets": [
+        {
+          "id": "bp-rc-001",
+          "text": "Engineered a command-line interface in Python for execution of GET, POST, PUT, and DELETE requests with parameterized header and payload options.",
+          "tags": [
+            "python",
+            "cli",
+            "http-client"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-rc-002",
+          "text": "Implemented response parsing mechanisms to automatically format and output clean headers and JSON bodies directly to log files.",
+          "tags": [
+            "tooling",
+            "file-io",
+            "network-utility"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        }
+      ]
+    },
+    {
+      "id": "proj-django-news",
+      "name": "django-News-API: API-Key Protected News Aggregation Service",
+      "github": "https://github.com/satgunsodhi/django-News-API",
+      "techStack": "Django 5, Django REST Framework, SQLite, Python",
+      "tags": [
+        "django",
+        "drf",
+        "python",
+        "rest-api",
+        "sqlite",
+        "api-key",
+        "news-aggregation",
+        "backend",
+        "web"
+      ],
+      "bullets": [
+        {
+          "id": "bp-dn-001",
+          "text": "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom scoring function.",
+          "tags": [
+            "django",
+            "drf",
+            "rest-api",
+            "python",
+            "api-key"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-dn-002",
+          "text": "Designed a relational schema with News, Comment, apiKey, and Log models, using ModelSerializers for JSON responses while serving traditional HTML templates for authentication.",
+          "tags": [
+            "django",
+            "database",
+            "sqlite",
+            "rest-api"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-dn-003",
+          "text": "Encoded 'latest', 'popular', and 'best' selection logic as dedicated aggregation functions, with per-article view counters and access logs for observability.",
+          "tags": [
+            "backend",
+            "aggregation",
+            "analytics",
+            "python"
+          ],
+          "priority": 2,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-proj-django-news-ext-1",
+          "text": "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom 'best' scorer combining recency (0.3 weight) and popularity (0.7 weight).",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-django-news-ext-2",
+          "text": "Designed a relational schema with News, Comment, apiKey, and Log models, using ModelSerializers for JSON responses while serving traditional HTML templates for authentication and browsing.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-proj-django-news-ext-3",
+          "text": "Encoded 'latest', 'popular', and 'best' selection logic as dedicated aggregation functions over SQLite, with per-article view counters and human-readable access logs in a Log table for observability.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-iqilo",
+      "name": "Iqilo: Gamified Tech Roadmap Learning OS",
+      "github": "https://github.com/satgunsodhi/Iqilo",
+      "techStack": "Next.js, TypeScript, TailwindCSS v4, useSyncExternalStore, localStorage",
+      "tags": [
+        "next-js",
+        "typescript",
+        "react",
+        "app-router",
+        "gamification",
+        "tailwindcss",
+        "state-management",
+        "frontend",
+        "web",
+        "fullstack",
+        "learning-platform",
+        "dsa",
+        "competitive-programming",
+        "quantitative-finance",
+        "external-store",
+        "localstorage",
+        "cross-tab-sync"
+      ],
+      "bullets": [
+        {
+          "id": "bp-iq-001",
+          "text": "Architected a Next.js/TypeScript learning OS where immutable course roadmaps and day-level units are wired into an external ProgressStore via useSyncExternalStore, supporting instant 'continue where you left off' redirects based on lastVisitedDay per course.",
+          "tags": [
+            "next-js",
+            "typescript",
+            "state-management",
+            "app-router",
+            "external-store",
+            "frontend"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-iq-002",
+          "text": "Built a gamification subsystem that derives XP levels, streaks, and badges from localStorage-backed stores, synchronizing changes across tabs via storage and custom events while keeping UI reactive through external-store subscriptions.",
+          "tags": [
+            "gamification",
+            "cross-tab-sync",
+            "localstorage",
+            "react",
+            "state-management"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-iq-003",
+          "text": "Implemented a fully client-side progress API exposing day/resource toggles, per-week/per-course completion stats, JSON export, and auto-redirect logic alongside a Tailwind-driven dashboard with recommended quests, certificate cards, and learning velocity graphs.",
+          "tags": [
+            "tailwindcss",
+            "frontend",
+            "dashboard",
+            "learning-platform",
+            "next-js"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    },
+    {
+      "id": "proj-nvidia-claude-bridge",
+      "name": "nvidia-claude-code-bridge: Rate-Limited LLM Proxy for NVIDIA NIM + Claude Code",
+      "github": "https://github.com/satgunsodhi/nvidia-claude-code-bridge",
+      "techStack": "Python, litellm, asyncio, NVIDIA NIM, Claude Code, Rate Limiting",
+      "tags": [
+        "python",
+        "litellm",
+        "llm-proxy",
+        "rate-limiting",
+        "asyncio",
+        "nvidia-nim",
+        "claude-code",
+        "multimodal",
+        "devtools",
+        "mlops",
+        "agentic-ai",
+        "llms",
+        "api-gateway",
+        "safety",
+        "custom-callback"
+      ],
+      "bullets": [
+        {
+          "id": "bp-ncb-001",
+          "text": "Implemented a per-model async rate limiter (ModelRateLimiter + AsyncRateLimiter) around litellm that enforces a 40 RPM cap using a lock-protected timestamp deque, preventing downstream NVIDIA NIM 429 responses.",
+          "tags": [
+            "python",
+            "asyncio",
+            "rate-limiting",
+            "litellm",
+            "nvidia-nim"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ncb-002",
+          "text": "Built a multimodal safety layer in async_pre_call_hook that clamps max_tokens and strips image payloads from messages for text-only models, injecting a dummy text block and logging explicit warnings when Claude Code sends images to non-vision backends.",
+          "tags": [
+            "multimodal",
+            "safety",
+            "litellm",
+            "claude-code",
+            "api-gateway"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ncb-003",
+          "text": "Engineered a failure introspection system that detects HTTP 429 rate-limit conditions, dumps exception attributes, NIM response headers (retry-after/limit fields), and raw/parsed JSON bodies to enable rapid debugging of bridge failures.",
+          "tags": [
+            "debugging",
+            "devtools",
+            "python",
+            "mlops",
+            "llm-proxy"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Tech Computer Science and Engineering",
+      "institution": "Vellore Institute of Technology (VIT)",
+      "location": "Vellore, Tamil Nadu",
+      "startDate": "2023",
+      "graduationDate": "2027",
+      "gpa": "9.42 CGPA",
+      "tags": [
+        "computer-science",
+        "machine-learning",
+        "algorithms",
+        "data-structures"
+      ]
+    },
+    {
+      "degree": "Class XII",
+      "institution": "Delhi World Public School",
+      "location": "Nerul, Navi Mumbai",
+      "graduationDate": "2023",
+      "gpa": "91.8%",
+      "tags": [
+        "academics"
+      ]
+    },
+    {
+      "degree": "Class X",
+      "institution": "Apeejay School",
+      "location": "Nerul, Navi Mumbai",
+      "graduationDate": "2021",
+      "gpa": "90.6%",
+      "tags": [
+        "academics"
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Alliance Française B1 (Concours Romain Rolland)",
+      "issuer": "Alliance Française",
+      "date": "2019",
+      "tags": [
+        "french",
+        "language",
+        "certification"
+      ]
+    }
+  ],
+  "extracurriculars": [
+    {
+      "id": "ec-001",
+      "organization": "Mozilla Firefox Club, VIT Vellore",
+      "role": "Core Member & Point of Contact",
+      "tags": [
+        "leadership",
+        "community",
+        "hackathon",
+        "events"
+      ],
+      "bullets": [
+        {
+          "id": "bp-ec-001",
+          "text": "Served as Point of Contact for CodeHub hackathon and anchored 5+ technical events including a keynote with Love Babbar (500+ attendees).",
+          "tags": [
+            "leadership",
+            "events",
+            "hackathon"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-ec-002",
+          "text": "Achieved <b>1st Place</b> at Binary Battles at Gravitas, VIT's annual technical fest.",
+          "tags": [
+            "competition",
+            "achievement",
+            "algorithms"
+          ],
+          "priority": 1,
+          "lengthCategory": "SHORT"
+        }
+      ]
+    },
+    {
+      "id": "ec-002-llama3-hackathon",
+      "organization": "Lllama3 Hackathon: Local Medical LLM Prototype",
+      "role": "Participant",
+      "tags": [
+        "python",
+        "ollama",
+        "llamaindex",
+        "huggingface",
+        "gradio",
+        "plotly",
+        "hackathon",
+        "local-llm",
+        "medical-ai",
+        "rapid-prototyping"
+      ],
+      "bullets": [
+        {
+          "id": "bp-lh-001",
+          "text": "Prototyped an end-to-end local medical assistant by downloading a quantized 8B-parameter med-llama model from HuggingFace, registering it in Ollama, and wiring it into LlamaIndex for offline inference.",
+          "tags": [
+            "ollama",
+            "llamaindex",
+            "local-llm",
+            "huggingface",
+            "hackathon"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-lh-002",
+          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots for the local med-LLM.",
+          "tags": [
+            "gradio",
+            "plotly",
+            "hackathon",
+            "rapid-prototyping",
+            "medical-ai"
+          ],
+          "priority": 1,
+          "lengthCategory": "MEDIUM"
+        },
+        {
+          "id": "bp-lh-003",
+          "text": "Delivered the prototype under hackathon time constraints using colab-xterm for Ollama process management directly from Jupyter notebooks.",
+          "tags": [
+            "hackathon",
+            "rapid-prototyping",
+            "ollama"
+          ],
+          "priority": 2,
+          "lengthCategory": "SHORT"
+        },
+        {
+          "id": "bp-ec-002-llama3-hackathon-ext-1",
+          "text": "Prototyped an end-to-end local medical assistant by downloading a quantized 8B-parameter med-llama .gguf model from HuggingFace, registering it in Ollama, and wiring it into LlamaIndex for offline inference inside Colab.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ec-002-llama3-hackathon-ext-2",
+          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots, providing a front-end for the local med-LLM.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-ec-002-llama3-hackathon-ext-3",
+          "text": "Delivered the prototype under hackathon time constraints using colab-xterm for Ollama process management directly from Jupyter notebooks.",
+          "tags": [],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ]
     }
