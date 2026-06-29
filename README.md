@@ -103,9 +103,22 @@ cp .env.example .env
 ---
 
 ## 🧑‍💻 Adapting for Yourself
-This project is currently hardcoded with the portfolio links, persona, and experiences of its original author. If you want to use this pipeline to send your own outreach emails, you will need to update several files (prompts, configuration, JSON endpoints). 
+This project is currently built with placeholder configurations and data for you to easily customize. To use this pipeline to send your own outreach emails, you MUST update the following files with your personal details before deploying:
 
-Please see the comprehensive **[Customization Guide](docs/CUSTOMIZATION_GUIDE.md)** for step-by-step instructions on making this repo your own!
+### 1. Resume and Technical Knowledge Base
+- **`src/main/resources/data/master_resume.json`**: Replace the skeleton schema with your actual experiences, education, and skills. The LLM agent uses these specific keys (`id`, `tags`, `priority`) to dynamically pick which bullets to include.
+- **`src/main/resources/data/project_deep_context.json`**: Add deep context notes for your projects. The Cover Letter Agent uses this to speak authoritatively about your background.
+
+### 2. Spring Boot Configurations & Emails
+- **`.env` (from `.env.example`)**: Configure your `GMAIL_ADDRESS`, API keys, and target `DISCOVERY_ROLE` (e.g. `Machine Learning Engineer` instead of `ML Intern`).
+- **`src/main/java/com/outreach/agent/controller/BatchOutreachController.java`**: Locate `your_test_email@gmail.com` in the `resetTestTargets` filter and change it to your actual email so test drafts go to you.
+- **`src/main/java/com/outreach/agent/service/BatchOutreachService.java`**: Update the `signature` HTML string at the bottom. Replace `https://yourportfolio.com` and GitHub/LinkedIn placeholders with your actual profile links.
+- **`src/main/java/com/outreach/agent/agent/CoverLetterAgent.java`**: In the system prompt, replace `[Your Name]` and `[Your Role]` so the agent generates cover letters that actually sound like you.
+
+### 3. Frontend / Web Security
+- **`application.yml` & `SecurityConfig.java`**: If you deploy the frontend somewhere other than Vercel, replace `https://yourportfolio.com` in `app.cors.allowed-origins` with your real frontend domain.
+
+> For a complete, step-by-step breakdown (including how to set up Google OAuth), please see the comprehensive **[Customization Guide](docs/CUSTOMIZATION_GUIDE.md)**!
 
 Edit `.env` with your actual credentials (see the table below). Example files for ignored runtime paths live in `docs/examples/`.
 
