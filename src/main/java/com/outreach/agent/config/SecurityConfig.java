@@ -33,7 +33,7 @@ public class SecurityConfig {
     @Value("${app.security.password:admin123}")
     private String adminPassword;
 
-    @Value("${app.cors.allowed-origins:https://satgunsodhi.vercel.app,http://localhost:3000,http://localhost:5173}")
+    @Value("${app.cors.allowed-origins:https://yourportfolio.com,http://localhost:3000,http://localhost:5173}")
     private String allowedOriginsRaw;
 
     @jakarta.annotation.PostConstruct

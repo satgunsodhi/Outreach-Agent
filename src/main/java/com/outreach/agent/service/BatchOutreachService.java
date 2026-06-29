@@ -262,7 +262,7 @@ public class BatchOutreachService {
                 
                 String signature = "\n\nBest,\n"
                         + "<strong>" + candidateName + "</strong>\n"
-                        + "<a href=\"https://satgunsodhi.vercel.app\">Portfolio</a> | "
+                        + "<a href=\"https://yourportfolio.com\">Portfolio</a> | "
                         + "<a href=\"" + github + "\">GitHub</a> | "
                         + "<a href=\"" + linkedin + "\">LinkedIn</a>\n"
                         + "<a href=\"" + driveLink + "\">View My Tailored Resume</a>";

@@ -34,7 +34,7 @@ public class BatchOutreachController {
     @PostMapping("/reset-tests")
     public ResponseEntity<?> resetTestTargets() {
         List<OutreachTarget> testTargets = targetRepository.findAll().stream()
-                .filter(t -> "satgunsodhi@gmail.com".equalsIgnoreCase(t.getRecipientEmail()))
+                .filter(t -> "your_test_email@gmail.com".equalsIgnoreCase(t.getRecipientEmail()))
                 .toList();
                 
         for (OutreachTarget target : testTargets) {
