@@ -234,7 +234,7 @@
         },
         {
           "id": "bp-a-002",
-          "text": "Outperformed TransUNet on the Synapse Multi-Organ benchmark — <b>84% Dice Score at 28B FLOPs vs 77.48% at 106B FLOPs</b>, achieving a superior efficiency-performance tradeoff.",
+          "text": "Outperformed TransUNet on the Synapse Multi-Organ benchmark \u2014 <b>84% Dice Score at 28B FLOPs vs 77.48% at 106B FLOPs</b>, achieving a superior efficiency-performance tradeoff.",
           "tags": [
             "benchmarking",
             "efficiency",
@@ -499,7 +499,7 @@
         },
         {
           "id": "bp-proj-slm-ext-1",
-          "text": "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English → financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
+          "text": "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English \u2192 financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -521,140 +521,8 @@
       ]
     },
     {
-      "id": "proj-streamflix",
-      "name": "StreamFlix: Netflix Clone with Watch Party Feature",
-      "github": "https://github.com/satgunsodhi/StreamFlix",
-      "liveDemo": "https://stream-watch-party.onrender.com",
-      "techStack": "React 19, Zustand, Chakra UI, WebSockets, Node.js",
-      "tags": [
-        "web",
-        "react",
-        "websockets",
-        "real-time",
-        "zustand",
-        "chakra-ui",
-        "full-stack",
-        "team-project"
-      ],
-      "bullets": [
-        {
-          "id": "bp-sf-001",
-          "text": "Implemented real-time bi-directional video synchronization using WebSockets for seamless multi-user watch parties.",
-          "tags": [
-            "websockets",
-            "real-time",
-            "synchronization",
-            "full-stack"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-sf-002",
-          "text": "Architected modular content browsing and playback components with React 19, Zustand, and Chakra UI with responsive theme switching.",
-          "tags": [
-            "react",
-            "zustand",
-            "chakra-ui",
-            "component-architecture",
-            "web"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-sf-003",
-          "text": "Collaborated in a team of 3 to deliver full-stack features including content browsing, playback controls, and user sessions under course evaluation.",
-          "tags": [
-            "teamwork",
-            "full-stack",
-            "agile",
-            "course-project"
-          ],
-          "priority": 2,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-proj-streamflix-ext-1",
-          "text": "Built a full MERN watch-party experience where a React/Vite frontend controls shared playback state via an Express/MongoDB timer API (POST/GET/PUT /api/timers), synchronizing iframe video time across participants with cross-window messaging and periodic server polling.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-streamflix-ext-2",
-          "text": "Implemented responsive movie browsing using React Router, category-aware MovieRow carousels with dynamic visibleCount computation, and a search flow that merges and filters multiple movie lists at runtime.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-streamflix-ext-3",
-          "text": "Deployed as a single production Node process that statically serves the Vite-built frontend from frontend/dist and mounts REST routes under /api/timers with MongoDB connection wiring.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        }
-      ]
-    },
-    {
-      "id": "proj-publicstore",
-      "name": "Public-Store: Full-Stack Product Listing App",
-      "github": "https://github.com/satgunsodhi/Public-Store",
-      "techStack": "React.js, Node.js, Express.js, MongoDB, Zustand",
-      "tags": [
-        "web",
-        "react",
-        "express",
-        "mongodb",
-        "zustand",
-        "full-stack",
-        "crud"
-      ],
-      "bullets": [
-        {
-          "id": "bp-ps-001",
-          "text": "Developed full-stack CRUD functionality with Express, MongoDB, and React, with Zustand for efficient client-side state management and real-time UI updates.",
-          "tags": [
-            "crud",
-            "zustand",
-            "full-stack",
-            "mongodb"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-ps-002",
-          "text": "Implemented responsive web design and accessibility features, ensuring smooth UX across desktop and mobile devices.",
-          "tags": [
-            "responsive-design",
-            "accessibility",
-            "ux",
-            "web"
-          ],
-          "priority": 2,
-          "lengthCategory": "SHORT"
-        },
-        {
-          "id": "bp-proj-publicstore-ext-1",
-          "text": "Developed full-stack CRUD functionality with Express, MongoDB, and React, with Zustand for efficient client-side state management and real-time UI updates.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-publicstore-ext-2",
-          "text": "Implemented responsive web design and accessibility features, ensuring smooth UX across desktop and mobile devices.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        }
-      ]
-    },
-    {
       "id": "proj-sih",
-      "name": "Smart India Hackathon — Cloud & Network Infrastructure",
+      "name": "Smart India Hackathon \u2014 Cloud & Network Infrastructure",
       "github": null,
       "techStack": "AWS EC2, Docker, PostgreSQL, n8n, AWS S3",
       "tags": [
@@ -1077,62 +945,8 @@
       ]
     },
     {
-      "id": "proj-portfolio-v3",
-      "name": "Portfolio v3: Dark-Mode Cinematic Portfolio",
-      "github": "https://github.com/satgunsodhi/portfolio-v3-redesign",
-      "techStack": "HTML5, CSS3, JavaScript, GSAP, ScrollTrigger",
-      "tags": [
-        "web",
-        "frontend",
-        "gsap",
-        "animation",
-        "responsive-design",
-        "vanilla-js"
-      ],
-      "bullets": [
-        {
-          "id": "bp-pv3-001",
-          "text": "Designed and built a dark-mode-first, cinematic developer portfolio featuring a terminal-inspired typing simulator and custom GSAP scroll-triggered animations.",
-          "tags": [
-            "web",
-            "frontend",
-            "gsap",
-            "animation"
-          ],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-pv3-002",
-          "text": "Engineered smooth-scroll navigation with active section highlighting, custom CSS property theme systems, and responsive layout tested across various viewports.",
-          "tags": [
-            "web",
-            "frontend",
-            "responsive-design",
-            "vanilla-js"
-          ],
-          "priority": 2,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-portfolio-v3-ext-1",
-          "text": "Designed and built a dark-mode-first, cinematic developer portfolio featuring a terminal-inspired typing simulator and custom GSAP scroll-triggered animations.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-portfolio-v3-ext-2",
-          "text": "Engineered smooth-scroll navigation with active section highlighting, custom CSS property theme systems, and responsive layout tested across various viewports.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        }
-      ]
-    },
-    {
       "id": "proj-video-summary",
-      "name": "AI Video Transcription & Summary – Multimodal Meeting Summarizer",
+      "name": "AI Video Transcription & Summary \u2013 Multimodal Meeting Summarizer",
       "github": "https://github.com/satgunsodhi/AI-Video-Transcription-Summary",
       "techStack": "Python, OpenAI Whisper, OpenCV, Ollama (LLaVA + LLaMA 3.2), ffmpeg",
       "tags": [
@@ -1497,8 +1311,8 @@
   ],
   "certifications": [
     {
-      "name": "Alliance Française B1 (Concours Romain Rolland)",
-      "issuer": "Alliance Française",
+      "name": "Alliance Fran\u00e7aise B1 (Concours Romain Rolland)",
+      "issuer": "Alliance Fran\u00e7aise",
       "date": "2019",
       "tags": [
         "french",
