@@ -55,6 +55,10 @@ public class OpenRouterInterceptor implements ClientHttpRequestInterceptor {
 
         // Add the response-caching header
         request.getHeaders().set("X-OpenRouter-Cache", "true");
+        
+        // Add Identity Headers to bypass shared IP rate-limiting (e.g., GitHub Actions)
+        request.getHeaders().set("HTTP-Referer", "https://github.com/satgunsodhi/Outreach-Agent");
+        request.getHeaders().set("X-Title", "Outreach Agent");
 
         // Rewrite the body to inject the "models" fallback array safely via Jackson
         byte[] modifiedBody = injectModels(body);
