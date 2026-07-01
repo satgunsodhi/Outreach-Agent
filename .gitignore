@@ -46,3 +46,6 @@ Thumbs.db
 # Alternative/Local Env configs
 .env.*
 !.env.example
+
+# Agents
+.agents
