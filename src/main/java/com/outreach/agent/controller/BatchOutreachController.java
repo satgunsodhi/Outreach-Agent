@@ -127,4 +127,3 @@ public class BatchOutreachController {
         }).orElse(ResponseEntity.notFound().build());
     }
 }
- 

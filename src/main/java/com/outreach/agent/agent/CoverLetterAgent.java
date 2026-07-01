@@ -90,4 +90,3 @@ public interface CoverLetterAgent {
     String generateSubject(@V("companyName") String companyName, @V("roleName") String roleName);
 }
 
- 
