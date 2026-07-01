@@ -95,7 +95,7 @@ outreach-agent/
 ### 1. Clone and configure environment
 
 ```bash
-git clone https://github.com/your-username/outreach-agent.git
+git clone -b main --single-branch https://github.com/satgunsodhi/Outreach-Agent.git
 cd outreach-agent
 cp .env.example .env
 ```
