@@ -1,6 +1,7 @@
 package com.outreach.agent.service;
 
 import java.net.URI;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -128,7 +129,7 @@ public class CompanyDeduplicationService {
         //    We iterate from longest to shortest to prefer longer matches first (e.g. "incorporated" > "inc")
         String best = LEGAL_SUFFIXES.stream()
                 .filter(suffix -> normalized.endsWith(suffix) && normalized.length() > suffix.length())
-                .max(java.util.Comparator.comparingInt(String::length))
+                .max(Comparator.comparingInt(String::length))
                 .map(suffix -> normalized.substring(0, normalized.length() - suffix.length()))
                 .orElse(normalized);
 
