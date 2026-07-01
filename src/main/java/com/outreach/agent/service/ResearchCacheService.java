@@ -1,7 +1,6 @@
 package com.outreach.agent.service;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -28,11 +27,14 @@ public class ResearchCacheService {
     private final ObjectMapper objectMapper;
 
     /**
-     * B2: Stores CompletableFuture values so that concurrent callers for the same company
+     * B2: Stores CompletableFuture values so that concurrent callers for the same
+     * company
      * share a single in-flight LLM request instead of triggering duplicate calls.
-     * E6: CacheEntry records the result plus a timestamp for 24-hour TTL enforcement.
+     * E6: CacheEntry records the result plus a timestamp for 24-hour TTL
+     * enforcement.
      */
-    private record CacheEntry(String research, LocalDateTime timestamp) {}
+    private record CacheEntry(String research, LocalDateTime timestamp) {
+    }
 
     /** In-memory store: cacheKey → CompletableFuture<CacheEntry> */
     private final ConcurrentHashMap<String, CompletableFuture<CacheEntry>> inFlightMap = new ConcurrentHashMap<>();
@@ -52,7 +54,8 @@ public class ResearchCacheService {
         if (file.exists()) {
             try {
                 Map<String, SerializedEntry> loaded = objectMapper.readValue(file,
-                        new TypeReference<Map<String, SerializedEntry>>() {});
+                        new TypeReference<Map<String, SerializedEntry>>() {
+                        });
                 for (Map.Entry<String, SerializedEntry> e : loaded.entrySet()) {
                     CacheEntry entry = new CacheEntry(e.getValue().research(), e.getValue().timestamp());
                     CompletableFuture<CacheEntry> future = CompletableFuture.completedFuture(entry);
@@ -73,7 +76,8 @@ public class ResearchCacheService {
 
         LocalDateTime cutoff = LocalDateTime.now().minusHours(24);
 
-        // B2: computeIfAbsent is atomic — only one thread creates the future, others share it.
+        // B2: computeIfAbsent is atomic — only one thread creates the future, others
+        // share it.
         CompletableFuture<CacheEntry> future = inFlightMap.compute(cacheKey, (key, existing) -> {
             if (existing != null) {
                 // Check if the completed future holds a fresh entry
@@ -84,7 +88,8 @@ public class ResearchCacheService {
                             log.debug("Cache hit for {}", key);
                             return existing; // Re-use fresh entry
                         }
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 } else if (!existing.isDone()) {
                     log.debug("Cache in-flight for {}: waiting on existing future", key);
                     return existing; // Another thread is fetching — share the same future
@@ -111,7 +116,8 @@ public class ResearchCacheService {
     /** E6: Flush research cache to disk every 5 minutes if modified. */
     @Scheduled(fixedDelay = 300_000)
     public void flushCacheToDisk() {
-        if (!dirty) return;
+        if (!dirty)
+            return;
         try {
             File file = new File(CACHE_FILE_PATH);
             file.getParentFile().mkdirs();
@@ -134,5 +140,6 @@ public class ResearchCacheService {
     }
 
     /** DTO for JSON serialization of cache entries. */
-    record SerializedEntry(String research, LocalDateTime timestamp) {}
+    record SerializedEntry(String research, LocalDateTime timestamp) {
+    }
 }

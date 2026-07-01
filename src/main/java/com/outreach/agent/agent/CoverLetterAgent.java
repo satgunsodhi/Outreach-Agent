@@ -74,10 +74,10 @@ public interface CoverLetterAgent {
             Do not use placeholders like [Company Name], [Role], or YOUR_NAME.
             
             Good examples:
-            - Quick note re your ML infra challenges
-            - DaSAI meets Sarvam - intern application
-            - ML engineer for your vision pipeline
-            - Satgun Sodhi - ML intern application
+            - Quick note re your [Company Focus] challenges
+            - [Your Project] meets [Company Name] - intern application
+            - [Your Role] for your [Specific Team/Product]
+            - [Your Name] - [Your Role] application
             
             Bad examples (do NOT write these):
             - Application for Position at Company

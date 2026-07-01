@@ -46,7 +46,7 @@ public class MasterResumeService {
             return masterResume;
         }
 
-        List<String> lowerTags = tags.stream().map(String::toLowerCase).toList();
+        List<String> lowerTags = tags.stream().map(t -> t.toLowerCase()).toList();
 
         List<Experience> filteredExperiences = masterResume.experiences().stream()
                 .map(exp -> {
@@ -57,7 +57,7 @@ public class MasterResumeService {
                                         .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
                                         .toList();
                                 List<BulletPoint> finalBullets = filteredBullets.isEmpty() ? proj.bullets() : filteredBullets;
-                                return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets);
+                                return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets, proj.priority());
                             })
                             .toList();
                     return new Experience(exp.id(), exp.company(), exp.title(), exp.startDate(), exp.endDate(), exp.location(), exp.tags(), filteredProjects);
@@ -71,13 +71,17 @@ public class MasterResumeService {
                             .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
                             .toList();
                     List<BulletPoint> finalBullets = filteredBullets.isEmpty() ? proj.bullets() : filteredBullets;
-                    return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets);
+                    return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets, proj.priority());
                 })
                 .filter(proj -> !proj.bullets().isEmpty() || matchesAny(proj.tags(), lowerTags))
                 .sorted(Comparator.comparingInt((Project proj) -> {
                     int projectMatches = countMatches(proj.tags(), lowerTags);
                     int bulletMatches = proj.bullets().stream().mapToInt(bp -> countMatches(bp.tags(), lowerTags)).sum();
-                    return projectMatches + bulletMatches;
+                    int relevanceScore = projectMatches + bulletMatches;
+                    int priorityWeight = proj.priority() != null ? proj.priority() : 1;
+                    // Blend relevance and priority: each matching keyword is worth 2 points,
+                    // and the project priority/quality rating adds 1 to 5 points.
+                    return (relevanceScore * 2) + priorityWeight;
                 }).reversed())
                 .toList();
 
@@ -114,14 +118,14 @@ public class MasterResumeService {
     private boolean matchesAny(List<String> itemTags, List<String> searchTags) {
         if (itemTags == null || itemTags.isEmpty()) return false;
         return itemTags.stream()
-                .map(String::toLowerCase)
+                .map(t -> t.toLowerCase())
                 .anyMatch(searchTags::contains);
     }
 
     private int countMatches(List<String> itemTags, List<String> searchTags) {
         if (itemTags == null || itemTags.isEmpty()) return 0;
         return (int) itemTags.stream()
-                .map(String::toLowerCase)
+                .map(t -> t.toLowerCase())
                 .filter(searchTags::contains)
                 .count();
     }

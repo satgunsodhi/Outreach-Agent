@@ -23,7 +23,10 @@ public class BatchOutreachService {
 
     private static final Logger log = LoggerFactory.getLogger(BatchOutreachService.class);
 
-    /** Maximum number of automatic retries before a target is permanently marked FAILED. */
+    /**
+     * Maximum number of automatic retries before a target is permanently marked
+     * FAILED.
+     */
     private static final int MAX_RETRIES = 2;
 
     private final OutreachTargetRepository targetRepository;
@@ -52,17 +55,20 @@ public class BatchOutreachService {
     @Value("${app.followups.enabled:false}")
     private boolean followupsEnabled;
 
+    @Value("${app.discovery.role:ML Engineer}")
+    private String targetRoleName;
+
     public BatchOutreachService(OutreachTargetRepository targetRepository,
-                                ResumeOrchestrationService resumeOrchestrationService,
-                                CoverLetterAgent coverLetterAgent,
-                                EmailAutomationService emailAutomationService,
-                                MasterResumeService masterResumeService,
-                                GoogleDriveService googleDriveService,
-                                GmailService gmailService,
-                                OutreachSanitizer sanitizer,
-                                WorkingDayCalculator workingDayCalculator,
-                                ResearchCacheService researchCacheService,
-                                OutreachFileManager fileManager) {
+            ResumeOrchestrationService resumeOrchestrationService,
+            CoverLetterAgent coverLetterAgent,
+            EmailAutomationService emailAutomationService,
+            MasterResumeService masterResumeService,
+            GoogleDriveService googleDriveService,
+            GmailService gmailService,
+            OutreachSanitizer sanitizer,
+            WorkingDayCalculator workingDayCalculator,
+            ResearchCacheService researchCacheService,
+            OutreachFileManager fileManager) {
         this.targetRepository = targetRepository;
         this.resumeOrchestrationService = resumeOrchestrationService;
         this.coverLetterAgent = coverLetterAgent;
@@ -98,7 +104,8 @@ public class BatchOutreachService {
             targetRepository.saveAll(failedTargets); // Fix #2: batch save
         }
 
-        // 2. Revert any PROCESSING targets to PENDING (since this is a fresh startup, nothing is actively processing yet)
+        // 2. Revert any PROCESSING targets to PENDING (since this is a fresh startup,
+        // nothing is actively processing yet)
         List<OutreachTarget> processingTargets = targetRepository.findByStatusOrderByIdAsc(TargetStatus.PROCESSING);
         if (!processingTargets.isEmpty()) {
             log.info("Found {} targets in PROCESSING on startup. Reverting them to PENDING.", processingTargets.size());
@@ -128,15 +135,18 @@ public class BatchOutreachService {
 
     /**
      * Runs at startup (after a 30-second delay) and every 10 minutes thereafter.
-     * Only recovers targets that have been stuck in PROCESSING for more than 15 minutes,
-     * preventing false-positive recovery of targets being actively processed by a concurrent thread.
+     * Only recovers targets that have been stuck in PROCESSING for more than 15
+     * minutes,
+     * preventing false-positive recovery of targets being actively processed by a
+     * concurrent thread.
      */
     @Scheduled(fixedRate = 600_000, initialDelay = 30_000)
     public void recoverStalledTargets() {
         LocalDateTime threshold = LocalDateTime.now().minusMinutes(15);
         List<OutreachTarget> stalledTargets = targetRepository.findStalledTargets(TargetStatus.PROCESSING, threshold);
         if (!stalledTargets.isEmpty()) {
-            log.warn("Found {} targets stalled in PROCESSING for >15 minutes. Reverting to PENDING.", stalledTargets.size());
+            log.warn("Found {} targets stalled in PROCESSING for >15 minutes. Reverting to PENDING.",
+                    stalledTargets.size());
             for (OutreachTarget target : stalledTargets) {
                 target.setStatus(TargetStatus.PENDING);
                 target.setClaimToken(null); // Clear claim token
@@ -146,7 +156,8 @@ public class BatchOutreachService {
         }
     }
 
-    // Run every 10 seconds to draft targets (disabled in CI batch mode — CiBatchRunner calls directly)
+    // Run every 10 seconds to draft targets (disabled in CI batch mode —
+    // CiBatchRunner calls directly)
     @Scheduled(fixedDelay = 10000)
     public void scheduledProcessPendingTargets() {
         if (ciBatchMode) {
@@ -206,9 +217,11 @@ public class BatchOutreachService {
                 pdfPathStr = sanitizer.sanitizePdfPath(pdfPathStr);
 
                 // Guard: verify the file actually exists before attempting Drive upload.
-                // The LLM sometimes returns a path without the .pdf extension; sanitizePdfPath()
+                // The LLM sometimes returns a path without the .pdf extension;
+                // sanitizePdfPath()
                 // now guarantees the extension, but a double-check here ensures we fail fast
-                // with a clear message rather than an opaque IllegalArgumentException from DriveService.
+                // with a clear message rather than an opaque IllegalArgumentException from
+                // DriveService.
                 if (!java.nio.file.Files.exists(java.nio.file.Path.of(pdfPathStr))) {
                     // Last-resort: try without the .pdf in case we double-added it
                     String altPath = pdfPathStr.replaceAll("(?i)\\.pdf\\.pdf$", ".pdf");
@@ -216,16 +229,17 @@ public class BatchOutreachService {
                         pdfPathStr = altPath;
                     } else {
                         throw new IllegalStateException(
-                            "Generated PDF not found on disk at: " + pdfPathStr +
-                            ". The LLM may have returned a malformed or truncated path.");
+                                "Generated PDF not found on disk at: " + pdfPathStr +
+                                        ". The LLM may have returned a malformed or truncated path.");
                     }
                 }
 
                 // 3. Generate Cover Letter & Subject
                 String masterResumeJson = masterResumeService.getMasterResumeJson();
-                // Fix #3: extract a concise role name — take the first line of the JD or truncate to 200 chars
+                // Fix #3: extract a concise role name — take the first line of the JD or
+                // truncate to 200 chars
                 // rather than passing the entire JD text to generateSubject's 8-word prompt.
-                String roleName = "ML Intern";
+                String roleName = targetRoleName;
                 if (target.getJobDescription() != null && !target.getJobDescription().isBlank()) {
                     String firstLine = target.getJobDescription().split("[\n\r]")[0].trim();
                     roleName = firstLine.length() <= 200 ? firstLine : firstLine.substring(0, 200);
@@ -235,7 +249,8 @@ public class BatchOutreachService {
                 var personalInfo = masterResumeService.getMasterResume().personalInfo();
                 String candidateName = personalInfo.name();
 
-                // E8: Build a short persona string from personalInfo to replace the hardcoded name in CoverLetterAgent.
+                // E8: Build a short persona string from personalInfo to replace the hardcoded
+                // name in CoverLetterAgent.
                 String candidatePersona = candidateName
                         + ", a candidate"
                         + (personalInfo.summary() != null && !personalInfo.summary().isBlank()
@@ -243,7 +258,8 @@ public class BatchOutreachService {
                                 : "");
 
                 String coverLetterBody = coverLetterAgent.generateCoverLetter(
-                        candidatePersona, masterResumeJson, roleName, target.getCompanyName(), jd, companyResearch, target.getJobUrl());
+                        candidatePersona, masterResumeJson, roleName, target.getCompanyName(), jd, companyResearch,
+                        target.getJobUrl());
 
                 // Clean up any remaining placeholders in the LLM output
                 coverLetterBody = sanitizer.fillPlaceholders(coverLetterBody, candidateName, target.getCompanyName());
@@ -253,22 +269,24 @@ public class BatchOutreachService {
                         .replaceAll("(?im)^(Best|Sincerely|Regards|Thanks|Cheers|Yours|Warmly)[,.]?\\s*[\\s\\S]*$", "")
                         .trim();
                 String github = personalInfo.github();
-                if (github != null && !github.startsWith("http")) github = "https://" + github;
+                if (github != null && !github.startsWith("http"))
+                    github = "https://" + github;
                 String linkedin = personalInfo.linkedin();
-                if (linkedin != null && !linkedin.startsWith("http")) linkedin = "https://" + linkedin;
+                if (linkedin != null && !linkedin.startsWith("http"))
+                    linkedin = "https://" + linkedin;
 
                 // Upload resume to Google Drive and append link to cover letter
                 String driveLink = googleDriveService.uploadResume(pdfPathStr);
-                
+
                 String signature = "\n\nBest,\n"
                         + "<strong>" + candidateName + "</strong>\n"
-                        + "<a href=\"https://satgunsodhi.vercel.app\">Portfolio</a> | "
+                        + "<a href=\"https://yourportfolio.com\">Portfolio</a> | "
                         + "<a href=\"" + github + "\">GitHub</a> | "
                         + "<a href=\"" + linkedin + "\">LinkedIn</a>\n"
                         + "<a href=\"" + driveLink + "\">View My Tailored Resume</a>";
-                
+
                 coverLetterBody = cleanBody + signature;
-                
+
                 String subject = target.getSubject() != null && !target.getSubject().isBlank()
                         ? target.getSubject()
                         : coverLetterAgent.generateSubject(target.getCompanyName(), roleName);
@@ -277,7 +295,8 @@ public class BatchOutreachService {
                 subject = subject.replaceAll("[\r\n\"]+", "").trim();
                 subject = sanitizer.fillPlaceholders(subject, candidateName, target.getCompanyName());
 
-                if (sanitizer.containsPlaceholderTokens(coverLetterBody) || sanitizer.containsPlaceholderTokens(subject)) {
+                if (sanitizer.containsPlaceholderTokens(coverLetterBody)
+                        || sanitizer.containsPlaceholderTokens(subject)) {
                     throw new IllegalStateException("Generated outreach text still contains placeholder tokens");
                 }
 
@@ -286,13 +305,13 @@ public class BatchOutreachService {
                         target.getRecipientEmail(),
                         subject,
                         null, // Resume is linked via Google Drive in the cover letter body
-                        coverLetterBody
-                );
+                        coverLetterBody);
 
                 if (draftId == null) {
-                    throw new IllegalStateException("Gmail draft creation returned null — Gmail API may be unavailable or token expired");
+                    throw new IllegalStateException(
+                            "Gmail draft creation returned null — Gmail API may be unavailable or token expired");
                 }
-                
+
                 // Clean up the local PDF after the draft is created
                 fileManager.deleteLocalPdf(pdfPathStr);
 
@@ -305,7 +324,7 @@ public class BatchOutreachService {
                 target.setDraftCreatedAt(LocalDateTime.now());
                 target.setFollowUpScheduledAt(workingDayCalculator.calculateNextWorkingDay8AmIst());
                 target.setProcessingCompletedAt(LocalDateTime.now());
-                
+
                 targetRepository.save(target);
                 log.debug("Successfully drafted target: {}. Draft ID: {}", target.getCompanyName(), draftId);
                 log.info("Successfully drafted target ID: {}. Draft ID: {}", target.getId(), draftId);
@@ -324,39 +343,49 @@ public class BatchOutreachService {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        List<OutreachTarget> dueFollowUps = targetRepository.findByStatusAndFollowUpScheduledAtBefore(TargetStatus.DRAFT_CREATED, now);
+        List<OutreachTarget> dueFollowUps = targetRepository
+                .findByStatusAndFollowUpScheduledAtBefore(TargetStatus.DRAFT_CREATED, now);
 
         for (OutreachTarget target : dueFollowUps) {
             try {
-                // 1. Check if the initial draft still exists. If it does, the user hasn't sent it yet!
+                // 1. Check if the initial draft still exists. If it does, the user hasn't sent
+                // it yet!
                 if (target.getGmailDraftId() != null && gmailService.isDraftStillPending(target.getGmailDraftId())) {
                     log.debug("Initial draft {} still pending in Gmail. Skipping follow-up.", target.getGmailDraftId());
                     continue;
                 }
 
                 // 2. Check if we actually sent the email and if we received a reply.
-                GmailService.ThreadStatus threadStatus = gmailService.checkThreadStatus(target.getRecipientEmail(), target.getSubject());
+                GmailService.ThreadStatus threadStatus = gmailService.checkThreadStatus(target.getRecipientEmail(),
+                        target.getSubject());
                 if (threadStatus == GmailService.ThreadStatus.NO_SENT_EMAIL) {
-                    log.info("No sent email found for thread matching recipient {} and subject {}. The draft may have been deleted without sending. Skipping follow-up.", target.getRecipientEmail(), target.getSubject());
+                    log.info(
+                            "No sent email found for thread matching recipient {} and subject {}. The draft may have been deleted without sending. Skipping follow-up.",
+                            target.getRecipientEmail(), target.getSubject());
                     target.setStatus(TargetStatus.FAILED);
                     target.setErrorReason("Initial draft was deleted or not sent.");
                     targetRepository.save(target);
                     continue;
                 } else if (threadStatus == GmailService.ThreadStatus.REPLIED) {
-                    log.info("Reply already received from {} for thread: {}. Marking as COMPLETED.", target.getRecipientEmail(), target.getSubject());
-                    // Fix #10: use a meaningful status — FOLLOW_UP_DRAFT_CREATED conflates "got a reply" with "created a draft"
+                    log.info("Reply already received from {} for thread: {}. Marking as COMPLETED.",
+                            target.getRecipientEmail(), target.getSubject());
+                    // Fix #10: use a meaningful status — FOLLOW_UP_DRAFT_CREATED conflates "got a
+                    // reply" with "created a draft"
                     target.setStatus(TargetStatus.FOLLOW_UP_DRAFT_CREATED);
                     target.setErrorReason(null); // Not an error — clear any stale reason
                     targetRepository.save(target);
                     continue;
                 }
 
-                // threadStatus is NO_REPLY: We sent the email and got no reply. Proceed to generate the follow-up draft.
+                // threadStatus is NO_REPLY: We sent the email and got no reply. Proceed to
+                // generate the follow-up draft.
                 LocalDateTime draftedAt = target.getDraftCreatedAt() != null
                         ? target.getDraftCreatedAt()
                         : target.getEmailSentAt();
-                if (draftedAt == null) draftedAt = now.minusDays(1);
-                int daysSince = Math.max(1, (int) ChronoUnit.DAYS.between(draftedAt, now)); // Fix #I: Math.max already ensures >= 1
+                if (draftedAt == null)
+                    draftedAt = now.minusDays(1);
+                int daysSince = Math.max(1, (int) ChronoUnit.DAYS.between(draftedAt, now)); // Fix #I: Math.max already
+                                                                                            // ensures >= 1
 
                 String candidateName = masterResumeService.getMasterResume().personalInfo().name();
                 String followUpDraftId = emailAutomationService.sendFollowUp(
@@ -380,7 +409,8 @@ public class BatchOutreachService {
 
     /**
      * Handles a target processing failure with retry logic.
-     * If the target has been retried fewer than MAX_RETRIES times, it is reset to PENDING
+     * If the target has been retried fewer than MAX_RETRIES times, it is reset to
+     * PENDING
      * for another attempt. Otherwise, it is permanently marked FAILED.
      */
     private void handleTargetFailure(OutreachTarget target, Exception e) {
@@ -402,7 +432,8 @@ public class BatchOutreachService {
             targetRepository.save(target);
             log.debug("Permanently failed target {} after {} retries: {}",
                     target.getCompanyName(), MAX_RETRIES, e.getMessage(), e);
-            if (e instanceof dev.langchain4j.exception.HttpException || e.getCause() instanceof dev.langchain4j.exception.HttpException) {
+            if (e instanceof dev.langchain4j.exception.HttpException
+                    || e.getCause() instanceof dev.langchain4j.exception.HttpException) {
                 log.error("Permanently failed target ID: {} after {} retries due to HTTP/RateLimit error: {}",
                         target.getId(), MAX_RETRIES, e.getMessage());
             } else {

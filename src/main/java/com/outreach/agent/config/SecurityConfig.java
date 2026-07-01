@@ -33,26 +33,26 @@ public class SecurityConfig {
     @Value("${app.security.password:admin123}")
     private String adminPassword;
 
-    @Value("${app.cors.allowed-origins:https://satgunsodhi.vercel.app,http://localhost:3000,http://localhost:5173}")
+    @Value("${app.cors.allowed-origins:https://yourportfolio.com,http://localhost:3000,http://localhost:5173}")
     private String allowedOriginsRaw;
 
     @jakarta.annotation.PostConstruct
     public void validateSecurityConfig() {
         if ("admin123".equals(adminPassword)) {
-            log.warn("SECURITY: Default admin password 'admin123' is in use. Set APP_SECURITY_PASSWORD in your .env file.");
+            log.warn(
+                    "SECURITY: Default admin password 'admin123' is in use. Set APP_SECURITY_PASSWORD in your .env file.");
         }
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(withDefaults())
-            .csrf(csrf -> csrf.disable()) // Disable CSRF since we are stateless/using API
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().authenticated()
-            )
-            .httpBasic(withDefaults()); // Use Basic Auth
+                .cors(withDefaults())
+                .csrf(csrf -> csrf.disable()) // Disable CSRF since we are stateless/using API
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated())
+                .httpBasic(withDefaults()); // Use Basic Auth
 
         return http.build();
     }
@@ -61,16 +61,17 @@ public class SecurityConfig {
     public InMemoryUserDetailsManager userDetailsService() {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         UserDetails user = User.withUsername(adminUsername)
-            .password(encoder.encode(adminPassword))
-            .roles("USER", "ADMIN")
-            .build();
+                .password(encoder.encode(adminPassword))
+                .roles("USER", "ADMIN")
+                .build();
         return new InMemoryUserDetailsManager(user);
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Origins are configured via app.cors.allowed-origins (or CORS_ALLOWED_ORIGINS env var)
+        // Origins are configured via app.cors.allowed-origins (or CORS_ALLOWED_ORIGINS
+        // env var)
         List<String> allowedOrigins = Arrays.asList(allowedOriginsRaw.split(","));
         configuration.setAllowedOriginPatterns(allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -81,4 +82,3 @@ public class SecurityConfig {
         return source;
     }
 }
- 

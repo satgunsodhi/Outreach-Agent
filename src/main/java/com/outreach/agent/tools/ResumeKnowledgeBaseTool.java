@@ -35,7 +35,7 @@ public class ResumeKnowledgeBaseTool {
             if (keywords == null || keywords.isEmpty()) {
                 return objectMapper.writeValueAsString(skills);
             }
-            List<String> lowerKeywords = keywords.stream().map(String::toLowerCase).toList();
+            List<String> lowerKeywords = keywords.stream().map(s -> s.toLowerCase()).toList();
 
             // Step 1: sort items within each category by keyword match
             var reordered = skills.stream().map(category -> {

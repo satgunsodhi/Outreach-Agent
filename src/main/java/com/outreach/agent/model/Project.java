@@ -9,5 +9,6 @@ public record Project(
     String liveDemo,
     String techStack,
     List<String> tags,
-    List<BulletPoint> bullets
+    List<BulletPoint> bullets,
+    Integer priority
 ) {}

@@ -21,7 +21,8 @@ public class BatchOutreachController {
     private final OutreachCampaignRepository campaignRepository;
     private final OutreachTargetRepository targetRepository;
 
-    public BatchOutreachController(OutreachCampaignRepository campaignRepository, OutreachTargetRepository targetRepository) {
+    public BatchOutreachController(OutreachCampaignRepository campaignRepository,
+            OutreachTargetRepository targetRepository) {
         this.campaignRepository = campaignRepository;
         this.targetRepository = targetRepository;
     }
@@ -34,9 +35,9 @@ public class BatchOutreachController {
     @PostMapping("/reset-tests")
     public ResponseEntity<?> resetTestTargets() {
         List<OutreachTarget> testTargets = targetRepository.findAll().stream()
-                .filter(t -> "satgunsodhi@gmail.com".equalsIgnoreCase(t.getRecipientEmail()))
+                .filter(t -> "your_test_email@gmail.com".equalsIgnoreCase(t.getRecipientEmail()))
                 .toList();
-                
+
         for (OutreachTarget target : testTargets) {
             target.setStatus(TargetStatus.PENDING);
             target.setClaimToken(null);
@@ -49,8 +50,9 @@ public class BatchOutreachController {
             target.setEmailSentAt(null);
             targetRepository.save(target);
         }
-        
-        return ResponseEntity.ok(java.util.Map.of("message", "Reset " + testTargets.size() + " test targets to PENDING."));
+
+        return ResponseEntity
+                .ok(java.util.Map.of("message", "Reset " + testTargets.size() + " test targets to PENDING."));
     }
 
     @PostMapping("/batch")
@@ -85,21 +87,20 @@ public class BatchOutreachController {
             campaignRepository.delete(campaign);
             return ResponseEntity.ok(Map.of(
                     "message", "All targets already exist — no new targets were added.",
-                    "totalTargets", 0
-            ));
+                    "totalTargets", 0));
         }
 
         return ResponseEntity.ok(Map.of(
                 "message", "Batch outreach scheduled successfully.",
                 "campaignId", campaign.getId(),
-                "totalTargets", addedCount
-        ));
+                "totalTargets", addedCount));
     }
 
     @GetMapping("/campaign/{id}")
     public ResponseEntity<?> getCampaignStatus(@PathVariable Long id) {
         return campaignRepository.findById(id).map(campaign -> {
-            // Use a DB-side aggregation instead of findAll() + stream to avoid a full table scan and N+1 lazy loads.
+            // Use a DB-side aggregation instead of findAll() + stream to avoid a full table
+            // scan and N+1 lazy loads.
             List<Object[]> rows = targetRepository.countByStatusForCampaign(id);
             long total = 0, pending = 0, processing = 0, drafted = 0, failed = 0;
             for (Object[] row : rows) {
@@ -122,9 +123,7 @@ public class BatchOutreachController {
                             "pending", pending,
                             "processing", processing,
                             "drafted", drafted,
-                            "failed", failed
-                    )
-            ));
+                            "failed", failed)));
         }).orElse(ResponseEntity.notFound().build());
     }
 }

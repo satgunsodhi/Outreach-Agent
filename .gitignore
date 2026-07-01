@@ -47,5 +47,5 @@ Thumbs.db
 .env.*
 !.env.example
 
-# Agents
-.agents
+# Local Agent Rules
+.agents/
