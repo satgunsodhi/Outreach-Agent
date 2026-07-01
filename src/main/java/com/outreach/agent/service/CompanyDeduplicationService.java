@@ -129,7 +129,7 @@ public class CompanyDeduplicationService {
         //    We iterate from longest to shortest to prefer longer matches first (e.g. "incorporated" > "inc")
         String best = LEGAL_SUFFIXES.stream()
                 .filter(suffix -> normalized.endsWith(suffix) && normalized.length() > suffix.length())
-                .max(Comparator.comparingInt(String::length))
+                .max(Comparator.comparingInt(s -> s.length()))
                 .map(suffix -> normalized.substring(0, normalized.length() - suffix.length()))
                 .orElse(normalized);
 
