@@ -78,7 +78,7 @@ public class OpenRouterLlmConfig {
                     for (int i = 0; i < models.size(); i++) {
                         ChatModel model = models.get(i);
                         int maxRetries = 3;
-                        long backoffMs = 1000;
+                        long backoffMs = 5000;
                         for (int attempt = 1; attempt <= maxRetries; attempt++) {
                             try {
                                 return method.invoke(model, args);
