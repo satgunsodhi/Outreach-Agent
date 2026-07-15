@@ -9,7 +9,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "outreach.llm")
 public class LlmProperties {
     private String openRouterApiKey;
-    private String openRouterModelName = "openai/gpt-oss-120b:free";
+    private String openRouterModelName = "google/gemma-2-9b-it:free";
     private Double temperature = 0.2;
     private Integer maxTokens = 4000;
     /**
