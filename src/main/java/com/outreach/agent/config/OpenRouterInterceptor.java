@@ -93,9 +93,15 @@ public class OpenRouterInterceptor implements ClientHttpRequestInterceptor {
                 ArrayNode modelsArray = objectNode.putArray("models");
                 modelsArray.add(primaryModel);
 
+                // OpenRouter caps the 'models' array at a maximum of 3 items
+                int added = 1;
                 for (String fallback : fallbackModels) {
+                    if (added >= 3) {
+                        break;
+                    }
                     if (!fallback.equals(primaryModel)) {
                         modelsArray.add(fallback);
+                        added++;
                     }
                 }
 
