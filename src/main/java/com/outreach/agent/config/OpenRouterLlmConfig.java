@@ -1,5 +1,6 @@
 package com.outreach.agent.config;
 
+import dev.langchain4j.http.client.spring.restclient.SpringRestClient;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,6 +8,7 @@ import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestClient;
 import com.outreach.agent.service.OpenRouterModelService;
 
 /**
@@ -52,6 +54,10 @@ public class OpenRouterLlmConfig {
 
     private ChatModel buildChatModel(double temperature, int maxTokens) {
         boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
+        
+        RestClient.Builder builder = RestClient.builder()
+                .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels));
+
         return OpenAiChatModel.builder()
                 .baseUrl("https://openrouter.ai/api/v1")
                 .apiKey(llmProperties.getOpenRouterApiKey())
@@ -60,6 +66,7 @@ public class OpenRouterLlmConfig {
                 .maxTokens(maxTokens)
                 .logRequests(isTrace)
                 .logResponses(isTrace)
+                .httpClientBuilder(SpringRestClient.builder().restClientBuilder(builder))
                 .build();
     }
 
