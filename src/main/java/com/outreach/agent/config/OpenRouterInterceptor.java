@@ -11,9 +11,16 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpResponse;
 
 /**
  * Spring {@link ClientHttpRequestInterceptor} that enriches outbound OpenRouter API requests with:
@@ -68,7 +75,19 @@ public class OpenRouterInterceptor implements ClientHttpRequestInterceptor {
         // Rewrite the body to inject the "models" fallback array safely via Jackson
         byte[] modifiedBody = injectModels(body);
 
-        return execution.execute(request, modifiedBody);
+        ClientHttpResponse response = execution.execute(request, modifiedBody);
+
+        // Log clear API errors (4xx/5xx) without consuming the stream.
+        // We buffer the body so LangChain4j can still read it for its own error handling.
+        if (response.getStatusCode().isError()) {
+            byte[] bodyBytes = response.getBody().readAllBytes();
+            String bodyStr = new String(bodyBytes, java.nio.charset.StandardCharsets.UTF_8);
+            log.error("OpenRouter API error (Status {}): {}", response.getStatusCode().value(), bodyStr);
+            // Wrap back so downstream (LangChain4j RetryUtils) can still read the body
+            return new BufferedErrorResponse(response, bodyBytes);
+        }
+
+        return response;
     }
 
     /**
@@ -115,5 +134,44 @@ public class OpenRouterInterceptor implements ClientHttpRequestInterceptor {
 
         // Fallback: return original body if it wasn't a JSON object with a "model" key, or if parsing failed
         return bodyBytes;
+    }
+
+    /**
+     * Wraps a consumed error response body back into a readable {@link ClientHttpResponse},
+     * so that LangChain4j's RetryUtils can still inspect the body for its own error-mapping.
+     */
+    private static class BufferedErrorResponse implements ClientHttpResponse {
+        private final ClientHttpResponse delegate;
+        private final byte[] body;
+
+        BufferedErrorResponse(ClientHttpResponse delegate, byte[] body) {
+            this.delegate = delegate;
+            this.body = body;
+        }
+
+        @Override
+        public HttpStatusCode getStatusCode() throws IOException {
+            return delegate.getStatusCode();
+        }
+
+        @Override
+        public String getStatusText() throws IOException {
+            return delegate.getStatusText();
+        }
+
+        @Override
+        public HttpHeaders getHeaders() {
+            return delegate.getHeaders();
+        }
+
+        @Override
+        public InputStream getBody() {
+            return new ByteArrayInputStream(body);
+        }
+
+        @Override
+        public void close() {
+            delegate.close();
+        }
     }
 }

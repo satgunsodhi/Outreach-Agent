@@ -58,17 +58,7 @@ public class OpenRouterLlmConfig {
         boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
         
         RestClient.Builder builder = RestClient.builder()
-                .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels))
-                .defaultStatusHandler(
-                        status -> status.isError(),
-                        (request, response) -> {
-                            byte[] bodyBytes = response.getBody().readAllBytes();
-                            String bodyStr = new String(bodyBytes, java.nio.charset.StandardCharsets.UTF_8);
-                            String errMsg = String.format("OpenRouter API error (Status %d): %s", response.getStatusCode().value(), bodyStr);
-                            log.error(errMsg);
-                            throw new RuntimeException(errMsg);
-                        }
-                );
+                .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels));
 
         return OpenAiChatModel.builder()
                 .baseUrl("https://openrouter.ai/api/v1")
