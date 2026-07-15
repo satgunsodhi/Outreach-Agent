@@ -142,18 +142,7 @@ public class OutreachSanitizer {
         if (rawPath == null) {
             return null;
         }
-        // Strip surrounding quotes/backticks BEFORE running the filename regex
-        // so that `resume-xyz.pdf` is handled the same as resume-xyz.pdf.
-        String trimmed = rawPath.trim();
-        if (trimmed.startsWith("`") && trimmed.endsWith("`")) {
-            trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
-        }
-        if (trimmed.startsWith("\"") && trimmed.endsWith("\"")) {
-            trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
-        }
-        if (trimmed.startsWith("'") && trimmed.endsWith("'")) {
-            trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
-        }
+        String trimmed = stripSurroundingQuotes(rawPath.trim());
 
         // Match the resume stem (with or without .pdf). Always emit with .pdf guaranteed.
         // Regex: matches "resume-" followed by word chars/dashes, optionally ending in ".pdf" or ".PDF"
@@ -169,5 +158,24 @@ public class OutreachSanitizer {
 
         // Fallback: return the raw path normalized to forward slashes
         return trimmed.replace("\\", "/");
+    }
+
+    /**
+     * Strips matching surrounding quote or backtick pairs from a string.
+     * Handles {@code `...`}, {@code "..."}, and {@code '...'}.
+     */
+    private String stripSurroundingQuotes(String s) {
+        boolean stripped;
+        do {
+            stripped = false;
+            for (char q : new char[]{'`', '"', '\''}) {
+                if (s.length() >= 2 && s.charAt(0) == q && s.charAt(s.length() - 1) == q) {
+                    s = s.substring(1, s.length() - 1).trim();
+                    stripped = true;
+                    break;
+                }
+            }
+        } while (stripped);
+        return s;
     }
 }

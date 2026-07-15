@@ -2,6 +2,7 @@ package com.outreach.agent.runner;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,43 +75,27 @@ public class CiBatchRunner implements ApplicationRunner {
             return;
         }
 
-        // 1. Load targets
+        // 1. Load targets from file
         File targetsFile = new File(targetsFilePath);
         if (targetsFile.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             List<OutreachTarget> targets = mapper.readValue(targetsFile, new TypeReference<List<OutreachTarget>>() {});
-            // E2: Load the full set of normalized company names once before iterating.
-            java.util.Set<String> existingNames = deduplicationService.getAllNormalizedCompanyNames();
-            int added = 0;
-            for (OutreachTarget t : targets) {
-                if (!deduplicationService.isDuplicate(t, existingNames)) {
-                    t.setStatus(TargetStatus.PENDING);
-                    repository.save(t);
-                    // Add the new entry's normalized name to the in-memory set so sibling targets
-                    // in the same file are also checked against it without another DB query.
-                    String norm = deduplicationService.normalize(t.getCompanyName());
-                    if (norm != null) existingNames.add(norm);
-                    added++;
-                } else {
-                    log.info("Skipping duplicate target from targets.json: '{}'", t.getCompanyName());
-                }
-            }
-            log.info("Loaded {} targets. {} new targets added.", targets.size(), added);
+            Set<String> existingNames = deduplicationService.getAllNormalizedCompanyNames();
+            int added = saveNewTargets(targets, existingNames, false);
+            log.info("Loaded {} targets from file. {} new targets added.", targets.size(), added);
         } else {
             log.info("Targets file not found at: {}", targetsFilePath);
         }
 
         // 2. Process all PENDING targets
-        // processPendingTargets() is synchronous — no poll loop needed; it returns only when all targets are processed.
         log.info("Starting target processing...");
         batchOutreachService.processPendingTargets();
         log.info("Target processing complete.");
 
-        // 4. Idle Target Discovery
+        // 3. Idle Target Discovery — only triggered when no pending targets remain
         if (repository.findByStatusOrderByIdAsc(TargetStatus.PENDING).isEmpty()) {
             log.info("Queue is idle. Triggering autonomous target discovery...");
             try {
-                // B5: use configurable role/region instead of hardcoded strings.
                 String rawResult = targetDiscoveryAgent.discoverTargets(discoveryRole, discoveryRegion);
                 log.info("Raw discovery result: {}", rawResult);
 
@@ -131,42 +116,19 @@ public class CiBatchRunner implements ApplicationRunner {
                         java.nio.file.Files.createDirectories(debugDir);
                         String ts = java.time.LocalDateTime.now()
                                 .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-                        java.nio.file.Files.writeString(
-                                debugDir.resolve("discovery_" + ts + ".txt"), rawResult);
+                        java.nio.file.Files.writeString(debugDir.resolve("discovery_" + ts + ".txt"), rawResult);
                         log.info("Saved raw discovery output to data/debug/discovery_{}.txt", ts);
                     } catch (Exception dumpEx) {
                         log.warn("Could not write discovery debug file: {}", dumpEx.getMessage());
                     }
-                    newTargets = java.util.List.of();
+                    newTargets = List.of();
                 }
 
-                // E2: pre-load normalized names once before iterating discovered targets.
-                java.util.Set<String> existingNames = deduplicationService.getAllNormalizedCompanyNames();
-                int added = 0;
-                for (OutreachTarget t : newTargets) {
-                    if (t.getCompanyName() == null || t.getCompanyName().isBlank()) {
-                        log.warn("Skipping discovered target with blank companyName.");
-                        continue;
-                    }
-                    if (!isValidEmail(t.getRecipientEmail())) {
-                        log.warn("Skipping discovered target '{}' with invalid recipientEmail: {}",
-                                t.getCompanyName(), t.getRecipientEmail());
-                        continue;
-                    }
-                    if (!deduplicationService.isDuplicate(t, existingNames)) {
-                        t.setStatus(TargetStatus.PENDING);
-                        repository.save(t);
-                        String norm = deduplicationService.normalize(t.getCompanyName());
-                        if (norm != null) existingNames.add(norm);
-                        added++;
-                    } else {
-                        log.info("Skipping duplicate discovered target: '{}'", t.getCompanyName());
-                    }
-                }
+                Set<String> existingNames = deduplicationService.getAllNormalizedCompanyNames();
+                int added = saveNewTargets(newTargets, existingNames, true);
 
                 if (added > 0) {
                     log.info("Found {} new targets! Processing them now.", added);
-                    // processPendingTargets() is synchronous — no poll loop needed.
                     batchOutreachService.processPendingTargets();
                 } else {
                     log.info("No new targets discovered.");
@@ -179,8 +141,43 @@ public class CiBatchRunner implements ApplicationRunner {
         log.info("==================================================");
         log.info("   CI BATCH MODE COMPLETE. EXITING.");
         log.info("==================================================");
-        
+
         System.exit(SpringApplication.exit(context, () -> 0));
+    }
+
+    /**
+     * Saves non-duplicate targets to the repository and updates the in-memory name set.
+     *
+     * @param targets        candidates to evaluate and save
+     * @param existingNames  mutable set of normalized company names already in the DB;
+     *                       updated in-place as new targets are saved to prevent
+     *                       within-batch duplicates without extra DB queries
+     * @param validateEmail  when {@code true}, targets with blank or malformed email
+     *                       addresses are skipped (applied to LLM-discovered targets)
+     * @return the number of targets actually saved
+     */
+    private int saveNewTargets(List<OutreachTarget> targets, Set<String> existingNames, boolean validateEmail) {
+        int added = 0;
+        for (OutreachTarget t : targets) {
+            if (t.getCompanyName() == null || t.getCompanyName().isBlank()) {
+                log.warn("Skipping target with blank companyName.");
+                continue;
+            }
+            if (validateEmail && !isValidEmail(t.getRecipientEmail())) {
+                log.warn("Skipping target '{}' with invalid recipientEmail: {}", t.getCompanyName(), t.getRecipientEmail());
+                continue;
+            }
+            if (!deduplicationService.isDuplicate(t, existingNames)) {
+                t.setStatus(TargetStatus.PENDING);
+                repository.save(t);
+                String norm = deduplicationService.normalize(t.getCompanyName());
+                if (norm != null) existingNames.add(norm);
+                added++;
+            } else {
+                log.info("Skipping duplicate target: '{}'", t.getCompanyName());
+            }
+        }
+        return added;
     }
 
     /** Basic email format validation — rejects null, blank, or addresses missing an @-domain-TLD structure. */

@@ -8,12 +8,12 @@ langchain4j:
 
 outreach:
   llm:
-    openRouterApiKey: ${OPENROUTER_API_KEY:}
-    openRouterModelName: ${OPENROUTER_MODEL_NAME:openai/gpt-oss-120b:free}
+    open-router-api-key: ${OPENROUTER_API_KEY:}
+    open-router-model-name: ${OPENROUTER_MODEL_NAME:openai/gpt-oss-120b:free}
     temperature: 0.2
-    maxTokens: 4000
+    max-tokens: 4000
     # Comma-separated ordered list of fallback models for OpenRouter (see .env.example).
-    fallbackModels: ${OPENROUTER_FALLBACK_MODELS:meta-llama/llama-3.3-70b-instruct:free,google/gemma-4-31b-it:free,qwen/qwen3-coder:free}
+    fallback-models: ${OPENROUTER_FALLBACK_MODELS:}
 
 google:
   oauth:

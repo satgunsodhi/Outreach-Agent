@@ -33,9 +33,9 @@ public class BatchOutreachController {
     }
 
     @PostMapping("/reset-tests")
-    public ResponseEntity<?> resetTestTargets() {
+    public ResponseEntity<?> resetTestTargets(@RequestParam String testEmail) {
         List<OutreachTarget> testTargets = targetRepository.findAll().stream()
-                .filter(t -> "your_test_email@gmail.com".equalsIgnoreCase(t.getRecipientEmail()))
+                .filter(t -> testEmail.equalsIgnoreCase(t.getRecipientEmail()))
                 .toList();
 
         for (OutreachTarget target : testTargets) {
@@ -68,15 +68,15 @@ public class BatchOutreachController {
 
         long addedCount = 0;
         for (TargetDto dto : request.getTargets()) {
-            if (targetRepository.existsByCompanyNameAndRecipientEmail(dto.getCompanyName(), dto.getRecipientEmail())) {
+            if (targetRepository.existsByCompanyNameAndRecipientEmail(dto.companyName(), dto.recipientEmail())) {
                 continue; // Skip duplicate targets
             }
             OutreachTarget target = new OutreachTarget();
             target.setCampaign(campaign);
-            target.setCompanyName(dto.getCompanyName());
-            target.setRecipientEmail(dto.getRecipientEmail());
-            target.setJobUrl(dto.getJobUrl());
-            target.setJobDescription(dto.getJobDescription());
+            target.setCompanyName(dto.companyName());
+            target.setRecipientEmail(dto.recipientEmail());
+            target.setJobUrl(dto.jobUrl());
+            target.setJobDescription(dto.jobDescription());
             target.setStatus(TargetStatus.PENDING);
             targetRepository.save(target);
             addedCount++;

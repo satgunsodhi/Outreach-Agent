@@ -1,0 +1,8 @@
+{
+  "name": "outreach-agent-root",
+  "version": "1.0.0",
+  "description": "Root orchestrator for Outreach Agent",
+  "scripts": {
+    "dev": "npx -y concurrently --names \"backend,frontend\" -c \"blue,green\" \"mvn spring-boot:run\" \"npm run dev --prefix frontend\""
+  }
+}
