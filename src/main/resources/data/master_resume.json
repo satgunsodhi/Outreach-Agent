@@ -16,95 +16,50 @@
         "C++",
         "Java",
         "SQL",
-        "Shell Scripting",
         "JavaScript"
       ]
     },
     {
-      "category": "Machine Learning & Deep Learning",
+      "category": "AI / ML & Deep Learning",
       "items": [
         "PyTorch",
         "TensorFlow",
-        "Keras",
         "Scikit-Learn",
         "OpenCV",
-        "Deep Learning",
-        "CNNs",
-        "Transformer Architecture",
-        "Autoencoders",
-        "LoRA Fine-tuning",
-        "Instruction Tuning",
-        "Bayesian Optimization",
-        "Gaussian Processes",
-        "Sentence Transformers",
+        "LLMs",
         "RAG",
         "Agentic AI",
-        "LLMs",
-        "MLOps",
-        "CI/CD",
+        "LoRA Fine-tuning",
+        "Sentence Transformers",
         "FAISS",
-        "Vector Databases"
-      ]
-    },
-    {
-      "category": "Computer Vision",
-      "items": [
-        "OpenCV",
-        "RT-DETR",
-        "EasyOCR",
-        "Swin Transformer",
-        "EfficientNet-B3",
-        "Medical Image Segmentation",
-        "Neural Style Transfer",
-        "K-Means Clustering"
+        "Vector Databases",
+        "Anomaly Detection",
+        "Time-Series Analysis",
+        "Bayesian Optimization",
+        "MLOps"
       ]
     },
     {
       "category": "Web & Backend",
       "items": [
         "React.js",
+        "Next.js",
         "Node.js",
-        "Express.js",
-        "MongoDB",
-        "Oracle XE",
         "Spring Boot",
         "FastAPI",
-        "Next.js",
-        "TypeScript",
-        "Zustand",
-        "WebSockets",
-        "Chakra UI",
-        "TailwindCSS v4",
-        "App Router",
-        "litellm"
+        "MongoDB",
+        "TypeScript"
       ]
     },
     {
       "category": "Cloud & Infrastructure",
       "items": [
         "Docker",
-        "Docker Compose",
         "AWS EC2",
         "AWS S3",
-        "Cloudflare Warp & Tunnel",
         "Supabase",
-        "pgvector",
-        "Railway",
         "Vercel",
-        "Raspberry Pi",
-        "n8n"
-      ]
-    },
-    {
-      "category": "Data & Analytics",
-      "items": [
-        "Pandas",
-        "NumPy",
-        "Plotly",
-        "Time-Series Analysis",
-        "Anomaly Detection",
-        "Statistical Modelling",
-        "Feature Engineering"
+        "CI/CD"
       ]
     }
   ],
@@ -234,7 +189,7 @@
         },
         {
           "id": "bp-a-002",
-          "text": "Outperformed TransUNet on the Synapse Multi-Organ benchmark — <b>84% Dice Score at 28B FLOPs vs 77.48% at 106B FLOPs</b>, achieving a superior efficiency-performance tradeoff.",
+          "text": "Outperformed TransUNet on the Synapse Multi-Organ benchmark: <b>87% Dice Score at 28B FLOPs vs 77.48% at 106B FLOPs</b>, achieving a superior efficiency-performance tradeoff.",
           "tags": [
             "benchmarking",
             "efficiency",
@@ -526,7 +481,7 @@
     },
     {
       "id": "proj-sih",
-      "name": "Smart India Hackathon — Cloud & Network Infrastructure",
+      "name": "Smart India Hackathon: Cloud & Network Infrastructure",
       "github": null,
       "techStack": "AWS EC2, Docker, PostgreSQL, n8n, AWS S3",
       "tags": [
@@ -1156,65 +1111,99 @@
     },
     {
       "id": "proj-iqilo",
-      "name": "Iqilo: Gamified Tech Roadmap Learning OS",
+      "name": "Iqilo: Gamified DSA & Competitive Programming Learning Platform",
       "github": "https://github.com/satgunsodhi/Iqilo",
-      "techStack": "Next.js, TypeScript, TailwindCSS v4, useSyncExternalStore, localStorage",
+      "techStack": "Next.js 15, TypeScript, TailwindCSS v4, useSyncExternalStore, LeetCode GraphQL API, localStorage",
       "tags": [
         "next-js",
         "typescript",
         "react",
         "app-router",
-        "gamification",
-        "tailwindcss",
+        "hooks",
+        "context-api",
         "state-management",
+        "external-store",
+        "graphql",
+        "api-integration",
+        "gamification",
+        "event-driven",
+        "cross-tab-sync",
         "frontend",
         "web",
         "fullstack",
-        "learning-platform",
+        "open-source",
+        "performance",
+        "tailwindcss",
+        "javascript",
+        "web-app",
+        "client-side",
+        "data-structures",
+        "algorithms",
         "dsa",
-        "competitive-programming",
-        "quantitative-finance",
-        "external-store",
-        "localstorage",
-        "cross-tab-sync"
+        "competitive-programming"
       ],
       "bullets": [
         {
           "id": "bp-iq-001",
-          "text": "Architected a Next.js/TypeScript learning OS where immutable course roadmaps and day-level units are wired into an external ProgressStore via useSyncExternalStore, supporting instant 'continue where you left off' redirects based on lastVisitedDay per course.",
+          "text": "Designed a zero-server-side-state architecture using React's useSyncExternalStore to bind course progress (completedDays, lastVisitedDay, completedResources) to a localStorage-backed external store, enabling instant SSR-safe hydration and 'continue where you left off' redirects without any backend.",
           "tags": [
             "next-js",
             "typescript",
+            "react",
+            "hooks",
             "state-management",
-            "app-router",
             "external-store",
+            "app-router",
+            "performance",
             "frontend"
           ],
-          "priority": 1,
+          "priority": 2,
           "lengthCategory": "LONG"
         },
         {
           "id": "bp-iq-002",
-          "text": "Built a gamification subsystem that derives XP levels, streaks, and badges from localStorage-backed stores, synchronizing changes across tabs via storage and custom events while keeping UI reactive through external-store subscriptions.",
+          "text": "Integrated LeetCode's public GraphQL API (proxied via Next.js rewrites to bypass CORS) to auto-sync a user's 100 most recent accepted submissions into a local slug cache, automatically checking off matching roadmap tasks without manual input.",
           "tags": [
-            "gamification",
-            "cross-tab-sync",
-            "localstorage",
-            "react",
-            "state-management"
+            "graphql",
+            "api-integration",
+            "next-js",
+            "typescript",
+            "frontend",
+            "web",
+            "dsa",
+            "competitive-programming"
           ],
-          "priority": 1,
+          "priority": 2,
           "lengthCategory": "LONG"
         },
         {
           "id": "bp-iq-003",
-          "text": "Implemented a fully client-side progress API exposing day/resource toggles, per-week/per-course completion stats, JSON export, and auto-redirect logic alongside a Tailwind-driven dashboard with recommended quests, certificate cards, and learning velocity graphs.",
+          "text": "Engineered a cross-tab gamification engine (XP, streaks, badges) backed by separate localStorage keys and synchronized across browser tabs via both the native StorageEvent and a custom 'iqilo-xp-update' CustomEvent, with a weighted XP formula that distributes daily XP across resources (15%), practice problems (60%), and tasks (25%).",
           "tags": [
-            "tailwindcss",
+            "gamification",
+            "event-driven",
+            "cross-tab-sync",
+            "javascript",
+            "typescript",
+            "client-side",
+            "state-management",
+            "react"
+          ],
+          "priority": 2,
+          "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-iq-004",
+          "text": "Built a tiered badge achievement system (common → rare → epic → legendary) with idempotent unlock guards and per-rarity CSS glow animations, alongside a ProgressContext exposing getCourseStats, getWeekStats, exportProgress, and getNextIncompleteDay to all child components without prop drilling.",
+          "tags": [
+            "react",
+            "context-api",
+            "typescript",
+            "gamification",
             "frontend",
-            "dashboard",
-            "learning-platform",
-            "next-js"
+            "tailwindcss",
+            "web-app",
+            "open-source"
           ],
           "priority": 1,
           "lengthCategory": "LONG"

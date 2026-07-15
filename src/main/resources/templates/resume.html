@@ -306,7 +306,7 @@
             <div class="edu-inst" itemscope itemtype="https://schema.org/EducationalOrganization" itemprop="recognizedBy">
                 <span th:text="${edu['institution']}" itemprop="name">Institution</span>
                 <span th:if="${edu['location'] != null}" style="color:#6a7a9a;" itemprop="address">
-                    — <span th:text="${edu['location']}">Location</span>
+                    - <span th:text="${edu['location']}">Location</span>
                 </span>
                 <span style="float:right; font-style:normal; color:#5a6a8a; font-size:8.5pt;"
                       th:text="${edu['graduationDate']}">Year</span>

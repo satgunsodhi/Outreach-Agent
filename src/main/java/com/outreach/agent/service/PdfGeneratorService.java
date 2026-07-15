@@ -17,8 +17,13 @@ import java.util.Map;
 @Service
 public class PdfGeneratorService {
 
-    /** Fix #8: wraps xhtml + fill% in a single record so both are updated atomically via one volatile write. */
-    private record RenderResult(String xhtml, int fillPercent) {}
+    /**
+     * Fix #8: wraps xhtml + fill% in a single record so both are updated atomically
+     * via one volatile write.
+     */
+    private record RenderResult(String xhtml, int fillPercent) {
+    }
+
     private volatile RenderResult lastRenderResult = null;
 
     private final TemplateEngine templateEngine;
@@ -27,13 +32,18 @@ public class PdfGeneratorService {
         this.templateEngine = templateEngine;
     }
 
-    /** Returns the XHTML produced by the most recent generatePdf() call, or null. */
+    /**
+     * Returns the XHTML produced by the most recent generatePdf() call, or null.
+     */
     public String getLastRenderedXhtml() {
         RenderResult r = lastRenderResult;
         return r != null ? r.xhtml() : null;
     }
 
-    /** Returns the fill percentage of the most recent generatePdf() call, or -1 if not yet generated. */
+    /**
+     * Returns the fill percentage of the most recent generatePdf() call, or -1 if
+     * not yet generated.
+     */
     public int getLastRenderedFillPercent() {
         RenderResult r = lastRenderResult;
         return r != null ? r.fillPercent() : -1;
@@ -118,7 +128,7 @@ public class PdfGeneratorService {
      * enrichTemplateData can overwrite them with values from the master resume.
      *
      * The LLM sometimes emits {"id": "proj-foo", "name": null, "bullets": [...]}
-     * — in that case the key "name" IS present (value = null), so putIfAbsent
+     * - in that case the key "name" IS present (value = null), so putIfAbsent
      * does nothing and the project renders with no header in the PDF.
      * By removing the null entries first, enrichTemplateData's putIfAbsent calls
      * can fill in the correct name/github/techStack from the master resume.
@@ -253,11 +263,10 @@ public class PdfGeneratorService {
 
         try {
             java.nio.file.Files.writeString(
-                java.nio.file.Paths.get("data/debug/resume.html"),
-                xhtml,
-                java.nio.file.StandardOpenOption.CREATE,
-                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
-            );
+                    java.nio.file.Paths.get("data/debug/resume.html"),
+                    xhtml,
+                    java.nio.file.StandardOpenOption.CREATE,
+                    java.nio.file.StandardOpenOption.TRUNCATE_EXISTING);
         } catch (Exception e) {
             // ignore
         }
@@ -269,13 +278,15 @@ public class PdfGeneratorService {
 
             // Calculate fill percentage using the renderer's layout state
             double usableHeight = (297.0 / 25.4 - 0.25 - 0.25) * 72.0; // ≈ 806pt for A4 with margins
-            double contentPt = (renderer.getRootBox().getHeight() / (double) renderer.getSharedContext().getDotsPerPixel()) * (72.0 / 96.0);
+            double contentPt = (renderer.getRootBox().getHeight()
+                    / (double) renderer.getSharedContext().getDotsPerPixel()) * (72.0 / 96.0);
             // Fix #8: write both fields atomically as a single record reference
-            this.lastRenderResult = new RenderResult(xhtml, Math.max(0, (int) Math.round((contentPt / usableHeight) * 100.0)));
+            this.lastRenderResult = new RenderResult(xhtml,
+                    Math.max(0, (int) Math.round((contentPt / usableHeight) * 100.0)));
 
             renderer.createPDF(outputStream);
             byte[] generatedPdf = outputStream.toByteArray();
-            
+
             // Remove empty pages using PDFBox
             try (org.apache.pdfbox.pdmodel.PDDocument pdDocument = org.apache.pdfbox.Loader.loadPDF(generatedPdf)) {
                 org.apache.pdfbox.text.PDFTextStripper stripper = new org.apache.pdfbox.text.PDFTextStripper();
@@ -305,6 +316,5 @@ public class PdfGeneratorService {
             return reader.getNumberOfPages();
         }
     }
-
 
 }
