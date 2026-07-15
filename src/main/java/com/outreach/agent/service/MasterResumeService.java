@@ -46,17 +46,13 @@ public class MasterResumeService {
             return masterResume;
         }
 
-        List<String> lowerTags = tags.stream().map(t -> t.toLowerCase()).toList();
+        List<String> lowerTags = tags.stream().map(String::toLowerCase).toList();
 
         List<Experience> filteredExperiences = masterResume.experiences().stream()
                 .map(exp -> {
                     List<Project> filteredProjects = exp.projects().stream()
                             .map(proj -> {
-                                List<BulletPoint> filteredBullets = proj.bullets().stream()
-                                        .filter(bp -> matchesAny(bp.tags(), lowerTags))
-                                        .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
-                                        .toList();
-                                List<BulletPoint> finalBullets = filteredBullets.isEmpty() ? proj.bullets() : filteredBullets;
+                                List<BulletPoint> finalBullets = filterBullets(proj.bullets(), lowerTags);
                                 return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets, proj.priority());
                             })
                             .toList();
@@ -66,11 +62,7 @@ public class MasterResumeService {
 
         List<Project> filteredProjects = masterResume.projects().stream()
                 .map(proj -> {
-                    List<BulletPoint> filteredBullets = proj.bullets().stream()
-                            .filter(bp -> matchesAny(bp.tags(), lowerTags))
-                            .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
-                            .toList();
-                    List<BulletPoint> finalBullets = filteredBullets.isEmpty() ? proj.bullets() : filteredBullets;
+                    List<BulletPoint> finalBullets = filterBullets(proj.bullets(), lowerTags);
                     return new Project(proj.id(), proj.name(), proj.github(), proj.liveDemo(), proj.techStack(), proj.tags(), finalBullets, proj.priority());
                 })
                 .filter(proj -> !proj.bullets().isEmpty() || matchesAny(proj.tags(), lowerTags))
@@ -85,21 +77,16 @@ public class MasterResumeService {
                 }).reversed())
                 .toList();
 
-        List<Extracurricular> filteredExtracurriculars = masterResume.extracurriculars() != null 
+        List<Extracurricular> filteredExtracurriculars = masterResume.extracurriculars() != null
                 ? masterResume.extracurriculars().stream()
                         .map(ec -> {
-                            List<BulletPoint> filteredBullets = ec.bullets().stream()
-                                    .filter(bp -> matchesAny(bp.tags(), lowerTags))
-                                    .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
-                                    .toList();
-                            List<BulletPoint> finalBullets = filteredBullets.isEmpty() ? ec.bullets() : filteredBullets;
+                            List<BulletPoint> finalBullets = filterBullets(ec.bullets(), lowerTags);
                             return new Extracurricular(ec.id(), ec.organization(), ec.role(), ec.tags(), finalBullets);
                         })
                         .toList()
                 : List.of();
 
-        // Fallback: If both experiences and projects end up completely empty after filtering,
-        // return the original unfiltered lists so the agent has material to build a resume.
+        // Fallback: if filtering produces nothing, return the original unfiltered lists.
         List<Experience> finalExperiences = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.experiences() : filteredExperiences;
         List<Project> finalProjects = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.projects() : filteredProjects;
         List<Extracurricular> finalExtracurriculars = filteredExperiences.isEmpty() && filteredProjects.isEmpty() ? masterResume.extracurriculars() : filteredExtracurriculars;
@@ -113,6 +100,19 @@ public class MasterResumeService {
                 masterResume.certifications(),
                 finalExtracurriculars
         );
+    }
+
+    /**
+     * Filters and sorts a bullet list by tag relevance.
+     * If no bullets match the search tags, returns the original list unmodified
+     * (ensures the section always has content).
+     */
+    private List<BulletPoint> filterBullets(List<BulletPoint> bullets, List<String> lowerTags) {
+        List<BulletPoint> matched = bullets.stream()
+                .filter(bp -> matchesAny(bp.tags(), lowerTags))
+                .sorted(Comparator.comparingInt((BulletPoint bp) -> countMatches(bp.tags(), lowerTags)).reversed())
+                .toList();
+        return matched.isEmpty() ? bullets : matched;
     }
 
     private boolean matchesAny(List<String> itemTags, List<String> searchTags) {

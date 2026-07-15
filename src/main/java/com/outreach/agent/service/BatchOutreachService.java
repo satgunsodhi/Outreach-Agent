@@ -56,7 +56,7 @@ public class BatchOutreachService {
     private boolean followupsEnabled;
 
     @Value("${app.discovery.role:ML Engineer}")
-    private String targetRoleName;
+    private String fallbackRoleName;
 
     public BatchOutreachService(OutreachTargetRepository targetRepository,
             ResumeOrchestrationService resumeOrchestrationService,
@@ -237,9 +237,9 @@ public class BatchOutreachService {
                 // 3. Generate Cover Letter & Subject
                 String masterResumeJson = masterResumeService.getMasterResumeJson();
                 // Fix #3: extract a concise role name — take the first line of the JD or
-                // truncate to 200 chars
-                // rather than passing the entire JD text to generateSubject's 8-word prompt.
-                String roleName = targetRoleName;
+                // truncate to 200 chars rather than passing the entire JD to generateSubject.
+                // fallbackRoleName is used when no job description is present.
+                String roleName = fallbackRoleName;
                 if (target.getJobDescription() != null && !target.getJobDescription().isBlank()) {
                     String firstLine = target.getJobDescription().split("[\n\r]")[0].trim();
                     roleName = firstLine.length() <= 200 ? firstLine : firstLine.substring(0, 200);

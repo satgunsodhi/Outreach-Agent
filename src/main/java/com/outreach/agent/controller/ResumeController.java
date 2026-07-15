@@ -23,13 +23,16 @@ public class ResumeController {
     private final ResumeOrchestrationService orchestrationService;
     private final OutreachTargetRepository targetRepository;
     private final GmailService gmailService;
+    private final com.outreach.agent.service.OutreachFileManager fileManager;
 
     public ResumeController(ResumeOrchestrationService orchestrationService,
                             OutreachTargetRepository targetRepository,
-                            GmailService gmailService) {
+                            GmailService gmailService,
+                            com.outreach.agent.service.OutreachFileManager fileManager) {
         this.orchestrationService = orchestrationService;
         this.targetRepository = targetRepository;
         this.gmailService = gmailService;
+        this.fileManager = fileManager;
     }
 
     @DeleteMapping("/clean-targets")
@@ -43,8 +46,8 @@ public class ResumeController {
                     if (target.getGmailDraftId() != null) {
                         gmailService.deleteDraft(target.getGmailDraftId());
                     }
-                    // Delete PDF file
-                    deleteGeneratedPdf(target);
+                    // Delete PDF and invalidate cache
+                    fileManager.deleteLocalPdf(target.getGeneratedPdfPath());
                     // Delete from DB
                     targetRepository.delete(target);
                     deletedCount++;
@@ -68,8 +71,8 @@ public class ResumeController {
                     if (target.getGmailDraftId() != null) {
                         gmailService.deleteDraft(target.getGmailDraftId());
                     }
-                    // Delete PDF file
-                    deleteGeneratedPdf(target);
+                    // Delete PDF and invalidate cache
+                    fileManager.deleteLocalPdf(target.getGeneratedPdfPath());
 
                     // Reset to PENDING and clear all derived fields
                     target.setStatus(TargetStatus.PENDING);
@@ -132,15 +135,5 @@ public class ResumeController {
             }
         }
         return false;
-    }
-
-    /** Deletes the generated PDF file from disk if it exists. */
-    private void deleteGeneratedPdf(OutreachTarget target) {
-        if (target.getGeneratedPdfPath() != null) {
-            java.io.File pdfFile = new java.io.File(target.getGeneratedPdfPath());
-            if (pdfFile.exists() && !pdfFile.delete()) {
-                log.warn("Could not delete PDF file at: {}", target.getGeneratedPdfPath());
-            }
-        }
     }
 }

@@ -111,15 +111,7 @@ public class PdfCacheService {
 
         java.security.MessageDigest digest = SHA256.get();
         digest.reset();
-        byte[] encodedhash = digest.digest(combined.getBytes(StandardCharsets.UTF_8));
-        StringBuilder hexString = new StringBuilder(2 * encodedhash.length);
-        for (byte b : encodedhash) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
+        byte[] encodedHash = digest.digest(combined.getBytes(StandardCharsets.UTF_8));
+        return java.util.HexFormat.of().formatHex(encodedHash);
     }
 }

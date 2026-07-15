@@ -14,7 +14,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ * JPA entity representing a single outreach target — one company/recipient pair
+ * moving through the drafting pipeline.
+ */
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "outreach_targets", indexes = {
         @jakarta.persistence.Index(name = "idx_target_status", columnList = "status"),
@@ -32,16 +40,16 @@ public class OutreachTarget {
 
     private String companyName;
     private String recipientEmail;
-    
+
     @Column(length = 2000)
     private String jobUrl;
-    
+
     @Column(columnDefinition = "TEXT")
     private String jobDescription;
 
     @Enumerated(EnumType.STRING)
     private TargetStatus status;
-    
+
     @Column(columnDefinition = "TEXT")
     private String errorReason;
 
@@ -52,7 +60,7 @@ public class OutreachTarget {
     private LocalDateTime followUpScheduledAt;
     private LocalDateTime processingStartedAt;
     private LocalDateTime processingCompletedAt;
-    
+
     private String subject;
 
     @Column(columnDefinition = "TEXT")
@@ -75,173 +83,5 @@ public class OutreachTarget {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-    }
-
-    public String getClaimToken() {
-        return claimToken;
-    }
-
-    public void setClaimToken(String claimToken) {
-        this.claimToken = claimToken;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public OutreachCampaign getCampaign() {
-        return campaign;
-    }
-
-    public void setCampaign(OutreachCampaign campaign) {
-        this.campaign = campaign;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getRecipientEmail() {
-        return recipientEmail;
-    }
-
-    public void setRecipientEmail(String recipientEmail) {
-        this.recipientEmail = recipientEmail;
-    }
-
-    public String getJobUrl() {
-        return jobUrl;
-    }
-
-    public void setJobUrl(String jobUrl) {
-        this.jobUrl = jobUrl;
-    }
-
-    public String getJobDescription() {
-        return jobDescription;
-    }
-
-    public void setJobDescription(String jobDescription) {
-        this.jobDescription = jobDescription;
-    }
-
-    public TargetStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TargetStatus status) {
-        this.status = status;
-    }
-
-    public String getErrorReason() {
-        return errorReason;
-    }
-
-    public void setErrorReason(String errorReason) {
-        this.errorReason = errorReason;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getEmailSentAt() {
-        return emailSentAt;
-    }
-
-    public void setEmailSentAt(LocalDateTime emailSentAt) {
-        this.emailSentAt = emailSentAt;
-    }
-
-    public LocalDateTime getDraftCreatedAt() {
-        return draftCreatedAt;
-    }
-
-    public void setDraftCreatedAt(LocalDateTime draftCreatedAt) {
-        this.draftCreatedAt = draftCreatedAt;
-    }
-
-    public LocalDateTime getFollowUpScheduledAt() {
-        return followUpScheduledAt;
-    }
-
-    public void setFollowUpScheduledAt(LocalDateTime followUpScheduledAt) {
-        this.followUpScheduledAt = followUpScheduledAt;
-    }
-
-    public LocalDateTime getProcessingStartedAt() {
-        return processingStartedAt;
-    }
-
-    public void setProcessingStartedAt(LocalDateTime processingStartedAt) {
-        this.processingStartedAt = processingStartedAt;
-    }
-
-    public LocalDateTime getProcessingCompletedAt() {
-        return processingCompletedAt;
-    }
-
-    public void setProcessingCompletedAt(LocalDateTime processingCompletedAt) {
-        this.processingCompletedAt = processingCompletedAt;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getDraftedCoverLetter() {
-        return draftedCoverLetter;
-    }
-
-    public void setDraftedCoverLetter(String draftedCoverLetter) {
-        this.draftedCoverLetter = draftedCoverLetter;
-    }
-
-    public String getGeneratedPdfPath() {
-        return generatedPdfPath;
-    }
-
-    public void setGeneratedPdfPath(String generatedPdfPath) {
-        this.generatedPdfPath = generatedPdfPath;
-    }
-
-    public String getGmailDraftId() {
-        return gmailDraftId;
-    }
-
-    public void setGmailDraftId(String gmailDraftId) {
-        this.gmailDraftId = gmailDraftId;
-    }
-
-    public LocalDateTime getEmailScheduledAt() {
-        return emailScheduledAt;
-    }
-
-    public void setEmailScheduledAt(LocalDateTime emailScheduledAt) {
-        this.emailScheduledAt = emailScheduledAt;
-    }
-
-    public int getRetryCount() {
-        return retryCount;
-    }
-
-    public void setRetryCount(int retryCount) {
-        this.retryCount = retryCount;
     }
 }
