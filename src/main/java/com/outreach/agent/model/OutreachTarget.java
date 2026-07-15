@@ -73,6 +73,9 @@ public class OutreachTarget {
 
     private LocalDateTime emailScheduledAt;
 
+    /** Timestamp after which this target can be retried. null means it can be processed immediately. */
+    private LocalDateTime nextAttemptAt;
+
     /** Number of times this target has been retried after a transient failure. */
     @Column(columnDefinition = "integer default 0")
     private int retryCount = 0;

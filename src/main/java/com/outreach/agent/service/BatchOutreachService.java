@@ -419,26 +419,52 @@ public class BatchOutreachService {
             target.setRetryCount(retries + 1);
             target.setStatus(TargetStatus.PENDING);
             target.setClaimToken(null); // Clear claim token so it can be picked up on retry
-            target.setErrorReason("Retry " + (retries + 1) + "/" + MAX_RETRIES + ": " + e.getMessage());
+
+            int delayMinutes = (retries == 0) ? 1 : 3;
+            if (e != null && e.getMessage() != null) {
+                java.util.regex.Pattern pattern = java.util.regex.Pattern
+                        .compile("\"retry_after_seconds\"\\s*:\\s*(\\d+)");
+                java.util.regex.Matcher matcher = pattern.matcher(e.getMessage());
+                if (matcher.find()) {
+                    try {
+                        int seconds = Integer.parseInt(matcher.group(1));
+                        int delaySeconds = seconds + 5; // 5 seconds buffer
+                        target.setNextAttemptAt(LocalDateTime.now().plusSeconds(delaySeconds));
+                        log.info("Rate limit retry-after detected: {} seconds. Next attempt scheduled at: {}", seconds,
+                                target.getNextAttemptAt());
+                        delayMinutes = -1;
+                    } catch (Exception ex) {
+                        // ignore
+                    }
+                }
+            }
+            if (delayMinutes > 0) {
+                target.setNextAttemptAt(LocalDateTime.now().plusMinutes(delayMinutes));
+            }
+
+            String errorMessage = e != null ? e.getMessage() : "Unknown error";
+            target.setErrorReason("Retry " + (retries + 1) + "/" + MAX_RETRIES + ": " + errorMessage);
             targetRepository.save(target);
             log.debug("Transient failure for {} (retry {}/{}): {}",
-                    target.getCompanyName(), retries + 1, MAX_RETRIES, e.getMessage());
+                    target.getCompanyName(), retries + 1, MAX_RETRIES, errorMessage);
             log.warn("Transient failure for target ID: {} (retry {}/{}): {}",
-                    target.getId(), retries + 1, MAX_RETRIES, e.getMessage());
+                    target.getId(), retries + 1, MAX_RETRIES, errorMessage);
         } else {
+            String errorMessage = e != null ? e.getMessage() : "Unknown error";
             target.setStatus(TargetStatus.FAILED);
             target.setClaimToken(null);
-            target.setErrorReason(e.getMessage());
+            target.setNextAttemptAt(null);
+            target.setErrorReason(errorMessage);
             targetRepository.save(target);
             log.debug("Permanently failed target {} after {} retries: {}",
-                    target.getCompanyName(), MAX_RETRIES, e.getMessage(), e);
-            if (e instanceof dev.langchain4j.exception.HttpException
-                    || e.getCause() instanceof dev.langchain4j.exception.HttpException) {
+                    target.getCompanyName(), MAX_RETRIES, errorMessage, e);
+            if (e != null && (e instanceof dev.langchain4j.exception.HttpException
+                    || e.getCause() instanceof dev.langchain4j.exception.HttpException)) {
                 log.error("Permanently failed target ID: {} after {} retries due to HTTP/RateLimit error: {}",
-                        target.getId(), MAX_RETRIES, e.getMessage());
+                        target.getId(), MAX_RETRIES, errorMessage);
             } else {
                 log.error("Permanently failed target ID: {} after {} retries: {}",
-                        target.getId(), MAX_RETRIES, e.getMessage(), e);
+                        target.getId(), MAX_RETRIES, errorMessage, e);
             }
         }
     }

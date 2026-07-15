@@ -87,34 +87,33 @@ public class DocumentGeneratorTool {
             }
 
             try {
-                // Fix #E: write per-generation debug files with a timestamp so batch runs don't overwrite each other.
                 java.nio.file.Path debugDir = java.nio.file.Path.of("data/debug");
-                if (java.nio.file.Files.exists(debugDir)) {
-                    String timestamp = java.time.LocalDateTime.now()
-                            .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
-                    String debugJson = objectMapper.writeValueAsString(templateData);
-                    java.nio.file.Files.writeString(
-                            debugDir.resolve("selected_data_raw_" + timestamp + ".json"),
-                            debugJson);
-                }
+                java.nio.file.Files.createDirectories(debugDir);
+                String timestamp = java.time.LocalDateTime.now()
+                        .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
+                String debugJson = objectMapper.writeValueAsString(templateData);
+                log.info("RAW TEMPLATE DATA KEYS: {}", templateData.keySet());
+                java.nio.file.Files.writeString(
+                        debugDir.resolve("selected_data_raw_" + timestamp + ".json"),
+                        debugJson);
             } catch (Exception ex) {
-                // Ignore write failure of debug file
+                log.warn("Failed to write raw debug file: {}", ex.getMessage());
             }
 
             enrichTemplateData(templateData);
 
             try {
-                // Write enriched data for debugging as well
                 java.nio.file.Path debugDir = java.nio.file.Path.of("data/debug");
-                if (java.nio.file.Files.exists(debugDir)) {
-                    String timestamp = java.time.LocalDateTime.now()
-                            .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
-                    String debugJson = objectMapper.writeValueAsString(templateData);
-                    java.nio.file.Files.writeString(
-                            debugDir.resolve("selected_data_enriched_" + timestamp + ".json"),
-                            debugJson);
-                }
-            } catch (Exception ex) {}
+                java.nio.file.Files.createDirectories(debugDir);
+                String timestamp = java.time.LocalDateTime.now()
+                        .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS"));
+                String debugJson = objectMapper.writeValueAsString(templateData);
+                java.nio.file.Files.writeString(
+                        debugDir.resolve("selected_data_enriched_" + timestamp + ".json"),
+                        debugJson);
+            } catch (Exception ex) {
+                log.warn("Failed to write enriched debug file: {}", ex.getMessage());
+            }
 
             byte[] pdfBytes = pdfGeneratorService.generatePdf(templateData);
             int pageCount = pdfGeneratorService.countPages(pdfBytes);
@@ -332,12 +331,12 @@ public class DocumentGeneratorTool {
     public static class ResumeDataWrapper {
         private Map<String, Object> personalInfo;
         private String summary;
-        private Object skills;
-        private Object experiences;
-        private Object projects;
-        private Object education;
-        private Object certifications;
-        private Object extracurriculars;
+        private java.util.List<Object> skills;
+        private java.util.List<Object> experiences;
+        private java.util.List<Object> projects;
+        private java.util.List<Object> education;
+        private java.util.List<Object> certifications;
+        private java.util.List<Object> extracurriculars;
 
         private Map<String, Object> additionalProperties = new java.util.HashMap<>();
 
@@ -362,51 +361,51 @@ public class DocumentGeneratorTool {
             this.summary = summary;
         }
 
-        public Object getSkills() {
+        public java.util.List<Object> getSkills() {
             return skills;
         }
 
-        public void setSkills(Object skills) {
+        public void setSkills(java.util.List<Object> skills) {
             this.skills = skills;
         }
 
-        public Object getExperiences() {
+        public java.util.List<Object> getExperiences() {
             return experiences;
         }
 
-        public void setExperiences(Object experiences) {
+        public void setExperiences(java.util.List<Object> experiences) {
             this.experiences = experiences;
         }
 
-        public Object getProjects() {
+        public java.util.List<Object> getProjects() {
             return projects;
         }
 
-        public void setProjects(Object projects) {
+        public void setProjects(java.util.List<Object> projects) {
             this.projects = projects;
         }
 
-        public Object getEducation() {
+        public java.util.List<Object> getEducation() {
             return education;
         }
 
-        public void setEducation(Object education) {
+        public void setEducation(java.util.List<Object> education) {
             this.education = education;
         }
 
-        public Object getCertifications() {
+        public java.util.List<Object> getCertifications() {
             return certifications;
         }
 
-        public void setCertifications(Object certifications) {
+        public void setCertifications(java.util.List<Object> certifications) {
             this.certifications = certifications;
         }
 
-        public Object getExtracurriculars() {
+        public java.util.List<Object> getExtracurriculars() {
             return extracurriculars;
         }
 
-        public void setExtracurriculars(Object extracurriculars) {
+        public void setExtracurriculars(java.util.List<Object> extracurriculars) {
             this.extracurriculars = extracurriculars;
         }
 

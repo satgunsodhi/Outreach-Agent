@@ -8,20 +8,30 @@ import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 import com.outreach.agent.service.OpenRouterModelService;
+import java.net.http.HttpClient;
+import java.time.Duration;
 
 /**
- * LangChain4j ChatModel configuration for the {@code openrouter} Spring profile.
+ * LangChain4j ChatModel configuration for the {@code openrouter} Spring
+ * profile.
  *
- * <p>Model fallback and response caching are handled transparently by
- * {@link OpenRouterInterceptor}, which is registered as a {@link RestClientCustomizer}
- * and applied to every outbound LLM request. There is no need for application-level
- * retry proxies here.</p>
+ * <p>
+ * Model fallback and response caching are handled transparently by
+ * {@link OpenRouterInterceptor}, which is registered as a
+ * {@link RestClientCustomizer}
+ * and applied to every outbound LLM request. There is no need for
+ * application-level
+ * retry proxies here.
+ * </p>
  */
 @Configuration
 @Profile("openrouter")
 public class OpenRouterLlmConfig {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class);
 
     private final LlmProperties llmProperties;
     private final OpenRouterModelService openRouterModelService;
@@ -35,15 +45,20 @@ public class OpenRouterLlmConfig {
     private String logLevel;
 
     /**
-     * Registers the {@link OpenRouterInterceptor} as a Spring {@link RestClientCustomizer}.
+     * Registers the {@link OpenRouterInterceptor} as a Spring
+     * {@link RestClientCustomizer}.
      * LangChain4j's OpenAI integration uses Spring's RestClient internally, so this
-     * customizer is automatically picked up and applied to every outbound LLM request.
+     * customizer is automatically picked up and applied to every outbound LLM
+     * request.
      *
-     * <p>The interceptor:</p>
+     * <p>
+     * The interceptor:
+     * </p>
      * <ol>
-     *   <li>Adds {@code X-OpenRouter-Cache: true} for server-side response caching.</li>
-     *   <li>Rewrites {@code "model":"x"} → {@code "models":["x","fallback1",...]} so
-     *       OpenRouter automatically fails over to a healthy model on 503 errors.</li>
+     * <li>Adds {@code X-OpenRouter-Cache: true} for server-side response
+     * caching.</li>
+     * <li>Rewrites {@code "model":"x"} → {@code "models":["x","fallback1",...]} so
+     * OpenRouter automatically fails over to a healthy model on 503 errors.</li>
      * </ol>
      */
     @Bean
@@ -54,8 +69,23 @@ public class OpenRouterLlmConfig {
 
     private ChatModel buildChatModel(double temperature, int maxTokens) {
         boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
-        
+        if (isTrace) {
+            log.trace("Building ChatModel — model={}, temperature={}, maxTokens={}",
+                    openRouterModelService.getPrimaryModel(), temperature, maxTokens);
+        }
+
+        // Use a generous read timeout — LLM responses for cover letters/resumes can
+        // take 60–90 s.
+        // The default JDK HttpClient timeout is far shorter, which caused "Stream
+        // cancelled" errors.
+        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(
+                HttpClient.newBuilder()
+                        .connectTimeout(Duration.ofSeconds(10))
+                        .build());
+        requestFactory.setReadTimeout(Duration.ofSeconds(120));
+
         RestClient.Builder builder = RestClient.builder()
+                .requestFactory(requestFactory)
                 .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels));
 
         return OpenAiChatModel.builder()
@@ -70,7 +100,10 @@ public class OpenRouterLlmConfig {
                 .build();
     }
 
-    /** Strictly deterministic model for resume generation (temperature=0.1, larger token budget). */
+    /**
+     * Strictly deterministic model for resume generation (temperature=0.1, larger
+     * token budget).
+     */
     @Bean("resumeChatModel")
     public ChatModel resumeChatModel() {
         return buildChatModel(0.1, 8000);

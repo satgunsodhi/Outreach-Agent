@@ -27,6 +27,20 @@ public class OpenRouterModelService {
     private final LlmProperties llmProperties;
     private final List<String> cachedFreeModels = new CopyOnWriteArrayList<>();
 
+    private static final List<String> PREFERRED_FREE_MODELS = List.of(
+            "nvidia/llama-3.1-nemotron-70b-instruct:free",
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "nousresearch/hermes-3-llama-3.1-405b:free",
+            "google/gemma-4-31b-it:free",
+            "google/gemma-4-26b-a4b-it:free",
+            "google/gemma-2-9b-it:free",
+            "tencent/hy3:free",
+            "poolside/laguna-xs-2.1:free",
+            "cohere/north-mini-code:free",
+            "qwen/qwen3-coder:free",
+            "meta-llama/llama-3.2-3b-instruct:free"
+    );
+
     public OpenRouterModelService(LlmProperties llmProperties) {
         this.llmProperties = llmProperties;
     }
@@ -55,6 +69,16 @@ public class OpenRouterModelService {
             
             RestClient restClient = RestClient.builder()
                     .defaultHeader("Accept", "application/json")
+                    .defaultStatusHandler(
+                            status -> status.isError(),
+                            (request, response) -> {
+                                byte[] bodyBytes = response.getBody().readAllBytes();
+                                String bodyStr = new String(bodyBytes, java.nio.charset.StandardCharsets.UTF_8);
+                                String errMsg = String.format("OpenRouter API error (Status %d): %s", response.getStatusCode().value(), bodyStr);
+                                log.error(errMsg);
+                                throw new RuntimeException(errMsg);
+                            }
+                    )
                     .build();
 
             JsonNode response = restClient.get()
@@ -99,30 +123,59 @@ public class OpenRouterModelService {
     /**
      * Returns the list of fallback models.
      * Uses dynamically cached free models if available, otherwise falls back to configured values in LlmProperties.
+     * Fallback list is sorted to prioritize our preferred high-quality free models first.
      */
     public List<String> getFallbackModels() {
         if (cachedFreeModels.isEmpty()) {
             log.debug("No cached free models available. Triggering fetch now for current execution.");
             fetchFreeModels(); // Fetch synchronously if empty
             
-            if (!cachedFreeModels.isEmpty()) {
-                return new ArrayList<>(cachedFreeModels);
+            if (cachedFreeModels.isEmpty()) {
+                log.debug("Still no cached free models available after fetch. Using configured fallback models from properties.");
+                return llmProperties.getFallbackModels();
             }
-            
-            log.debug("Still no cached free models available after fetch. Using configured fallback models from properties.");
-            return llmProperties.getFallbackModels();
         }
-        return new ArrayList<>(cachedFreeModels);
+        
+        List<String> sorted = new ArrayList<>(cachedFreeModels);
+        sorted.sort((a, b) -> {
+            int indexA = PREFERRED_FREE_MODELS.indexOf(a);
+            int indexB = PREFERRED_FREE_MODELS.indexOf(b);
+            
+            if (indexA != -1 && indexB != -1) {
+                return Integer.compare(indexA, indexB);
+            }
+            if (indexA != -1) {
+                return -1;
+            }
+            if (indexB != -1) {
+                return 1;
+            }
+            return 0;
+        });
+        return sorted;
+    }
+
+    /**
+     * Helper to select the best available model from the cached free models based on ranking.
+     */
+    private String selectBestFreeModel() {
+        for (String preferred : PREFERRED_FREE_MODELS) {
+            if (cachedFreeModels.contains(preferred)) {
+                return preferred;
+            }
+        }
+        // Fallback to the first available if none of our preferred list are present
+        return cachedFreeModels.get(0);
     }
 
     /**
      * Returns the primary model name.
-     * If configured in LlmProperties, uses that.
-     * Otherwise, fetches and uses the first dynamically cached free model.
+     * If configured in LlmProperties (and is not blank or 'auto'), uses that.
+     * Otherwise, selects the best available free model dynamically.
      */
     public String getPrimaryModel() {
         String configured = llmProperties.getOpenRouterModelName();
-        if (configured != null && !configured.isBlank()) {
+        if (configured != null && !configured.isBlank() && !"auto".equalsIgnoreCase(configured)) {
             return configured;
         }
         
@@ -132,7 +185,7 @@ public class OpenRouterModelService {
         }
         
         if (!cachedFreeModels.isEmpty()) {
-            String primary = cachedFreeModels.get(0);
+            String primary = selectBestFreeModel();
             log.info("Using dynamically determined primary model: {}", primary);
             return primary;
         }
