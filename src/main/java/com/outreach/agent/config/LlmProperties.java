@@ -9,17 +9,14 @@ import java.util.List;
 @ConfigurationProperties(prefix = "outreach.llm")
 public class LlmProperties {
     private String openRouterApiKey;
-    private String openRouterModelName = "google/gemma-2-9b-it:free";
+    private String openRouterModelName;
     private Double temperature = 0.2;
     private Integer maxTokens = 4000;
     /**
      * Ordered list of fallback model IDs tried after the primary model returns a
      * 503.
      */
-    private List<String> fallbackModels = List.of(
-            "nvidia/nemotron-3-ultra-550b-a55b:free",
-            "google/gemma-4-31b-it:free",
-            "poolside/laguna-m.1:free");
+    private List<String> fallbackModels = List.of();
 
     public String getOpenRouterApiKey() {
         return openRouterApiKey;

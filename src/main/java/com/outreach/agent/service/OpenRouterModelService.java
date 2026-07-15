@@ -114,4 +114,29 @@ public class OpenRouterModelService {
         }
         return new ArrayList<>(cachedFreeModels);
     }
+
+    /**
+     * Returns the primary model name.
+     * If configured in LlmProperties, uses that.
+     * Otherwise, fetches and uses the first dynamically cached free model.
+     */
+    public String getPrimaryModel() {
+        String configured = llmProperties.getOpenRouterModelName();
+        if (configured != null && !configured.isBlank()) {
+            return configured;
+        }
+        
+        if (cachedFreeModels.isEmpty()) {
+            log.info("No cached free models available. Triggering fetch now for primary model.");
+            fetchFreeModels();
+        }
+        
+        if (!cachedFreeModels.isEmpty()) {
+            String primary = cachedFreeModels.get(0);
+            log.info("Using dynamically determined primary model: {}", primary);
+            return primary;
+        }
+        
+        throw new IllegalStateException("No primary model configured in properties, and no free models could be fetched from OpenRouter.");
+    }
 }
