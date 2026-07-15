@@ -23,6 +23,8 @@ import com.outreach.agent.service.OpenRouterModelService;
 @Profile("openrouter")
 public class OpenRouterLlmConfig {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OpenRouterLlmConfig.class);
+
     private final LlmProperties llmProperties;
     private final OpenRouterModelService openRouterModelService;
 
@@ -56,7 +58,17 @@ public class OpenRouterLlmConfig {
         boolean isTrace = "TRACE".equalsIgnoreCase(logLevel);
         
         RestClient.Builder builder = RestClient.builder()
-                .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels));
+                .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels))
+                .defaultStatusHandler(
+                        status -> status.isError(),
+                        (request, response) -> {
+                            byte[] bodyBytes = response.getBody().readAllBytes();
+                            String bodyStr = new String(bodyBytes, java.nio.charset.StandardCharsets.UTF_8);
+                            String errMsg = String.format("OpenRouter API error (Status %d): %s", response.getStatusCode().value(), bodyStr);
+                            log.error(errMsg);
+                            throw new RuntimeException(errMsg);
+                        }
+                );
 
         return OpenAiChatModel.builder()
                 .baseUrl("https://openrouter.ai/api/v1")

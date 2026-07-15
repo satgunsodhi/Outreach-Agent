@@ -55,6 +55,16 @@ public class OpenRouterModelService {
             
             RestClient restClient = RestClient.builder()
                     .defaultHeader("Accept", "application/json")
+                    .defaultStatusHandler(
+                            status -> status.isError(),
+                            (request, response) -> {
+                                byte[] bodyBytes = response.getBody().readAllBytes();
+                                String bodyStr = new String(bodyBytes, java.nio.charset.StandardCharsets.UTF_8);
+                                String errMsg = String.format("OpenRouter API error (Status %d): %s", response.getStatusCode().value(), bodyStr);
+                                log.error(errMsg);
+                                throw new RuntimeException(errMsg);
+                            }
+                    )
                     .build();
 
             JsonNode response = restClient.get()
