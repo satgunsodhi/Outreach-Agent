@@ -13,6 +13,7 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Spring {@link ClientHttpRequestInterceptor} that enriches outbound OpenRouter API requests with:
@@ -34,14 +35,15 @@ public class OpenRouterInterceptor implements ClientHttpRequestInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(OpenRouterInterceptor.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final List<String> fallbackModels;
+    private final Supplier<List<String>> fallbackModelsSupplier;
 
     /**
-     * @param fallbackModels ordered list of fallback model IDs tried after the primary fails.
-     *                       The primary model is read from the original request body.
+     * @param fallbackModelsSupplier supplier for the ordered list of fallback model IDs 
+     *                               tried after the primary fails.
+     *                               The primary model is read from the original request body.
      */
-    public OpenRouterInterceptor(List<String> fallbackModels) {
-        this.fallbackModels = fallbackModels;
+    public OpenRouterInterceptor(Supplier<List<String>> fallbackModelsSupplier) {
+        this.fallbackModelsSupplier = fallbackModelsSupplier;
     }
 
     @Override
@@ -75,7 +77,8 @@ public class OpenRouterInterceptor implements ClientHttpRequestInterceptor {
      * Uses Jackson for robust parsing, falling back to the original body if parsing fails.
      */
     private byte[] injectModels(byte[] bodyBytes) {
-        if (fallbackModels.isEmpty() || bodyBytes == null || bodyBytes.length == 0) {
+        List<String> fallbackModels = fallbackModelsSupplier.get();
+        if (fallbackModels == null || fallbackModels.isEmpty() || bodyBytes == null || bodyBytes.length == 0) {
             return bodyBytes;
         }
 

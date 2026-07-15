@@ -7,6 +7,7 @@ import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import com.outreach.agent.service.OpenRouterModelService;
 
 /**
  * LangChain4j ChatModel configuration for the {@code openrouter} Spring profile.
@@ -21,9 +22,11 @@ import org.springframework.context.annotation.Profile;
 public class OpenRouterLlmConfig {
 
     private final LlmProperties llmProperties;
+    private final OpenRouterModelService openRouterModelService;
 
-    public OpenRouterLlmConfig(LlmProperties llmProperties) {
+    public OpenRouterLlmConfig(LlmProperties llmProperties, OpenRouterModelService openRouterModelService) {
         this.llmProperties = llmProperties;
+        this.openRouterModelService = openRouterModelService;
     }
 
     @Value("${logging.level.com.outreach.agent:INFO}")
@@ -44,7 +47,7 @@ public class OpenRouterLlmConfig {
     @Bean
     public RestClientCustomizer openRouterRestClientCustomizer() {
         return restClientBuilder -> restClientBuilder
-                .requestInterceptor(new OpenRouterInterceptor(llmProperties.getFallbackModels()));
+                .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels));
     }
 
     private ChatModel buildChatModel(double temperature, int maxTokens) {

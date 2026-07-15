@@ -46,7 +46,7 @@ public class MasterResumeService {
             return masterResume;
         }
 
-        List<String> lowerTags = tags.stream().map(String::toLowerCase).toList();
+        List<String> lowerTags = tags.stream().map(t -> t.toLowerCase()).toList();
 
         List<Experience> filteredExperiences = masterResume.experiences().stream()
                 .map(exp -> {
