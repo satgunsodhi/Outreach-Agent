@@ -251,6 +251,17 @@ public class PdfGeneratorService {
                 .charset(java.nio.charset.StandardCharsets.UTF_8);
         String xhtml = document.html();
 
+        try {
+            java.nio.file.Files.writeString(
+                java.nio.file.Paths.get("data/debug/resume.html"),
+                xhtml,
+                java.nio.file.StandardOpenOption.CREATE,
+                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+            );
+        } catch (Exception e) {
+            // ignore
+        }
+
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ITextRenderer renderer = new ITextRenderer();
             renderer.setDocumentFromString(xhtml);
