@@ -9,7 +9,7 @@ langchain4j:
 outreach:
   llm:
     open-router-api-key: ${OPENROUTER_API_KEY:}
-    open-router-model-name: ${OPENROUTER_MODEL_NAME:google/gemma-2-9b-it:free}
+    open-router-model-name: ${OPENROUTER_MODEL_NAME:}
     temperature: 0.2
     max-tokens: 4000
     # Comma-separated ordered list of fallback models for OpenRouter (see .env.example).

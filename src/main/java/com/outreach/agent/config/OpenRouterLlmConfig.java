@@ -61,7 +61,7 @@ public class OpenRouterLlmConfig {
         return OpenAiChatModel.builder()
                 .baseUrl("https://openrouter.ai/api/v1")
                 .apiKey(llmProperties.getOpenRouterApiKey())
-                .modelName(llmProperties.getOpenRouterModelName())
+                .modelName(openRouterModelService.getPrimaryModel())
                 .temperature(temperature)
                 .maxTokens(maxTokens)
                 .logRequests(isTrace)
