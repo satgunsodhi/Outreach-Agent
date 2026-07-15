@@ -30,7 +30,7 @@ An autonomous AI-powered outreach pipeline built with **Java 21 + Spring Boot 3*
 
 - **Core:** Java 21 / Spring Boot 3.4.0
 - **AI Orchestration:** LangChain4j 1.15.0
-- **LLM Provider:** OpenRouter (`openai/gpt-oss-120b:free` by default) or Google Gemini 2.5 Flash
+- **LLM Provider:** OpenRouter (dynamically resolved to the first available free model by default) or Google Gemini 2.5 Flash
 - **PDF Generation:** Thymeleaf + Flying Saucer (OpenPDF)
 - **Web Scraping:** Jsoup
 - **Database:** Spring Data JPA + H2 (file-based, persisted at `./data/outreachdb`)
@@ -127,7 +127,7 @@ Edit `.env` with your actual credentials (see the table below). Example files fo
 | Variable | Required | Description |
 |---|---|---|
 | `OPENROUTER_API_KEY` | ✅ | Your OpenRouter API key |
-| `OPENROUTER_MODEL_NAME` | Optional | Defaults to `openai/gpt-oss-120b:free` |
+| `OPENROUTER_MODEL_NAME` | Optional | Dynamically resolved from OpenRouter's active free tier |
 | `GEMINI_API_KEY` | Optional | Only needed if using the `gemini` Spring profile |
 | `GMAIL_ADDRESS` | ✅ | Gmail address used as the From: header |
 | `GOOGLE_CLIENT_SECRETS_JSON` | ✅ | Full contents of your OAuth 2.0 client secret JSON (see `docs/examples/credentials.json.example`) |
