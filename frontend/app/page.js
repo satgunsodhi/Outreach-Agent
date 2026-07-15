@@ -9,7 +9,7 @@ export default function Home() {
   const [targets, setTargets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   // Tab Navigation State: 'dashboard' | 'sandbox' | 'tools'
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -138,7 +138,7 @@ export default function Home() {
       setRecipientEmail('');
       setJobUrl('');
       setJobDescription('');
-      
+
       fetchTargets();
     } catch (err) {
       setError(err.message);
@@ -353,10 +353,10 @@ export default function Home() {
   // Filtered Targets list
   const filteredTargets = targets.filter(t => {
     const query = searchQuery.toLowerCase();
-    const matchesSearch = 
-      t.companyName.toLowerCase().includes(query) || 
+    const matchesSearch =
+      t.companyName.toLowerCase().includes(query) ||
       t.recipientEmail.toLowerCase().includes(query);
-    
+
     if (statusFilter === 'ALL') return matchesSearch;
     if (statusFilter === 'DRAFTED') {
       return matchesSearch && (t.status === 'DRAFT_CREATED' || t.status === 'FOLLOW_UP_DRAFT_CREATED');
@@ -365,7 +365,7 @@ export default function Home() {
   });
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return '—';
+    if (!dateStr) return '-';
     return new Date(dateStr).toLocaleString(undefined, {
       month: 'short',
       day: 'numeric',
@@ -398,21 +398,21 @@ export default function Home() {
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label>Admin Username</label>
-            <input 
-              type="text" 
-              value={username} 
-              onChange={e => setUsername(e.target.value)} 
-              required 
+            <input
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              required
               placeholder="Username"
             />
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input 
-              type="password" 
-              value={password} 
-              onChange={e => setPassword(e.target.value)} 
-              required 
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
               placeholder="••••••••"
             />
           </div>
@@ -436,19 +436,19 @@ export default function Home() {
           </div>
 
           <nav className="sidebar-nav">
-            <div 
+            <div
               className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
               onClick={() => setActiveTab('dashboard')}
             >
               <span>📊</span> Dashboard
             </div>
-            <div 
+            <div
               className={`nav-item ${activeTab === 'sandbox' ? 'active' : ''}`}
               onClick={() => setActiveTab('sandbox')}
             >
               <span>🧪</span> Resume Sandbox
             </div>
-            <div 
+            <div
               className={`nav-item ${activeTab === 'tools' ? 'active' : ''}`}
               onClick={() => setActiveTab('tools')}
             >
@@ -473,7 +473,7 @@ export default function Home() {
 
       {/* MAIN VIEW AREA */}
       <main className="main-content">
-        
+
         {/* TAB 1: DASHBOARD */}
         {activeTab === 'dashboard' && (
           <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -518,20 +518,20 @@ export default function Home() {
 
             {/* MAIN DASHBOARD CONTENT GRID */}
             <div className="dashboard-grid">
-              
+
               {/* TARGETS LIST */}
               <section className="glass data-table-card">
                 <h2 style={{ marginBottom: '1.25rem' }}>Outreach Queue</h2>
-                
+
                 <div className="search-controls">
-                  <input 
-                    type="text" 
-                    placeholder="Search company or email..." 
+                  <input
+                    type="text"
+                    placeholder="Search company or email..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
                     style={{ flex: 1 }}
                   />
-                  <select 
+                  <select
                     value={statusFilter}
                     onChange={e => setStatusFilter(e.target.value)}
                     style={{ width: '180px' }}
@@ -557,8 +557,8 @@ export default function Home() {
                     </thead>
                     <tbody>
                       {filteredTargets.map(t => (
-                        <tr 
-                          key={t.id} 
+                        <tr
+                          key={t.id}
                           onClick={() => openDrawer(t)}
                           className={`table-row ${selectedTarget?.id === t.id ? 'selected' : ''}`}
                         >
@@ -595,44 +595,44 @@ export default function Home() {
                     <span>⚠️</span> {error}
                   </div>
                 )}
-                
+
                 <form onSubmit={handleSubmit}>
                   <div className="form-group">
                     <label>Company Name</label>
-                    <input 
-                      type="text" 
-                      value={companyName} 
-                      onChange={e => setCompanyName(e.target.value)} 
-                      required 
+                    <input
+                      type="text"
+                      value={companyName}
+                      onChange={e => setCompanyName(e.target.value)}
+                      required
                       placeholder="e.g. Google"
                     />
                   </div>
                   <div className="form-group">
                     <label>Recipient Email</label>
-                    <input 
-                      type="email" 
-                      value={recipientEmail} 
-                      onChange={e => setRecipientEmail(e.target.value)} 
-                      required 
+                    <input
+                      type="email"
+                      value={recipientEmail}
+                      onChange={e => setRecipientEmail(e.target.value)}
+                      required
                       placeholder="manager@google.com"
                     />
                   </div>
                   <div className="form-group">
                     <label>Job URL (Optional)</label>
-                    <input 
-                      type="url" 
-                      value={jobUrl} 
-                      onChange={e => setJobUrl(e.target.value)} 
+                    <input
+                      type="url"
+                      value={jobUrl}
+                      onChange={e => setJobUrl(e.target.value)}
                       placeholder="https://careers.google.com/..."
                     />
                   </div>
                   <div className="form-group">
                     <label>Job Description</label>
-                    <textarea 
-                      value={jobDescription} 
-                      onChange={e => setJobDescription(e.target.value)} 
-                      rows="6" 
-                      required 
+                    <textarea
+                      value={jobDescription}
+                      onChange={e => setJobDescription(e.target.value)}
+                      rows="6"
+                      required
                       placeholder="Paste the full job posting description here..."
                     ></textarea>
                   </div>
@@ -658,7 +658,7 @@ export default function Home() {
               <form onSubmit={handleSandboxGenerate}>
                 <div className="form-group">
                   <label>Job Description</label>
-                  <textarea 
+                  <textarea
                     value={sandboxJobDescription}
                     onChange={e => setSandboxJobDescription(e.target.value)}
                     rows="8"
@@ -668,7 +668,7 @@ export default function Home() {
                 </div>
                 <div className="form-group">
                   <label>Company Research</label>
-                  <textarea 
+                  <textarea
                     value={sandboxResearch}
                     onChange={e => setSandboxResearch(e.target.value)}
                     rows="4"
@@ -719,15 +719,15 @@ export default function Home() {
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label>Match Keyword</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={toolsKeyword}
                     onChange={e => setToolsKeyword(e.target.value)}
                     placeholder="e.g. Python"
                   />
                 </div>
-                <button 
-                  onClick={handleBulkReset} 
+                <button
+                  onClick={handleBulkReset}
                   disabled={toolsLoading || !toolsKeyword}
                   style={{ width: '100%' }}
                 >
@@ -743,15 +743,15 @@ export default function Home() {
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label>Match Keyword</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={toolsKeyword}
                     onChange={e => setToolsKeyword(e.target.value)}
                     placeholder="e.g. Python"
                   />
                 </div>
-                <button 
-                  onClick={handleBulkClean} 
+                <button
+                  onClick={handleBulkClean}
                   disabled={toolsLoading || !toolsKeyword}
                   className="danger"
                   style={{ width: '100%' }}
@@ -768,15 +768,15 @@ export default function Home() {
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label>Test Recipient Email</label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
                     value={toolsEmail}
                     onChange={e => setToolsEmail(e.target.value)}
                     placeholder="e.g. test@domain.com"
                   />
                 </div>
-                <button 
-                  onClick={handleResetTests} 
+                <button
+                  onClick={handleResetTests}
                   disabled={toolsLoading || !toolsEmail}
                   className="secondary"
                   style={{ width: '100%' }}
@@ -796,9 +796,9 @@ export default function Home() {
       </main>
 
       {/* DETAIL SIDE SLIDER DRAWER */}
-      <div 
-        className={`drawer-backdrop ${drawerOpen ? 'open' : ''}`} 
-        onClick={closeDrawer} 
+      <div
+        className={`drawer-backdrop ${drawerOpen ? 'open' : ''}`}
+        onClick={closeDrawer}
       />
       <div className={`drawer ${drawerOpen ? 'open' : ''}`}>
         {selectedTarget && (
@@ -808,7 +808,7 @@ export default function Home() {
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Target Specification</h3>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>ID: #{selectedTarget.id}</p>
               </div>
-              <button 
+              <button
                 onClick={closeDrawer}
                 className="secondary"
                 style={{ borderRadius: '50%', padding: '0.5rem', width: '32px', height: '32px', lineHeight: 1 }}
@@ -890,8 +890,8 @@ export default function Home() {
                 <div>
                   <div className="preview-header">
                     <label style={{ margin: 0 }}>Generated Subject Line</label>
-                    <button 
-                      className="secondary" 
+                    <button
+                      className="secondary"
                       style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}
                       onClick={() => copyToClipboard(selectedTarget.subject, 'subject')}
                     >
@@ -908,8 +908,8 @@ export default function Home() {
                 <div>
                   <div className="preview-header">
                     <label style={{ margin: 0 }}>Cover Letter Text Draft</label>
-                    <button 
-                      className="secondary" 
+                    <button
+                      className="secondary"
                       style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem' }}
                       onClick={() => copyToClipboard(selectedTarget.draftedCoverLetter, 'body')}
                     >
@@ -924,17 +924,17 @@ export default function Home() {
             </div>
 
             <div className="drawer-footer">
-              <button 
-                onClick={() => handleDeleteTarget(selectedTarget.id)} 
+              <button
+                onClick={() => handleDeleteTarget(selectedTarget.id)}
                 className="danger"
                 disabled={actionLoading}
               >
                 Delete Target
               </button>
-              
+
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button 
-                  onClick={() => handleResetTarget(selectedTarget.id)} 
+                <button
+                  onClick={() => handleResetTarget(selectedTarget.id)}
                   disabled={actionLoading || selectedTarget.status === 'PENDING'}
                   className="secondary"
                 >

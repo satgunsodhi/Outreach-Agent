@@ -32,7 +32,7 @@ public interface OutreachTargetRepository extends JpaRepository<OutreachTarget, 
 
     @Modifying
     @Transactional
-    @Query("UPDATE OutreachTarget t SET t.claimToken = :token, t.status = com.outreach.agent.model.TargetStatus.PROCESSING, t.processingStartedAt = :now WHERE t.status = com.outreach.agent.model.TargetStatus.PENDING AND t.claimToken IS NULL")
+    @Query("UPDATE OutreachTarget t SET t.claimToken = :token, t.status = com.outreach.agent.model.TargetStatus.PROCESSING, t.processingStartedAt = :now WHERE t.status = com.outreach.agent.model.TargetStatus.PENDING AND t.claimToken IS NULL AND (t.nextAttemptAt IS NULL OR t.nextAttemptAt <= :now)")
     int claimPendingTargets(@Param("token") String token, @Param("now") LocalDateTime now);
 
     /**
