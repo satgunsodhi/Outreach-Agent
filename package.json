@@ -3,14 +3,6 @@
   "version": "1.0.0",
   "description": "Root orchestrator for Outreach Agent",
   "scripts": {
-    "dev": "npx -y concurrently --names \"backend,frontend\" -c \"blue,green\" \"mvn spring-boot:run\" \"npm run dev --prefix frontend\"",
-    "build": "npm run build --prefix frontend",
-    "start": "npm run start --prefix frontend",
-    "postinstall": "npm install --prefix frontend"
-  },
-  "dependencies": {
-    "next": "16.2.6",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "dev": "npx -y concurrently --names \"backend,frontend\" -c \"blue,green\" \"mvn spring-boot:run\" \"npm run dev --prefix frontend\""
   }
 }
