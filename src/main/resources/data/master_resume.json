@@ -596,84 +596,6 @@
       "priority": 3
     },
     {
-      "id": "proj-shlagent",
-      "name": "SHL Conversational Assessment Recommender",
-      "github": "https://github.com/satgunsodhi/SHL-Agent",
-      "techStack": "FastAPI, Python, FAISS, Sentence Transformers, OpenRouter LLM",
-      "tags": [
-        "fastapi",
-        "python",
-        "faiss",
-        "semantic-search",
-        "embeddings",
-        "vector-database",
-        "agentic-ai",
-        "conversational-ai",
-        "openrouter"
-      ],
-      "bullets": [
-        {
-          "id": "bp-shl-001",
-          "text": "Built a conversational AI recommender using FastAPI and OpenRouter to guide recruiters in choosing assessment tests from a 377-item SHL catalog.",
-          "tags": [
-            "fastapi",
-            "python",
-            "agentic-ai",
-            "conversational-ai",
-            "openrouter"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-shl-002",
-          "text": "Implemented semantic search using FAISS and Sentence Transformers (all-MiniLM-L6-v2 embeddings) to index and retrieve test metadata under 50ms latency.",
-          "tags": [
-            "faiss",
-            "semantic-search",
-            "embeddings",
-            "vector-database"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-shl-003",
-          "text": "Designed custom Scope Guards and Response Validators in FastAPI to bound LLM conversational behavior and prevent hallucinations.",
-          "tags": [
-            "validation",
-            "security",
-            "guardrails",
-            "llm"
-          ],
-          "priority": 2,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-proj-shlagent-ext-1",
-          "text": "Built a conversational AI recommender using FastAPI and OpenRouter that indexes a 377-item SHL catalog via <b>BM25Okapi</b> with enriched search_text strings, injecting detailed and compact catalog contexts into the LLM system prompt.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-shlagent-ext-2",
-          "text": "Implemented semantic search using FAISS and Sentence Transformers (all-MiniLM-L6-v2 embeddings) to index and retrieve test metadata under <b>50ms latency</b>, with a hybrid retrieval strategy prepending curated core assessments to BM25-ranked candidates.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-shlagent-ext-3",
-          "text": "Engineered URL/name validation that auto-corrects hallucinated product references via case-insensitive name lookup and secondary BM25 fallback, with off-topic filtering and Pydantic v2 strict JSON contracts.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        }
-      ],
-      "priority": 4
-    },
-    {
       "id": "proj-iqagent",
       "name": "IQAgent: Local LLM Interview Question Generator",
       "github": "https://github.com/satgunsodhi/IQAgent",
@@ -742,71 +664,6 @@
         {
           "id": "bp-proj-iqagent-ext-3",
           "text": "Structured output as markdown-friendly text persisted to interview_questions.txt, enabling reuse in interview prep workflows and easy versioning under source control.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        }
-      ],
-      "priority": 3
-    },
-    {
-      "id": "proj-fundr",
-      "name": "Fundr: Startup Crowdfunding & Consumer Investment Platform",
-      "github": "https://github.com/satgunsodhi/Fundr",
-      "liveDemo": "https://fundr.onrender.com",
-      "techStack": "React 19, TypeScript, Vite, Tailwind CSS",
-      "tags": [
-        "web",
-        "react",
-        "typescript",
-        "vite",
-        "tailwind-css",
-        "crowdfunding",
-        "startup-funding"
-      ],
-      "bullets": [
-        {
-          "id": "bp-fu-001",
-          "text": "Developed a functional crowdfunding prototype connecting early-stage startups and consumer investors, supporting dual Rolling and Goal-Based investment models.",
-          "tags": [
-            "web",
-            "react",
-            "typescript",
-            "vite",
-            "crowdfunding"
-          ],
-          "priority": 1,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-fu-002",
-          "text": "Implemented responsive UI dashboards using React 19 and Tailwind CSS to track campaign progress, funding timelines, and equity metrics.",
-          "tags": [
-            "react",
-            "tailwind-css",
-            "responsive-design",
-            "frontend"
-          ],
-          "priority": 2,
-          "lengthCategory": "MEDIUM"
-        },
-        {
-          "id": "bp-proj-fundr-ext-1",
-          "text": "Developed a functional crowdfunding prototype using React 19 + TypeScript with a typed ProjectContext managing project creation and investment flows across three SPA routes.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-fundr-ext-2",
-          "text": "Implemented responsive UI dashboards using Tailwind CSS to track campaign progress, funding timelines, and equity metrics with dynamic progress bars and localized currency formatting.",
-          "tags": [],
-          "priority": 1,
-          "lengthCategory": "LONG"
-        },
-        {
-          "id": "bp-proj-fundr-ext-3",
-          "text": "Deployed behind a minimal Express server serving the Vite-built frontend, providing clean separation between static SPA hosting and future API endpoints.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -1207,6 +1064,21 @@
           ],
           "priority": 1,
           "lengthCategory": "LONG"
+        },
+        {
+          "id": "bp-iq-005",
+          "text": "Embedded a Monaco code editor within the platform for CSES.fi problem submissions, enabling users to write, run, and submit solutions directly in-browser without leaving the learning environment.",
+          "tags": [
+            "monaco-editor",
+            "competitive-programming",
+            "cses",
+            "frontend",
+            "typescript",
+            "next-js",
+            "web-app"
+          ],
+          "priority": 1,
+          "lengthCategory": "LONG"
         }
       ],
       "priority": 5
@@ -1274,7 +1146,7 @@
           "lengthCategory": "LONG"
         }
       ],
-      "priority": 5
+      "priority": 4
     }
   ],
   "education": [

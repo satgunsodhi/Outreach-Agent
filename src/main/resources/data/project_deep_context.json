@@ -79,43 +79,6 @@
       "Deployed the model as FinPeak.ai, a Streamlit chat app that downloads safetensors weights from HuggingFace, reconstructs GPTConfig, and generates instruction-formatted financial answers with controllable temperature and response length."
     ]
   },
-  "proj-forgery": {
-    "coreProblem": "Signature forgery detection system benchmarking classical ML classifiers against adversarial attacks using Neural Style Transfer to simulate sophisticated forgeries.",
-    "architectureDetails": "Pipeline: OpenCV preprocessing for contour extraction, noise reduction, and stroke enhancement. Benchmarked 4 classifiers (SVC, KNN, Logistic Regression, GaussianNB) on clean signature datasets. Applied Neural Style Transfer to simulate adversarial forgeries, exposing 30-50% accuracy drops and model fragility under distribution shift. Comparative evaluation framework for testing robustness under adversarial transformations.",
-    "keyTechnologies": [
-      "Python",
-      "OpenCV",
-      "Scikit-Learn",
-      "SVC",
-      "KNN",
-      "Neural Style Transfer",
-      "Adversarial ML"
-    ],
-    "suggestedBullets": [
-      "Benchmarked 4 ML classifiers (SVC, KNN, Logistic Regression, GaussianNB) on clean signature datasets, achieving <b>up to 94% accuracy</b> with an OpenCV preprocessing pipeline for contour extraction and stroke enhancement.",
-      "Applied Neural Style Transfer to simulate adversarial forgeries, exposing <b>30-50% accuracy drops</b> and surfacing model fragility under distribution shift, demonstrating the need for adversarial-aware training.",
-      "Designed a comparative evaluation framework to systematically test model robustness under adversarial transformations, quantifying performance degradation across all classifier architectures."
-    ]
-  },
-  "proj-pokemon": {
-    "coreProblem": "Color classification pipeline for images using classical clustering + Random Forest baselines alongside a CNN classifier, mapping each image to a dominant color label.",
-    "architectureDetails": "Two-stage pipeline: Stage 1 \u2014 RGBA image preprocessing with transparent pixel filtering (alpha > 220), KMeans clustering (n_clusters=3, n_init=10) on filtered RGB pixels to find dominant color, then find_closest_color maps cluster center to discrete label. Stage 2 \u2014 RandomForest baseline with LabelEncoder and compute_sample_weight for class imbalance. CNN: Keras Sequential (Conv2D 32 filters \u2192 MaxPooling2D \u2192 Flatten \u2192 Dense 128 \u2192 Dense num_classes softmax). tf.data pipeline: shuffle, 64/18/18 train/test/val split, batch sizes 32/16/16. Training: 20 epochs with validation monitoring. Output: CNN_output.csv and Traditional_output.csv mapping entity names to predicted color labels.",
-    "keyTechnologies": [
-      "Python",
-      "TensorFlow",
-      "Keras",
-      "OpenCV",
-      "Scikit-Learn",
-      "KMeans",
-      "RandomForest",
-      "tf.data"
-    ],
-    "suggestedBullets": [
-      "Developed a color extraction algorithm using K-Means clustering on RGB pixel distributions to classify images into <b>10 dominant color categories</b>, with RGBA transparency filtering and closest-color mapping.",
-      "Implemented and compared Random Forest and CNN models (Conv-MaxPool-Dense architecture) using a tf.data pipeline with stratified splits and class-balanced sample weights for robust training on imbalanced datasets.",
-      "Exported predictions to CSV files mapping original entities to predicted color labels for downstream analytics and visualization."
-    ]
-  },
   "proj-sih": {
     "coreProblem": "Cloud and network infrastructure for Smart India Hackathon using AWS EC2, Docker, PostgreSQL, n8n workflow automation, and AWS S3.",
     "architectureDetails": "Dockerized n8n workflow automation and PostgreSQL services on AWS EC2 with persistent volumes and secure inter-container networking. AWS S3 bucket integration for scalable cloud storage. End-to-end infrastructure setup delivered under 36-hour hackathon constraints.",
@@ -148,25 +111,6 @@
       "Configured Docker Compose with persistent volumes and automated restart policies to keep n8n running continuously with data preserved across reboots."
     ]
   },
-  "proj-shlagent": {
-    "coreProblem": "Conversational AI recommender using FastAPI and OpenRouter to guide recruiters in choosing assessment tests from a 377-item SHL catalog, with BM25 retrieval and strict JSON output contracts.",
-    "architectureDetails": "CatalogRetriever loads and enriches SHL catalog from JSON+CSV. Builds tokenized search_text strings per item and creates BM25Okapi index. CORE_ASSESSMENT_NAMES constant seeds retrieval with curated core items. hybrid_retrieve: runs _bm25_search with 2x candidates, prepends core items, deduplicates by entity_id. SHLAgent: AsyncOpenAI client to OpenRouter. Large SYSTEM_PROMPT with detailed product knowledge, domain rules, and strict JSON response format. Dynamic context injection: detailed_context from top 40 retrieved items + compact_catalog reference. _validate_recommendations: URL validation against url_set, case-insensitive name lookup fallback, secondary BM25 search for hallucinated names. Off-topic detection via _is_off_topic. Warm-start via lifespan hook. Pydantic v2 schemas (ChatRequest, ChatResponse, Recommendation).",
-    "keyTechnologies": [
-      "FastAPI",
-      "Python",
-      "BM25Okapi",
-      "OpenRouter",
-      "AsyncOpenAI",
-      "Pydantic v2",
-      "FAISS",
-      "Sentence Transformers"
-    ],
-    "suggestedBullets": [
-      "Built a conversational AI recommender using FastAPI and OpenRouter that indexes a 377-item SHL catalog via <b>BM25Okapi</b> with enriched search_text strings, injecting detailed and compact catalog contexts into the LLM system prompt.",
-      "Implemented semantic search using FAISS and Sentence Transformers (all-MiniLM-L6-v2 embeddings) to index and retrieve test metadata under <b>50ms latency</b>, with a hybrid retrieval strategy prepending curated core assessments to BM25-ranked candidates.",
-      "Engineered URL/name validation that auto-corrects hallucinated product references via case-insensitive name lookup and secondary BM25 fallback, with off-topic filtering and Pydantic v2 strict JSON contracts."
-    ]
-  },
   "proj-iqagent": {
     "coreProblem": "Local-first CLI tool that turns a candidate's PDF resume into tailored technical interview questions and model answers using a locally hosted Ollama LLM, ensuring 100% data privacy.",
     "architectureDetails": "pypdf.PdfReader for resume text extraction. LangChain PromptTemplate with structured Instruction/Input/Response format. ChatOllama targeting gemma3:4b model at http://127.0.0.1:11434 with temperature=0.7. Chain: prompt | llm. Advanced variant: interactive multi-line job description capture from stdin with sentinel termination. Output persisted to interview_questions.txt as markdown-friendly text.",
@@ -182,23 +126,6 @@
       "Developed a localized Python CLI tool that parses PDF resumes with pypdf and generates structured technical interview questions with sample answers using Ollama (Gemma-3-4b), ensuring <b>100% data privacy</b> via fully offline inference.",
       "Integrated target Job Description matching to align generated questions with specific role requirements, with an interactive advanced CLI that captures multi-line JDs from stdin.",
       "Structured output as markdown-friendly text persisted to interview_questions.txt, enabling reuse in interview prep workflows and easy versioning under source control."
-    ]
-  },
-  "proj-fundr": {
-    "coreProblem": "Startup crowdfunding and consumer investment platform SPA with typed React context for managing project creation and investment flows.",
-    "architectureDetails": "Vite + React 18 + TypeScript SPA. ProjectContext: typed React context storing Project[] with addProject and investInProject operations. Project type includes id, companyName, productName, description, timeline, deadline, rewards, goal, currentAmount, photoLink. Three routes: HomePage (grid of cards with funding progress bars), CreatePage (form with validation), DisplayPage (hero image, project details, investment panel). Progress bar: Math.min((currentAmount/goal)*100, 100). Currency formatting via toLocaleString(). Minimal Express server serving frontend/dist in production.",
-    "keyTechnologies": [
-      "React 19",
-      "TypeScript",
-      "Vite",
-      "Tailwind CSS",
-      "React Router",
-      "Express.js"
-    ],
-    "suggestedBullets": [
-      "Developed a functional crowdfunding prototype using React 19 + TypeScript with a typed ProjectContext managing project creation and investment flows across three SPA routes.",
-      "Implemented responsive UI dashboards using Tailwind CSS to track campaign progress, funding timelines, and equity metrics with dynamic progress bars and localized currency formatting.",
-      "Deployed behind a minimal Express server serving the Vite-built frontend, providing clean separation between static SPA hosting and future API endpoints."
     ]
   },
   "proj-outreach-agent": {
@@ -256,25 +183,6 @@
       "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom 'best' scorer combining recency (0.3 weight) and popularity (0.7 weight).",
       "Designed a relational schema with News, Comment, apiKey, and Log models, using ModelSerializers for JSON responses while serving traditional HTML templates for authentication and browsing.",
       "Encoded 'latest', 'popular', and 'best' selection logic as dedicated aggregation functions over SQLite, with per-article view counters and human-readable access logs in a Log table for observability."
-    ]
-  },
-  "proj-llama3-hackathon": {
-    "coreProblem": "Rapid prototyping sandbox for local Llama-class medical assistant models in a hackathon setting, combining Ollama model management with LlamaIndex and a Gradio health-logging UI.",
-    "architectureDetails": "Colab-based workflow: downloads quantized med-llama8B.gguf (8B parameter medical LLM) from HuggingFace via hf_hub_download, registers with Ollama using custom Modelfile, and wires into LlamaIndex Ollama LLM wrapper for .complete() predictions. Uses colab-xterm for managing Ollama daemon and Modelfile commands directly from Jupyter. Separate HealthPulse AI notebook: Gradio + Plotly UI for logging health events into pandas DataFrame and rendering interactive time-series plots. Emphasis on rapid iteration and offline/local inference without cloud API dependencies.",
-    "keyTechnologies": [
-      "Python",
-      "Ollama",
-      "LlamaIndex",
-      "HuggingFace Hub",
-      "Gradio",
-      "Plotly",
-      "Pandas",
-      "Colab"
-    ],
-    "suggestedBullets": [
-      "Prototyped an end-to-end local medical assistant by downloading a quantized 8B-parameter med-llama .gguf model from HuggingFace, registering it in Ollama, and wiring it into LlamaIndex for offline inference inside Colab.",
-      "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots, providing a front-end for the local med-LLM.",
-      "Delivered the prototype under hackathon time constraints using colab-xterm for Ollama process management directly from Jupyter notebooks."
     ]
   },
   "proj-reliance-001": {

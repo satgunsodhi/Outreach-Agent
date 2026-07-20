@@ -8,6 +8,7 @@ langchain4j:
 
 outreach:
   llm:
+    base-url: ${OPENROUTER_BASE_URL:https://openrouter.ai/api/v1}
     open-router-api-key: ${OPENROUTER_API_KEY:}
     open-router-model-name: ${OPENROUTER_MODEL_NAME:}
     temperature: 0.2

@@ -10,6 +10,7 @@ import java.util.List;
 public class LlmProperties {
     private String openRouterApiKey;
     private String openRouterModelName;
+    private String baseUrl = "https://openrouter.ai/api/v1";
     private Double temperature = 0.2;
     private Integer maxTokens = 4000;
     /**
@@ -32,6 +33,14 @@ public class LlmProperties {
 
     public void setOpenRouterModelName(String openRouterModelName) {
         this.openRouterModelName = openRouterModelName;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     public Double getTemperature() {
