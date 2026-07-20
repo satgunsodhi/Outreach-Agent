@@ -75,21 +75,19 @@ public class OpenRouterLlmConfig {
         }
 
         // Use a generous read timeout — LLM responses for cover letters/resumes can
-        // take 60–90 s.
-        // The default JDK HttpClient timeout is far shorter, which caused "Stream
-        // cancelled" errors.
+        // take several minutes, especially when using complex models via a local proxy.
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(
                 HttpClient.newBuilder()
                         .connectTimeout(Duration.ofSeconds(10))
                         .build());
-        requestFactory.setReadTimeout(Duration.ofSeconds(120));
+        requestFactory.setReadTimeout(Duration.ofMinutes(5));
 
         RestClient.Builder builder = RestClient.builder()
                 .requestFactory(requestFactory)
                 .requestInterceptor(new OpenRouterInterceptor(openRouterModelService::getFallbackModels));
 
         return OpenAiChatModel.builder()
-                .baseUrl("https://openrouter.ai/api/v1")
+                .baseUrl(llmProperties.getBaseUrl())
                 .apiKey(llmProperties.getOpenRouterApiKey())
                 .modelName(openRouterModelService.getPrimaryModel())
                 .temperature(temperature)

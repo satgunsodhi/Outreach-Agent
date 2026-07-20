@@ -45,10 +45,17 @@ public class OpenRouterModelService {
         this.llmProperties = llmProperties;
     }
 
+    private boolean isUsingOpenRouter() {
+        String baseUrl = llmProperties.getBaseUrl();
+        return baseUrl != null && baseUrl.contains("openrouter.ai");
+    }
+
     @PostConstruct
     public void init() {
-        // Fetch free models asynchronously at startup to avoid blocking main thread
-        CompletableFuture.runAsync(this::fetchFreeModels);
+        if (isUsingOpenRouter()) {
+            // Fetch free models asynchronously at startup to avoid blocking main thread
+            CompletableFuture.runAsync(this::fetchFreeModels);
+        }
     }
 
     /**
@@ -57,7 +64,9 @@ public class OpenRouterModelService {
      */
     @Scheduled(fixedDelay = 43200000, initialDelay = 43200000)
     public void scheduledFetch() {
-        fetchFreeModels();
+        if (isUsingOpenRouter()) {
+            fetchFreeModels();
+        }
     }
 
     /**
@@ -128,7 +137,9 @@ public class OpenRouterModelService {
     public List<String> getFallbackModels() {
         if (cachedFreeModels.isEmpty()) {
             log.debug("No cached free models available. Triggering fetch now for current execution.");
-            fetchFreeModels(); // Fetch synchronously if empty
+            if (isUsingOpenRouter()) {
+                fetchFreeModels(); // Fetch synchronously if empty
+            }
             
             if (cachedFreeModels.isEmpty()) {
                 log.debug("Still no cached free models available after fetch. Using configured fallback models from properties.");
@@ -179,7 +190,7 @@ public class OpenRouterModelService {
             return configured;
         }
         
-        if (cachedFreeModels.isEmpty()) {
+        if (cachedFreeModels.isEmpty() && isUsingOpenRouter()) {
             log.info("No cached free models available. Triggering fetch now for primary model.");
             fetchFreeModels();
         }
