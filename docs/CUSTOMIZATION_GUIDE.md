@@ -23,7 +23,7 @@ Currently, the agent is hardcoded to adopt the persona of the original author. Y
   * Update `application.yml` (`allowed-origins: ...`) and/or `SecurityConfig.java` to remove `https://satgunsodhi.vercel.app` and replace it with your own frontend domain if you host the Next.js UI in production.
 * **`.env` Variables**:
   * Copy `.env.example` to `.env`.
-  * Set `SMTP_USERNAME` to your email.
+  * Set `GMAIL_ADDRESS` to your email.
   * Provide your OpenRouter/Gemini API keys.
 * **Google API Credentials**:
   * The project integrates with Gmail Drafts and Google Drive via OAuth 2.0.
