@@ -116,7 +116,7 @@
             },
             {
               "id": "bp-r-002",
-              "text": "Built deep Autoencoder models (SELU, AlphaDropout, MAE loss) for unsupervised anomaly detection across 5 industrial systems, achieving up to 99.47% training accuracy and 93.05% validation accuracy on large multi-sensor time-series data.",
+              "text": "Developed deep Autoencoder models (SELU, AlphaDropout, MAE loss) for unsupervised anomaly detection across 5 industrial systems, achieving up to 99.47% training accuracy and 93.05% validation accuracy on large multi-sensor time-series data.",
               "tags": [
                 "autoencoder",
                 "deep-learning",
@@ -129,7 +129,7 @@
             },
             {
               "id": "bp-r-003",
-              "text": "Implemented Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune training parameters, accelerating search efficiency by 3.5x over standard grid search.",
+              "text": "Applied Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune training parameters, accelerating search efficiency by 3.5x over standard grid search.",
               "tags": [
                 "bayesian-optimization",
                 "gaussian-processes",
@@ -257,7 +257,7 @@
       "bullets": [
         {
           "id": "bp-d-001",
-          "text": "Built a self-hostable Discord AI assistant with a RAG pipeline using Supabase pgvector (384-dim embeddings) for semantic knowledge base search with per-server data isolation.",
+          "text": "Engineered a self-hostable Discord AI assistant with a RAG pipeline using Supabase pgvector (384-dim embeddings) for semantic knowledge base search with per-server data isolation.",
           "tags": [
             "rag",
             "embeddings",
@@ -270,7 +270,7 @@
         },
         {
           "id": "bp-d-002",
-          "text": "Integrated Sentence Transformers to index messages for similarity-based retrieval, and implemented rolling conversation summaries with Llama-3.2-3B and DuckDuckGo for real-time context-aware responses.",
+          "text": "Integrated Sentence Transformers to index messages for similarity-based retrieval, and deployed rolling conversation summaries with Llama-3.2-3B and DuckDuckGo for real-time context-aware responses.",
           "tags": [
             "llm",
             "rag",
@@ -298,14 +298,14 @@
         },
         {
           "id": "bp-proj-dasai-ext-1",
-          "text": "Designed and implemented a multi-tenant Discord copilot that stores per-guild configuration, roles, message history, and pgvector-backed RAG documents in Supabase using <b>vector(384) embeddings and IVFFlat cosine indexes</b> for fast similarity search.",
+          "text": "Designed and deployed a multi-tenant Discord copilot that stores per-guild configuration, roles, message history, and pgvector-backed RAG documents in Supabase using <b>vector(384) embeddings and IVFFlat cosine indexes</b> for fast similarity search.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
         },
         {
           "id": "bp-proj-dasai-ext-2",
-          "text": "Built an HF InferenceClient integration that drives both chat and embedding calls via asyncio executors, runs a classifier sub-prompt to decide when to web-search, and injects DuckDuckGo summaries plus RAG snippets into the final system prompt while enforcing channel allowlists and team-lead/member roles.",
+          "text": "Programmed an HF InferenceClient integration that drives both chat and embedding calls via asyncio executors, runs a classifier sub-prompt to decide when to web-search, and injects DuckDuckGo summaries plus RAG snippets into the final system prompt while enforcing channel allowlists and team-lead/member roles.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -418,7 +418,7 @@
       "bullets": [
         {
           "id": "bp-s-001",
-          "text": "Built a transformer-based SLM from scratch in PyTorch using GPT-2 Tiktoken for financial sentiment classification and automated buy/sell/hold trading signal generation.",
+          "text": "Created a transformer-based SLM from scratch in PyTorch using GPT-2 Tiktoken for financial sentiment classification and automated buy/sell/hold trading signal generation.",
           "tags": [
             "nlp",
             "transformer",
@@ -457,7 +457,7 @@
         },
         {
           "id": "bp-proj-slm-ext-1",
-          "text": "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English → financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
+          "text": "Architected a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English → financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -702,7 +702,7 @@
         },
         {
           "id": "bp-oa-002",
-          "text": "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
+          "text": "Engineered a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
           "tags": [
             "concurrency",
             "batch-processing",
@@ -744,7 +744,7 @@
         },
         {
           "id": "bp-proj-outreach-agent-ext-2",
-          "text": "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
+          "text": "Engineered a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -804,7 +804,7 @@
         },
         {
           "id": "bp-vs-002",
-          "text": "Implemented per-stage checkpointing (transcript, frames, frame descriptions, summary) with <b>--force overrides</b>, enabling large-file resilience and efficient iterative runs on long meetings.",
+          "text": "Configured per-stage checkpointing (transcript, frames, frame descriptions, summary) with <b>--force overrides</b>, enabling large-file resilience and efficient iterative runs on long meetings.",
           "tags": [
             "checkpointing",
             "resilience",
@@ -835,7 +835,7 @@
         },
         {
           "id": "bp-proj-video-summary-ext-2",
-          "text": "Implemented per-stage checkpointing (transcript, frames, frame descriptions, summary) with --force overrides, enabling large-file resilience and efficient iterative runs on long meetings.",
+          "text": "Configured per-stage checkpointing (transcript, frames, frame descriptions, summary) with --force overrides, enabling large-file resilience and efficient iterative runs on long meetings.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -876,7 +876,7 @@
         },
         {
           "id": "bp-rc-002",
-          "text": "Implemented response parsing mechanisms to automatically format and output clean headers and JSON bodies directly to log files.",
+          "text": "Programmed response parsing mechanisms to automatically format and output clean headers and JSON bodies directly to log files.",
           "tags": [
             "tooling",
             "file-io",
@@ -907,7 +907,7 @@
       "bullets": [
         {
           "id": "bp-dn-001",
-          "text": "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom scoring function.",
+          "text": "Deployed a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom scoring function.",
           "tags": [
             "django",
             "drf",
@@ -944,7 +944,7 @@
         },
         {
           "id": "bp-proj-django-news-ext-1",
-          "text": "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom 'best' scorer combining recency (0.3 weight) and popularity (0.7 weight).",
+          "text": "Deployed a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom 'best' scorer combining recency (0.3 weight) and popularity (0.7 weight).",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"
@@ -1051,7 +1051,7 @@
         },
         {
           "id": "bp-iq-004",
-          "text": "Built a tiered badge achievement system (common → rare → epic → legendary) with idempotent unlock guards and per-rarity CSS glow animations, alongside a ProgressContext exposing getCourseStats, getWeekStats, exportProgress, and getNextIncompleteDay to all child components without prop drilling.",
+          "text": "Constructed a tiered badge achievement system (common → rare → epic → legendary) with idempotent unlock guards and per-rarity CSS glow animations, alongside a ProgressContext exposing getCourseStats, getWeekStats, exportProgress, and getNextIncompleteDay to all child components without prop drilling.",
           "tags": [
             "react",
             "context-api",
@@ -1108,7 +1108,7 @@
       "bullets": [
         {
           "id": "bp-ncb-001",
-          "text": "Implemented a per-model async rate limiter (ModelRateLimiter + AsyncRateLimiter) around litellm that enforces a 40 RPM cap using a lock-protected timestamp deque, preventing downstream NVIDIA NIM 429 responses.",
+          "text": "Constructed a per-model async rate limiter (ModelRateLimiter + AsyncRateLimiter) around litellm that enforces a 40 RPM cap using a lock-protected timestamp deque, preventing downstream NVIDIA NIM 429 responses.",
           "tags": [
             "python",
             "asyncio",
@@ -1121,7 +1121,7 @@
         },
         {
           "id": "bp-ncb-002",
-          "text": "Built a multimodal safety layer in async_pre_call_hook that clamps max_tokens and strips image payloads from messages for text-only models, injecting a dummy text block and logging explicit warnings when Claude Code sends images to non-vision backends.",
+          "text": "Established a multimodal safety layer in async_pre_call_hook that clamps max_tokens and strips image payloads from messages for text-only models, injecting a dummy text block and logging explicit warnings when Claude Code sends images to non-vision backends.",
           "tags": [
             "multimodal",
             "safety",
@@ -1265,7 +1265,7 @@
         },
         {
           "id": "bp-lh-002",
-          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots for the local med-LLM.",
+          "text": "Created a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots for the local med-LLM.",
           "tags": [
             "gradio",
             "plotly",
@@ -1296,7 +1296,7 @@
         },
         {
           "id": "bp-ec-002-llama3-hackathon-ext-2",
-          "text": "Built a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots, providing a front-end for the local med-LLM.",
+          "text": "Created a Gradio + Plotly HealthPulse UI that logs health events into a pandas DataFrame and renders interactive time-series plots, providing a front-end for the local med-LLM.",
           "tags": [],
           "priority": 1,
           "lengthCategory": "LONG"

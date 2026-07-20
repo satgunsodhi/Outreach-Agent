@@ -36,8 +36,8 @@
       "Railway"
     ],
     "suggestedBullets": [
-      "Designed and implemented a multi-tenant Discord copilot that stores per-guild configuration, roles, message history, and pgvector-backed RAG documents in Supabase using <b>vector(384) embeddings and IVFFlat cosine indexes</b> for fast similarity search.",
-      "Built an HF InferenceClient integration that drives both chat and embedding calls via asyncio executors, runs a classifier sub-prompt to decide when to web-search, and injects DuckDuckGo summaries plus RAG snippets into the final system prompt while enforcing channel allowlists and team-lead/member roles.",
+      "Designed and deployed a multi-tenant Discord copilot that stores per-guild configuration, roles, message history, and pgvector-backed RAG documents in Supabase using <b>vector(384) embeddings and IVFFlat cosine indexes</b> for fast similarity search.",
+      "Programmed an HF InferenceClient integration that drives both chat and embedding calls via asyncio executors, runs a classifier sub-prompt to decide when to web-search, and injects DuckDuckGo summaries plus RAG snippets into the final system prompt while enforcing channel allowlists and team-lead/member roles.",
       "Developed an authenticated Next.js admin console using Supabase SSR/CSR clients to manage guild-level prompts, allowed channels, conversation summaries, user roles, and RAG documents, wired into a production Docker + Railway deployment."
     ]
   },
@@ -74,7 +74,7 @@
       "HuggingFace Hub"
     ],
     "suggestedBullets": [
-      "Built a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English \u2192 financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
+      "Architected a GPT-style transformer from scratch in PyTorch with tied embeddings, flash-attention-aware causal self-attention, and GELU-based MLP blocks, trained via a <b>two-phase curriculum (general English \u2192 financial corpora)</b> with AdamW, warmup+cosine LR, gradient accumulation, and mixed-precision AMP.",
       "Applied LoRA for parameter-efficient fine-tuning on FinancialPhraseBank and FiQA, <b>reducing trainable parameters from millions to thousands</b> while preserving domain expressiveness for sentiment classification and buy/sell/hold signal generation.",
       "Deployed the model as FinPeak.ai, a Streamlit chat app that downloads safetensors weights from HuggingFace, reconstructs GPTConfig, and generates instruction-formatted financial answers with controllable temperature and response length."
     ]
@@ -144,7 +144,7 @@
     ],
     "suggestedBullets": [
       "Developed an agentic Spring Boot system using LangChain4j with a 3-tool architecture (knowledge base search, PDF generation, page-length validation) to automatically customize resumes targeting job descriptions.",
-      "Implemented a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
+      "Engineered a robust batch processing pipeline with an AtomicBoolean concurrency lock to prevent race conditions across parallel LLM invocations, alongside duplicate target prevention and exponential backoff for web scraping.",
       "Engineered a persistent PDF caching system using SHA-256 hashing on job descriptions and scraped company research to bypass redundant LLM generation, saving API costs and reducing latency.",
       "Designed an automated skill sorting algorithm to dynamically align resume keywords with parsed job requirements, eliminating LLM hallucination and enforcing strict ATS compliance."
     ]
@@ -164,7 +164,7 @@
     ],
     "suggestedBullets": [
       "Engineered a resumable multimodal summarization CLI that extracts audio via ffmpeg, transcribes with OpenAI Whisper, samples key frames using OpenCV, and calls Ollama vision/text models (LLaVA + LLaMA 3.2) to produce structured markdown summaries.",
-      "Implemented per-stage checkpointing (transcript, frames, frame descriptions, summary) with --force overrides, enabling large-file resilience and efficient iterative runs on long meetings.",
+      "Configured per-stage checkpointing (transcript, frames, frame descriptions, summary) with --force overrides, enabling large-file resilience and efficient iterative runs on long meetings.",
       "Packaged with a portable setup.sh that validates Python/ffmpeg/Ollama prerequisites, creates a venv, and pulls required Ollama models for one-command bootstrap."
     ]
   },
@@ -180,7 +180,7 @@
       "REST API"
     ],
     "suggestedBullets": [
-      "Implemented a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom 'best' scorer combining recency (0.3 weight) and popularity (0.7 weight).",
+      "Deployed a Django 5 + DRF API with path-parameterized endpoints and manual API-key validation, supporting list, search, random, and mode-based news retrieval with a custom 'best' scorer combining recency (0.3 weight) and popularity (0.7 weight).",
       "Designed a relational schema with News, Comment, apiKey, and Log models, using ModelSerializers for JSON responses while serving traditional HTML templates for authentication and browsing.",
       "Encoded 'latest', 'popular', and 'best' selection logic as dedicated aggregation functions over SQLite, with per-article view counters and human-readable access logs in a Log table for observability."
     ]
@@ -202,8 +202,8 @@
     ],
     "suggestedBullets": [
       "Engineered RMS-normalized flow deltas and cosine similarity features on sliding windows across all pairwise sensor combinations, improving anomaly detection recall by 14% and reducing processing latency by 25%.",
-      "Built deep Autoencoder models (SELU, AlphaDropout, MAE loss) for unsupervised anomaly detection across 5 industrial systems, achieving up to 99.47% training accuracy and 93.05% validation accuracy on large multi-sensor time-series data.",
-      "Implemented Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune training parameters, accelerating search efficiency by 3.5x over standard grid search.",
+      "Developed deep Autoencoder models (SELU, AlphaDropout, MAE loss) for unsupervised anomaly detection across 5 industrial systems, achieving up to 99.47% training accuracy and 93.05% validation accuracy on large multi-sensor time-series data.",
+      "Applied Bayesian hyperparameter optimization from scratch using Gaussian Processes (RBF kernel) and Expected Improvement to auto-tune training parameters, accelerating search efficiency by 3.5x over standard grid search.",
       "Delivered dashboards, technical documentation, and presentations to mentors, leads, and stakeholders, honing cross-functional communication in a production ML environment."
     ]
   },
@@ -225,13 +225,13 @@
     ],
     "suggestedBullets": [
       "Architected a Next.js/TypeScript learning OS where immutable course roadmaps and day-level units across DSA, competitive programming, and quantitative finance tracks are wired into an external <b>ProgressStore via useSyncExternalStore</b>, supporting instant 'continue where you left off' session redirects based on lastVisitedDay per course.",
-      "Built a gamification subsystem that derives XP levels, daily/longest streaks, and unlocked badges from localStorage-backed stores, synchronizing changes <b>across tabs via browser storage events and a custom 'iqilo-xp-update' event</b> while keeping UI reactive through external-store subscriptions.",
-      "Implemented a fully client-side progress API (useProgress) exposing day/resource toggles, per-week/per-course completion stats, JSON export, and auto-redirect logic, alongside a TailwindCSS v4 dashboard with recommended quests, certificate cards, and a learning velocity graph."
+      "Formulated a gamification subsystem that derives XP levels, daily/longest streaks, and unlocked badges from localStorage-backed stores, synchronizing changes <b>across tabs via browser storage events and a custom 'iqilo-xp-update' event</b> while keeping UI reactive through external-store subscriptions.",
+      "Developed a fully client-side progress API (useProgress) exposing day/resource toggles, per-week/per-course completion stats, JSON export, and auto-redirect logic, alongside a TailwindCSS v4 dashboard with recommended quests, certificate cards, and a learning velocity graph."
     ]
   },
   "proj-nvidia-claude-bridge": {
     "coreProblem": "Custom litellm callback layer that safely bridges Anthropic Claude Code (and similar IDE-integrated LLM clients) to NVIDIA NIM models, enforcing per-model rate limits, stripping mismatched multimodal payloads from text-only backends, and surfacing rich diagnostic logging for failures including HTTP 429 rate-limit responses.",
-    "architectureDetails": "Built around litellm.integrations.custom_logger.CustomLogger extended via CustomRateLimitLogger implementing pre-call hooks and failure logging. AsyncRateLimiter(rpm=40) maintains a lock-protected deque of timestamps; acquire(model_name) drops entries older than 60s, computes sleep_time = history[0] + 60.1 - now when at limit, logs yellow [RateLimiter] warning and awaits asyncio.sleep. ModelRateLimiter holds dict of AsyncRateLimiter keyed by model name with global_lock for lazy init. async_pre_call_hook: clamps max_tokens to 4096; for non-vision models strips image_url/image typed blocks from message content lists, injects dummy text block when all blocks removed; logs red [WARNING] about Claude Code image attempt; calls rate_limiter.acquire(model_name). is_vision_model() checks for 'vision', '-vl', 'paligemma', 'multimodal' in lowercase name. Failure logging: _log_failure extracts exception, derives status_code from exception.status_code or exception.response.status_code. Rate-limit detection via status_code==429 or 'rate' in exception type/message. Dumps all non-private exception attributes, response headers (flags retry-after and limit keys), response body (raw text + parsed JSON). Inspects response_obj attributes. Global proxy_handler_instance = CustomRateLimitLogger() exported for litellm attachment.",
+    "architectureDetails": "Structured around litellm.integrations.custom_logger.CustomLogger extended via CustomRateLimitLogger implementing pre-call hooks and failure logging. AsyncRateLimiter(rpm=40) maintains a lock-protected deque of timestamps; acquire(model_name) drops entries older than 60s, computes sleep_time = history[0] + 60.1 - now when at limit, logs yellow [RateLimiter] warning and awaits asyncio.sleep. ModelRateLimiter holds dict of AsyncRateLimiter keyed by model name with global_lock for lazy init. async_pre_call_hook: clamps max_tokens to 4096; for non-vision models strips image_url/image typed blocks from message content lists, injects dummy text block when all blocks removed; logs red [WARNING] about Claude Code image attempt; calls rate_limiter.acquire(model_name). is_vision_model() checks for 'vision', '-vl', 'paligemma', 'multimodal' in lowercase name. Failure logging: _log_failure extracts exception, derives status_code from exception.status_code or exception.response.status_code. Rate-limit detection via status_code==429 or 'rate' in exception type/message. Dumps all non-private exception attributes, response headers (flags retry-after and limit keys), response body (raw text + parsed JSON). Inspects response_obj attributes. Global proxy_handler_instance = CustomRateLimitLogger() exported for litellm attachment.",
     "keyTechnologies": [
       "Python",
       "litellm",
@@ -245,7 +245,7 @@
     ],
     "suggestedBullets": [
       "Implemented a per-model asynchronous rate limiter (ModelRateLimiter + AsyncRateLimiter) around litellm that enforces a <b>40 RPM cap</b> in-memory using a lock-protected timestamp deque, preventing downstream NVIDIA NIM 429 responses and emitting human-readable warnings when limits are reached.",
-      "Built a multimodal safety layer in async_pre_call_hook that clamps max_tokens and strips all image payloads from messages for text-only models, injecting a dummy text block when needed and logging explicit warnings when Claude Code attempts to send images to non-vision backends.",
+      "Established a multimodal safety layer in async_pre_call_hook that clamps max_tokens and strips all image payloads from messages for text-only models, injecting a dummy text block when needed and logging explicit warnings when Claude Code attempts to send images to non-vision backends.",
       "Engineered a rich failure introspection system that detects rate-limit conditions (HTTP 429 or 'rate' signatures), dumps all exception attributes, NIM response headers (including retry-after/limit fields), raw and parsed JSON bodies, plus response_obj attributes to enable rapid debugging of bridge failures."
     ]
   }
