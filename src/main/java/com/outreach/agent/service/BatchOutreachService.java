@@ -291,8 +291,13 @@ public class BatchOutreachService {
                         ? target.getSubject()
                         : coverLetterAgent.generateSubject(target.getCompanyName(), roleName);
 
-                // Ensure subject doesn't contain newlines or quotes from LLM formatting
-                subject = subject.replaceAll("[\r\n\"]+", "").trim();
+                if (subject == null || subject.isBlank()) {
+                    log.warn("LLM returned null for subject line (likely hit token limits during reasoning). Falling back to default.");
+                    subject = "Application for " + roleName + " at " + target.getCompanyName();
+                } else {
+                    // Ensure subject doesn't contain newlines or quotes from LLM formatting
+                    subject = subject.replaceAll("[\r\n\"]+", "").trim();
+                }
                 subject = sanitizer.fillPlaceholders(subject, candidateName, target.getCompanyName());
 
                 if (sanitizer.containsPlaceholderTokens(coverLetterBody)
